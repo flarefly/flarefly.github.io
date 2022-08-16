@@ -1,0 +1,1966 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>flarefly.fitter API documentation</title>
+<meta name="description" content="Module containing the class used to perform mass fits" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>flarefly.fitter</code></h1>
+</header>
+<section id="section-intro">
+<p>Module containing the class used to perform mass fits</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+Module containing the class used to perform mass fits
+&#34;&#34;&#34;
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+import zfit
+import mplhep
+from flarefly.utils import Logger
+
+
+# pylint: disable=too-many-instance-attributes
+class F2MassFitter:
+    &#34;&#34;&#34;
+    Class used to perform mass fits with the zfit library
+    https://github.com/zfit/zfit
+    &#34;&#34;&#34;
+
+    def __init__(self, data_handler=None, name_signal_pdf=None, name_background_pdf=None):
+        &#34;&#34;&#34;
+        Initialize the F2MassFitter class
+        Parameters
+        -------------------------------------------------
+        data_handler: flarefly.DataHandler
+            The data handler containing the data to fit
+        name_signal_pdf: str
+            The name of the signal pdf. The possible options are:
+            - &#39;gaussian&#39;
+            - &#39;crystalball&#39;
+        name_background_pdf: str
+            The name of the background pdf. The possible options are:
+            - &#39;expo&#39;
+        &#34;&#34;&#34;
+        self._data_handler_ = data_handler
+        self._name_signal_pdf_ = name_signal_pdf
+        self._name_background_pdf_ = name_background_pdf
+        self._signal_pdf_ = None
+        self._background_pdf_ = None
+        self._total_pdf_ = None
+        self._total_pdf_binned_ = None
+        self._fit_result_ = None
+        self._init_mass_ = 1.865
+        self._init_width_ = 0.01
+        self._mass_ = None
+        self._width_ = None
+        self._frac_signal_ = None
+        self._alpha_ = None
+        self._nsig_ = None
+        self._bkg_pars_ = [None]
+        self._minimizer_ = zfit.minimize.Minuit(verbosity=7)
+        self._rawyield_ = 0.
+        self._rawyield_err_ = 0.
+        self._name_secpeak_pdf_ = &#39;nosecpeak&#39;
+        self._init_mass_secpeak_ = 1.870
+        self._init_width_secpeak_ = 0.01
+        self._mass_secpeak_ = None
+        self._width_secpeak_ = None
+        self._alpha_secpeak_ = None
+        self._nsig_secpeak_ = None
+        self._frac_secpeak_ = None
+        self._secpeak_pdf_ = None
+        self._rawyield_secpeak_ = 0.
+        self._rawyield_err_secpeak_ = 0.
+
+        zfit.settings.advanced_warnings.all = False
+        zfit.settings.changed_warnings.all = False
+
+    # pylint: disable=too-many-branches
+    def __build_signal_pdf(self, obs):
+        &#34;&#34;&#34;
+        Helper function to compose the signal pdf
+        &#34;&#34;&#34;
+
+        if self._name_signal_pdf_ == &#39;gaussian&#39;:
+            if self._mass_ is None:
+                self._mass_ = zfit.Parameter(&#39;mass_signal&#39;, self._init_mass_)
+            else:
+                self._mass_.set_value(self._init_mass_)
+            if self._width_ is None:
+                self._width_ = zfit.Parameter(&#39;width_signal&#39;, self._init_width_)
+            else:
+                self._width_.set_value(self._init_width_)
+            self._signal_pdf_ = zfit.pdf.Gauss(obs=obs, mu=self._mass_, sigma=self._width_)
+        elif self._name_signal_pdf_ == &#39;crystalball&#39;:
+            if self._mass_ is None:
+                self._mass_ = zfit.Parameter(&#39;mass_signal&#39;, self._init_mass_)
+            else:
+                self._mass_.set_value(self._init_mass_)
+            if self._width_ is None:
+                self._width_ = zfit.Parameter(&#39;width_signal&#39;, self._init_width_)
+            else:
+                self._width_.set_value(self._init_width_)
+            if self._alpha_ is None:
+                self._alpha_ = zfit.Parameter(&#39;alpha&#39;, 0.5)
+            if self._nsig_ is None:
+                self._nsig_ = zfit.Parameter(&#39;nsig&#39;, 1.)
+            self._signal_pdf_ = zfit.pdf.CrystalBall(obs=obs, mu=self._mass_, sigma=self._width_,
+                                                     alpha=self._alpha_, n=self._nsig_)
+        else:
+            Logger(&#39;Signal pdf not supported&#39;, &#39;FATAL&#39;)
+
+    def __build_background_pdf(self, obs):
+        &#34;&#34;&#34;
+        Helper function to compose the background pdf
+        &#34;&#34;&#34;
+
+        if self._name_background_pdf_ == &#39;nobkg&#39;:
+            Logger(&#39;Performing fit with no bkg pdf&#39;, &#39;WARNING&#39;)
+        elif self._name_background_pdf_ == &#39;expo&#39;:
+            if self._bkg_pars_[0] is None:
+                self._bkg_pars_[0] = zfit.Parameter(&#39;bkg_p0&#39;, 0.1)
+            self._background_pdf_ = zfit.pdf.Exponential(self._bkg_pars_[0], obs=obs)
+        else:
+            Logger(&#39;Background pdf not supported&#39;, &#39;FATAL&#39;)
+
+    # pylint: disable=too-many-branches
+    def __build_secpeak_pdf(self, obs):
+        &#34;&#34;&#34;
+        Helper function to compose the second peak pdf
+        &#34;&#34;&#34;
+
+        if self._name_secpeak_pdf_ == &#39;noseckpeak&#39;:
+            return
+        if self._name_secpeak_pdf_ == &#39;gaussian&#39;:
+            if self._mass_secpeak_ is None:
+                self._mass_secpeak_ = zfit.Parameter(&#39;mass_secpeak&#39;, self._init_mass_secpeak_)
+            else:
+                self._mass_secpeak_.set_value(self._init_mass_secpeak_)
+            if self._width_secpeak_ is None:
+                self._width_secpeak_ = zfit.Parameter(&#39;width_secpeak&#39;, self._init_width_secpeak_)
+            else:
+                self._width_secpeak_.set_value(self._init_width_secpeak_)
+            self._secpeak_pdf_ = zfit.pdf.Gauss(obs=obs, mu=self._mass_secpeak_,
+                                                sigma=self._width_secpeak_)
+        elif self._name_secpeak_pdf_ == &#39;crystalball&#39;:
+            if self._mass_secpeak_ is None:
+                self._mass_secpeak_ = zfit.Parameter(&#39;mass_secpeak&#39;, self._init_mass_secpeak_)
+            else:
+                self._mass_secpeak_.set_value(self._init_mass_secpeak_)
+            if self._width_secpeak_ is None:
+                self._width_secpeak_ = zfit.Parameter(&#39;width_secpeak&#39;, self._init_width_secpeak_)
+            else:
+                self._width_secpeak_.set_value(self._init_width_secpeak_)
+            if self._alpha_secpeak_ is None:
+                self._alpha_secpeak_ = zfit.Parameter(&#39;alpha_secpeak&#39;, 0.5)
+            if self._nsig_secpeak_ is None:
+                self._nsig_secpeak_ = zfit.Parameter(&#39;nsig_secpeak&#39;, 1.)
+            self._secpeak_pdf_ = zfit.pdf.CrystalBall(obs=obs, mu=self._mass_secpeak_,
+                                                      sigma=self._width_secpeak_,
+                                                      alpha=self._alpha_secpeak_,
+                                                      n=self._nsig_secpeak_)
+        else:
+            Logger(&#39;Second peak pdf not supported, the second peak will not be included.&#39;, &#39;ERORR&#39;)
+
+    def __build_total_pdf(self):
+        &#34;&#34;&#34;
+        Helper function to compose the total pdf
+        &#34;&#34;&#34;
+
+        obs = self._data_handler_.get_obs()
+
+        # order of the pdfs is signal, second peak, background
+
+        self.__build_signal_pdf(obs)
+        self.__build_secpeak_pdf(obs)
+        self.__build_background_pdf(obs)
+
+        list_pdfs = [self._signal_pdf_]
+        if self._secpeak_pdf_:
+            list_pdfs.append(self._secpeak_pdf_)
+            if not self._frac_secpeak_:
+                self._frac_secpeak_ = zfit.Parameter(&#39;frac_secpeak&#39;, 0.1, 0., 1.)
+        if self._background_pdf_:
+            list_pdfs.append(self._background_pdf_)
+
+        n_pdfs = len(list_pdfs)
+        list_fracs = []
+        if n_pdfs &gt; 1:
+            if not self._frac_signal_:
+                self._frac_signal_ = zfit.Parameter(&#39;frac_signal&#39;, 0.1, 0., 1.)
+            list_fracs.append(self._frac_signal_)
+            if n_pdfs &gt; 2:
+                list_fracs.append(self._frac_secpeak_)
+
+            self._total_pdf_ = zfit.pdf.SumPDF(list_pdfs, list_fracs)
+        else:
+            self._total_pdf_ = self._signal_pdf_
+
+    def __prefit(self):
+        &#34;&#34;&#34;
+        Helper function to perform a prefit to the sidebands
+        &#34;&#34;&#34;
+
+        Logger(&#39;Prefit step to be implemented&#39;, &#39;WARNING&#39;)
+
+    def set_particle_mass(self, mass):
+        &#34;&#34;&#34;
+        Set the particle mass
+
+        Parameters
+        -------------------------------------------------
+        mass: float
+            The mass to be set
+        &#34;&#34;&#34;
+        self._init_mass_ = mass
+
+    def set_peak_width(self, width):
+        &#34;&#34;&#34;
+        Set the expected particle peak width
+
+        Parameters
+        -------------------------------------------------
+        width: float
+            The width to be set
+        &#34;&#34;&#34;
+        self._init_width_ = width
+
+    def mass_zfit(self):
+        &#34;&#34;&#34;
+        Perform a mass fit with the zfit library
+
+        Returns
+        -------------------------------------------------
+        fit_result: zfit.minimizers.fitresult.FitResult
+            The fit result
+        &#34;&#34;&#34;
+        if self._data_handler_ is None:
+            Logger(&#39;Data handler not specified&#39;, &#39;FATAL&#39;)
+
+        self.__build_total_pdf()
+        self.__prefit()
+
+        if self._data_handler_.get_is_binned():
+            self._total_pdf_binned_ = zfit.pdf.BinnedFromUnbinnedPDF(self._total_pdf_,
+                                                                     self._data_handler_.get_obs())
+            nll = zfit.loss.BinnedNLL(self._total_pdf_binned_,
+                                      self._data_handler_.get_binned_data())
+        else:
+            nll = zfit.loss.UnbinnedNLL(
+                model=self._total_pdf_, data=self._data_handler_.get_data())
+
+        self._fit_result_ = self._minimizer_.minimize(loss=nll)
+        self._fit_result_.hesse()
+        Logger(self._fit_result_, &#39;RESULT&#39;)
+
+        norm = self._data_handler_.get_norm()
+        if self._frac_signal_:
+            self._rawyield_ = self._fit_result_.params[&#39;frac_signal&#39;][&#39;value&#39;] * norm
+            self._rawyield_err_ = self._fit_result_.params[&#39;frac_signal&#39;][&#39;hesse&#39;][&#39;error&#39;] * norm
+        else:
+            self._rawyield_ = self._data_handler_.get_norm()
+            self._rawyield_err_ = np.sqrt(self._rawyield_)
+
+        if self._frac_secpeak_:
+            self._rawyield_secpeak_ = self._fit_result_.params[&#39;frac_secpeak&#39;][&#39;value&#39;] * norm
+            self._rawyield_err_secpeak_ = self._fit_result_.params[
+                &#39;frac_secpeak&#39;][&#39;hesse&#39;][&#39;error&#39;] * norm
+
+        return self._fit_result_
+
+    def plot_mass_fit(self, style=&#39;LHCb2&#39;, logy=False):
+        &#34;&#34;&#34;
+        Plot the mass fit
+
+        Parameters
+        -------------------------------------------------
+        style: str
+            style to be used (see https://github.com/scikit-hep/mplhep for more details)
+        logy: bool
+            log scale in y axis
+
+        Returns
+        -------------------------------------------------
+        fig: matplotlib.figure.Figure
+            figure containing the mass fit plot
+        &#34;&#34;&#34;
+        mplhep.style.use(style)
+
+        obs = self._data_handler_.get_obs()
+        limits = self._data_handler_.get_limits()
+
+        fig = plt.figure(figsize=(7, 7))
+        if self._data_handler_.get_is_binned():
+            hist = self._data_handler_.get_binned_data().to_hist()
+            hist.plot(yerr=True, color=&#39;black&#39;, histtype=&#39;errorbar&#39;,
+                      label=&#39;data&#39;)
+            bins = len(self._data_handler_.get_binned_data().values())
+            bin_width = (limits[1] - limits[0]) / bins
+            norm = self._data_handler_.get_norm() * bin_width
+        else:
+            data_np = zfit.run(self._data_handler_.get_data()[:, 0])
+            bins = 100
+            counts, bin_edges = np.histogram(data_np, bins, range=(limits[0], limits[1]))
+            mplhep.histplot((counts, bin_edges), yerr=True, color=&#39;black&#39;, histtype=&#39;errorbar&#39;,
+                            label=&#39;data&#39;)
+            norm = data_np.shape[0] / bins * obs.area()
+
+        x_plot = np.linspace(limits[0], limits[1], num=1000)
+        total_func = zfit.run(self._total_pdf_.pdf(x_plot, norm_range=obs))
+        signal_func = zfit.run(self._signal_pdf_.pdf(x_plot, norm_range=obs))
+
+        frac_signal = 1.
+        frac_secpeak = 0.
+        if self._frac_signal_:
+            frac_signal = self._fit_result_.params[&#39;frac_signal&#39;][&#39;value&#39;]
+        if self._frac_secpeak_:
+            frac_secpeak = self._fit_result_.params[&#39;frac_secpeak&#39;][&#39;value&#39;]
+
+        if self._name_background_pdf_ != &#34;nobkg&#34;:
+            bkg_func = zfit.run(self._background_pdf_.pdf(x_plot, norm_range=obs))
+            plt.plot(x_plot, bkg_func * norm * (1.-frac_signal-frac_secpeak), color=&#39;firebrick&#39;,
+                     ls=&#34;--&#34;, label=&#39;background&#39;)
+
+        if self._name_secpeak_pdf_ != &#34;nosecpeak&#34;:
+            secpeak_func = zfit.run(self._secpeak_pdf_.pdf(x_plot, norm_range=obs))
+            plt.plot(x_plot, secpeak_func * norm * frac_secpeak, color=&#39;teal&#39;)
+            plt.fill_between(x_plot, secpeak_func * norm * frac_secpeak, color=&#39;teal&#39;,
+                            alpha=0.5, label=&#39;second signal&#39;)
+
+        plt.plot(x_plot, signal_func * norm * frac_signal, color=&#39;seagreen&#39;)
+        plt.fill_between(x_plot, signal_func * norm * frac_signal, color=&#39;seagreen&#39;,
+                         alpha=0.5, label=&#39;signal&#39;)
+        plt.plot(x_plot, total_func * norm, color=&#39;xkcd:blue&#39;, label=&#39;total fit&#39;)
+        plt.xlabel(self._data_handler_.get_var_name())
+        plt.xlim(limits[0], limits[1])
+        plt.ylabel(rf&#39;counts / {(limits[1]-limits[0])/bins*1000:0.1f} MeV/$c^2$&#39;)
+        plt.legend(loc=&#39;best&#39;)
+        if logy:
+            plt.yscale(&#39;log&#39;)
+            plt.ylim(min(total_func) * norm / 5, max(total_func) * norm * 5)
+
+        return fig
+
+    def get_fit_result(self):
+        &#34;&#34;&#34;
+        Get the fit result
+
+        Returns
+        -------------------------------------------------
+        fit_result: zfit.minimizers.fitresult.FitResult
+            The fit result
+        &#34;&#34;&#34;
+        return self._fit_result_
+
+    def get_raw_yield(self):
+        &#34;&#34;&#34;
+        Get the raw yield and its error
+
+        Returns
+        -------------------------------------------------
+        raw_yield: float
+            The raw yield obtained from the fit
+        raw_yield_err: float
+            The raw yield error obtained from the fit
+        &#34;&#34;&#34;
+        return self._rawyield_, self._rawyield_err_
+
+    def get_raw_yield_secpeak(self):
+        &#34;&#34;&#34;
+        Get the second peak raw yield and its error
+
+        Returns
+        -------------------------------------------------
+        raw_yield: float
+            The raw yield obtained from the fit
+        raw_yield_err: float
+            The raw yield error obtained from the fit
+        &#34;&#34;&#34;
+        return self._rawyield_secpeak_, self._rawyield_err_secpeak_
+
+    def get_mass(self):
+        &#34;&#34;&#34;
+        Get the mass and its error
+
+        Returns
+        -------------------------------------------------
+        mass: float
+            The mass value obtained from the fit
+        mass_err: float
+            The mass error obtained from the fit
+        &#34;&#34;&#34;
+        return self._fit_result_.params[&#39;mass_signal&#39;][&#39;value&#39;], \
+            self._fit_result_.params[&#39;mass_signal&#39;][&#39;hesse&#39;][&#39;error&#39;]
+
+    def get_width(self):
+        &#34;&#34;&#34;
+        Get the width and its error
+
+        Returns
+        -------------------------------------------------
+        width: float
+            The width value obtained from the fit
+        width_err: float
+            The width error obtained from the fit
+        &#34;&#34;&#34;
+        return self._fit_result_.params[&#39;width_signal&#39;][&#39;value&#39;], \
+            self._fit_result_.params[&#39;width_signal&#39;][&#39;hesse&#39;][&#39;error&#39;]
+
+    def get_parameter(self, parameter):
+        &#34;&#34;&#34;
+        Get the width and its error
+
+        Parameters
+        -------------------------------------------------
+        parameter: str
+            parameter to return
+
+        Returns
+        -------------------------------------------------
+        parameter: float
+            The parameter value obtained from the fit
+        parameter_err: float
+            The parameter error obtained from the fit
+
+        &#34;&#34;&#34;
+        return self._fit_result_.params[parameter][&#39;value&#39;], \
+            self._fit_result_.params[parameter][&#39;hesse&#39;][&#39;error&#39;]
+
+    def get_signal(self, nsigma=3, second_peak=False):
+        &#34;&#34;&#34;
+        Get the signal and its error in mass +- nsigma * width
+        for main or second peak
+
+        Parameters
+        -------------------------------------------------
+        nsigma: float
+            nsigma window for signal computation
+        second_peak: bool
+            if True, compute signal for second peak
+            if False, compute signal for main peak
+
+        Returns
+        -------------------------------------------------
+        signal: float
+            The signal value obtained from the fit
+        signal_err: float
+            The signal error obtained from the fit
+        &#34;&#34;&#34;
+
+        if second_peak and not self._secpeak_pdf_:
+            Logger(&#39;Second peak not fitted&#39;, &#39;ERROR&#39;)
+            return 0., 0.
+
+        suffix = &#39;_secpeak&#39; if second_peak else &#39;_signal&#39;
+        min_value = self._fit_result_.params[f&#39;mass{suffix}&#39;][&#39;value&#39;] - \
+            nsigma * self._fit_result_.params[f&#39;width{suffix}&#39;][&#39;value&#39;]
+        max_value = self._fit_result_.params[f&#39;mass{suffix}&#39;][&#39;value&#39;] + \
+            nsigma * self._fit_result_.params[f&#39;width{suffix}&#39;][&#39;value&#39;]
+
+        # pylint: disable=missing-kwoa
+        if not second_peak:
+            signal = self._signal_pdf_.integrate((min_value, max_value))
+        else:
+            signal = self._secpeak_pdf_.integrate((min_value, max_value))
+
+        norm = self._data_handler_.get_norm()
+        norm_err = norm * self._fit_result_.params[f&#39;frac{suffix}&#39;][&#39;hesse&#39;][&#39;error&#39;]
+        norm *= self._fit_result_.params[f&#39;frac{suffix}&#39;][&#39;value&#39;]
+
+        return float(signal * norm), float(signal * norm_err)
+
+    def get_background(self, nsigma=3, second_peak=False):
+        &#34;&#34;&#34;
+        Get the background and its error in mass +- nsigma * width
+        for main or second peak
+
+        Parameters
+        -------------------------------------------------
+        nsigma: float
+            nsigma window for background computation
+        second_peak: bool
+            if True, compute background for second peak
+            if False, compute background for main peak
+
+        Returns
+        -------------------------------------------------
+        background: float
+            The background value obtained from the fit
+        background_err: float
+            The background error obtained from the fit
+        &#34;&#34;&#34;
+
+        if second_peak and not self._secpeak_pdf_:
+            Logger(&#39;Second peak not fitted&#39;, &#39;ERROR&#39;)
+            return 0., 0.
+
+        if not self._background_pdf_:
+            Logger(&#39;Background not fitted&#39;, &#39;ERROR&#39;)
+            return 0., 0.
+
+        suffix = &#39;_secpeak&#39; if second_peak else &#39;_signal&#39;
+        min_value = self._fit_result_.params[f&#39;mass{suffix}&#39;][&#39;value&#39;] - \
+            nsigma * self._fit_result_.params[f&#39;width{suffix}&#39;][&#39;value&#39;]
+        max_value = self._fit_result_.params[f&#39;mass{suffix}&#39;][&#39;value&#39;] + \
+            nsigma * self._fit_result_.params[f&#39;width{suffix}&#39;][&#39;value&#39;]
+
+        # pylint: disable=missing-kwoa
+        background = self._background_pdf_.integrate((min_value, max_value))
+
+        frac = 1. - self._fit_result_.params[&#39;frac_signal&#39;][&#39;value&#39;]
+        frac_err = self._fit_result_.params[&#39;frac_signal&#39;][&#39;hesse&#39;][&#39;error&#39;]
+        if self._secpeak_pdf_:
+            frac -= self._fit_result_.params[&#39;frac_secpeak&#39;][&#39;value&#39;]
+            frac_err = np.sqrt(
+                frac_err**2 + self._fit_result_.params[&#39;frac_secpeak&#39;][&#39;hesse&#39;][&#39;error&#39;]**2)
+
+        norm = self._data_handler_.get_norm()
+        norm_err = norm * frac_err
+        norm *= frac
+
+        return float(background * norm), float(background * norm_err)
+
+    def get_signal_over_background(self, nsigma=3, second_peak=False):
+        &#34;&#34;&#34;
+        Get the S/B ratio and its error in mass +- nsigma * width
+        for main or second peak
+
+        Parameters
+        -------------------------------------------------
+        nsigma: float
+            nsigma window for background computation
+        second_peak: bool
+            if True, compute background for second peak
+            if False, compute background for main peak
+
+        Returns
+        -------------------------------------------------
+        signal_over_background: float
+            The S/B value obtained from the fit
+        signal_over_background_err: float
+            The S/B error obtained from the fit
+        &#34;&#34;&#34;
+
+        signal = self.get_signal(nsigma, second_peak)
+        bkg = self.get_background(nsigma, second_peak)
+        signal_over_background = signal[0]/bkg[0]
+        signal_over_background_err = np.sqrt(signal[1]**2/signal[0]**2 + bkg[1]**2/bkg[0]**2)
+        signal_over_background_err *= signal_over_background
+
+        return signal_over_background, signal_over_background_err
+
+    def get_significance(self, nsigma, second_peak=False):
+        &#34;&#34;&#34;
+        Get the significance and its error in mass +- nsigma * width
+        for main or second peak
+
+        Parameters
+        -------------------------------------------------
+        nsigma: float
+            nsigma window for background computation
+        second_peak: bool
+            if True, compute background for second peak
+            if False, compute background for main peak
+
+        Returns
+        -------------------------------------------------
+        significance: float
+            The significance value obtained from the fit
+        significance_err: float
+            The significance error obtained from the fit
+        &#34;&#34;&#34;
+
+        signal = self.get_signal(nsigma, second_peak)
+        bkg = self.get_background(nsigma, second_peak)
+        significance = signal[0]/np.sqrt(signal[0]+bkg[0])
+        sig_plus_bkg = signal[0] + bkg[0]
+
+        significance_err = significance*np.sqrt(
+            (signal[1]**2 + bkg[1]**2) / (4. * sig_plus_bkg**2) + (
+                bkg[0]/sig_plus_bkg) * signal[1]**2 / signal[0]**2)
+
+        return significance, significance_err
+
+    def set_secpeak(self, pdf, mass, width):
+        &#34;&#34;&#34;
+        Enable second peak and set the second peak initial parameters
+        Parameters
+        -------------------------------------------------
+        pdf: str
+            pdf to be used for the second peak. The possible options are:
+            - &#39;gaussian&#39;
+            - &#39;crystalball&#39;
+        &#34;&#34;&#34;
+
+        self._name_secpeak_pdf_ = pdf
+        self._init_mass_secpeak_ = mass
+        self._init_width_secpeak_ = width</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="flarefly.fitter.F2MassFitter"><code class="flex name class">
+<span>class <span class="ident">F2MassFitter</span></span>
+<span>(</span><span>data_handler=None, name_signal_pdf=None, name_background_pdf=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Class used to perform mass fits with the zfit library
+<a href="https://github.com/zfit/zfit">https://github.com/zfit/zfit</a></p>
+<p>Initialize the F2MassFitter class
+Parameters</p>
+<hr>
+<dl>
+<dt><strong><code>data_handler</code></strong> :&ensp;<code>flarefly.DataHandler</code></dt>
+<dd>The data handler containing the data to fit</dd>
+<dt><strong><code>name_signal_pdf</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name of the signal pdf. The possible options are:
+- 'gaussian'
+- 'crystalball'</dd>
+<dt><strong><code>name_background_pdf</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name of the background pdf. The possible options are:
+- 'expo'</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class F2MassFitter:
+    &#34;&#34;&#34;
+    Class used to perform mass fits with the zfit library
+    https://github.com/zfit/zfit
+    &#34;&#34;&#34;
+
+    def __init__(self, data_handler=None, name_signal_pdf=None, name_background_pdf=None):
+        &#34;&#34;&#34;
+        Initialize the F2MassFitter class
+        Parameters
+        -------------------------------------------------
+        data_handler: flarefly.DataHandler
+            The data handler containing the data to fit
+        name_signal_pdf: str
+            The name of the signal pdf. The possible options are:
+            - &#39;gaussian&#39;
+            - &#39;crystalball&#39;
+        name_background_pdf: str
+            The name of the background pdf. The possible options are:
+            - &#39;expo&#39;
+        &#34;&#34;&#34;
+        self._data_handler_ = data_handler
+        self._name_signal_pdf_ = name_signal_pdf
+        self._name_background_pdf_ = name_background_pdf
+        self._signal_pdf_ = None
+        self._background_pdf_ = None
+        self._total_pdf_ = None
+        self._total_pdf_binned_ = None
+        self._fit_result_ = None
+        self._init_mass_ = 1.865
+        self._init_width_ = 0.01
+        self._mass_ = None
+        self._width_ = None
+        self._frac_signal_ = None
+        self._alpha_ = None
+        self._nsig_ = None
+        self._bkg_pars_ = [None]
+        self._minimizer_ = zfit.minimize.Minuit(verbosity=7)
+        self._rawyield_ = 0.
+        self._rawyield_err_ = 0.
+        self._name_secpeak_pdf_ = &#39;nosecpeak&#39;
+        self._init_mass_secpeak_ = 1.870
+        self._init_width_secpeak_ = 0.01
+        self._mass_secpeak_ = None
+        self._width_secpeak_ = None
+        self._alpha_secpeak_ = None
+        self._nsig_secpeak_ = None
+        self._frac_secpeak_ = None
+        self._secpeak_pdf_ = None
+        self._rawyield_secpeak_ = 0.
+        self._rawyield_err_secpeak_ = 0.
+
+        zfit.settings.advanced_warnings.all = False
+        zfit.settings.changed_warnings.all = False
+
+    # pylint: disable=too-many-branches
+    def __build_signal_pdf(self, obs):
+        &#34;&#34;&#34;
+        Helper function to compose the signal pdf
+        &#34;&#34;&#34;
+
+        if self._name_signal_pdf_ == &#39;gaussian&#39;:
+            if self._mass_ is None:
+                self._mass_ = zfit.Parameter(&#39;mass_signal&#39;, self._init_mass_)
+            else:
+                self._mass_.set_value(self._init_mass_)
+            if self._width_ is None:
+                self._width_ = zfit.Parameter(&#39;width_signal&#39;, self._init_width_)
+            else:
+                self._width_.set_value(self._init_width_)
+            self._signal_pdf_ = zfit.pdf.Gauss(obs=obs, mu=self._mass_, sigma=self._width_)
+        elif self._name_signal_pdf_ == &#39;crystalball&#39;:
+            if self._mass_ is None:
+                self._mass_ = zfit.Parameter(&#39;mass_signal&#39;, self._init_mass_)
+            else:
+                self._mass_.set_value(self._init_mass_)
+            if self._width_ is None:
+                self._width_ = zfit.Parameter(&#39;width_signal&#39;, self._init_width_)
+            else:
+                self._width_.set_value(self._init_width_)
+            if self._alpha_ is None:
+                self._alpha_ = zfit.Parameter(&#39;alpha&#39;, 0.5)
+            if self._nsig_ is None:
+                self._nsig_ = zfit.Parameter(&#39;nsig&#39;, 1.)
+            self._signal_pdf_ = zfit.pdf.CrystalBall(obs=obs, mu=self._mass_, sigma=self._width_,
+                                                     alpha=self._alpha_, n=self._nsig_)
+        else:
+            Logger(&#39;Signal pdf not supported&#39;, &#39;FATAL&#39;)
+
+    def __build_background_pdf(self, obs):
+        &#34;&#34;&#34;
+        Helper function to compose the background pdf
+        &#34;&#34;&#34;
+
+        if self._name_background_pdf_ == &#39;nobkg&#39;:
+            Logger(&#39;Performing fit with no bkg pdf&#39;, &#39;WARNING&#39;)
+        elif self._name_background_pdf_ == &#39;expo&#39;:
+            if self._bkg_pars_[0] is None:
+                self._bkg_pars_[0] = zfit.Parameter(&#39;bkg_p0&#39;, 0.1)
+            self._background_pdf_ = zfit.pdf.Exponential(self._bkg_pars_[0], obs=obs)
+        else:
+            Logger(&#39;Background pdf not supported&#39;, &#39;FATAL&#39;)
+
+    # pylint: disable=too-many-branches
+    def __build_secpeak_pdf(self, obs):
+        &#34;&#34;&#34;
+        Helper function to compose the second peak pdf
+        &#34;&#34;&#34;
+
+        if self._name_secpeak_pdf_ == &#39;noseckpeak&#39;:
+            return
+        if self._name_secpeak_pdf_ == &#39;gaussian&#39;:
+            if self._mass_secpeak_ is None:
+                self._mass_secpeak_ = zfit.Parameter(&#39;mass_secpeak&#39;, self._init_mass_secpeak_)
+            else:
+                self._mass_secpeak_.set_value(self._init_mass_secpeak_)
+            if self._width_secpeak_ is None:
+                self._width_secpeak_ = zfit.Parameter(&#39;width_secpeak&#39;, self._init_width_secpeak_)
+            else:
+                self._width_secpeak_.set_value(self._init_width_secpeak_)
+            self._secpeak_pdf_ = zfit.pdf.Gauss(obs=obs, mu=self._mass_secpeak_,
+                                                sigma=self._width_secpeak_)
+        elif self._name_secpeak_pdf_ == &#39;crystalball&#39;:
+            if self._mass_secpeak_ is None:
+                self._mass_secpeak_ = zfit.Parameter(&#39;mass_secpeak&#39;, self._init_mass_secpeak_)
+            else:
+                self._mass_secpeak_.set_value(self._init_mass_secpeak_)
+            if self._width_secpeak_ is None:
+                self._width_secpeak_ = zfit.Parameter(&#39;width_secpeak&#39;, self._init_width_secpeak_)
+            else:
+                self._width_secpeak_.set_value(self._init_width_secpeak_)
+            if self._alpha_secpeak_ is None:
+                self._alpha_secpeak_ = zfit.Parameter(&#39;alpha_secpeak&#39;, 0.5)
+            if self._nsig_secpeak_ is None:
+                self._nsig_secpeak_ = zfit.Parameter(&#39;nsig_secpeak&#39;, 1.)
+            self._secpeak_pdf_ = zfit.pdf.CrystalBall(obs=obs, mu=self._mass_secpeak_,
+                                                      sigma=self._width_secpeak_,
+                                                      alpha=self._alpha_secpeak_,
+                                                      n=self._nsig_secpeak_)
+        else:
+            Logger(&#39;Second peak pdf not supported, the second peak will not be included.&#39;, &#39;ERORR&#39;)
+
+    def __build_total_pdf(self):
+        &#34;&#34;&#34;
+        Helper function to compose the total pdf
+        &#34;&#34;&#34;
+
+        obs = self._data_handler_.get_obs()
+
+        # order of the pdfs is signal, second peak, background
+
+        self.__build_signal_pdf(obs)
+        self.__build_secpeak_pdf(obs)
+        self.__build_background_pdf(obs)
+
+        list_pdfs = [self._signal_pdf_]
+        if self._secpeak_pdf_:
+            list_pdfs.append(self._secpeak_pdf_)
+            if not self._frac_secpeak_:
+                self._frac_secpeak_ = zfit.Parameter(&#39;frac_secpeak&#39;, 0.1, 0., 1.)
+        if self._background_pdf_:
+            list_pdfs.append(self._background_pdf_)
+
+        n_pdfs = len(list_pdfs)
+        list_fracs = []
+        if n_pdfs &gt; 1:
+            if not self._frac_signal_:
+                self._frac_signal_ = zfit.Parameter(&#39;frac_signal&#39;, 0.1, 0., 1.)
+            list_fracs.append(self._frac_signal_)
+            if n_pdfs &gt; 2:
+                list_fracs.append(self._frac_secpeak_)
+
+            self._total_pdf_ = zfit.pdf.SumPDF(list_pdfs, list_fracs)
+        else:
+            self._total_pdf_ = self._signal_pdf_
+
+    def __prefit(self):
+        &#34;&#34;&#34;
+        Helper function to perform a prefit to the sidebands
+        &#34;&#34;&#34;
+
+        Logger(&#39;Prefit step to be implemented&#39;, &#39;WARNING&#39;)
+
+    def set_particle_mass(self, mass):
+        &#34;&#34;&#34;
+        Set the particle mass
+
+        Parameters
+        -------------------------------------------------
+        mass: float
+            The mass to be set
+        &#34;&#34;&#34;
+        self._init_mass_ = mass
+
+    def set_peak_width(self, width):
+        &#34;&#34;&#34;
+        Set the expected particle peak width
+
+        Parameters
+        -------------------------------------------------
+        width: float
+            The width to be set
+        &#34;&#34;&#34;
+        self._init_width_ = width
+
+    def mass_zfit(self):
+        &#34;&#34;&#34;
+        Perform a mass fit with the zfit library
+
+        Returns
+        -------------------------------------------------
+        fit_result: zfit.minimizers.fitresult.FitResult
+            The fit result
+        &#34;&#34;&#34;
+        if self._data_handler_ is None:
+            Logger(&#39;Data handler not specified&#39;, &#39;FATAL&#39;)
+
+        self.__build_total_pdf()
+        self.__prefit()
+
+        if self._data_handler_.get_is_binned():
+            self._total_pdf_binned_ = zfit.pdf.BinnedFromUnbinnedPDF(self._total_pdf_,
+                                                                     self._data_handler_.get_obs())
+            nll = zfit.loss.BinnedNLL(self._total_pdf_binned_,
+                                      self._data_handler_.get_binned_data())
+        else:
+            nll = zfit.loss.UnbinnedNLL(
+                model=self._total_pdf_, data=self._data_handler_.get_data())
+
+        self._fit_result_ = self._minimizer_.minimize(loss=nll)
+        self._fit_result_.hesse()
+        Logger(self._fit_result_, &#39;RESULT&#39;)
+
+        norm = self._data_handler_.get_norm()
+        if self._frac_signal_:
+            self._rawyield_ = self._fit_result_.params[&#39;frac_signal&#39;][&#39;value&#39;] * norm
+            self._rawyield_err_ = self._fit_result_.params[&#39;frac_signal&#39;][&#39;hesse&#39;][&#39;error&#39;] * norm
+        else:
+            self._rawyield_ = self._data_handler_.get_norm()
+            self._rawyield_err_ = np.sqrt(self._rawyield_)
+
+        if self._frac_secpeak_:
+            self._rawyield_secpeak_ = self._fit_result_.params[&#39;frac_secpeak&#39;][&#39;value&#39;] * norm
+            self._rawyield_err_secpeak_ = self._fit_result_.params[
+                &#39;frac_secpeak&#39;][&#39;hesse&#39;][&#39;error&#39;] * norm
+
+        return self._fit_result_
+
+    def plot_mass_fit(self, style=&#39;LHCb2&#39;, logy=False):
+        &#34;&#34;&#34;
+        Plot the mass fit
+
+        Parameters
+        -------------------------------------------------
+        style: str
+            style to be used (see https://github.com/scikit-hep/mplhep for more details)
+        logy: bool
+            log scale in y axis
+
+        Returns
+        -------------------------------------------------
+        fig: matplotlib.figure.Figure
+            figure containing the mass fit plot
+        &#34;&#34;&#34;
+        mplhep.style.use(style)
+
+        obs = self._data_handler_.get_obs()
+        limits = self._data_handler_.get_limits()
+
+        fig = plt.figure(figsize=(7, 7))
+        if self._data_handler_.get_is_binned():
+            hist = self._data_handler_.get_binned_data().to_hist()
+            hist.plot(yerr=True, color=&#39;black&#39;, histtype=&#39;errorbar&#39;,
+                      label=&#39;data&#39;)
+            bins = len(self._data_handler_.get_binned_data().values())
+            bin_width = (limits[1] - limits[0]) / bins
+            norm = self._data_handler_.get_norm() * bin_width
+        else:
+            data_np = zfit.run(self._data_handler_.get_data()[:, 0])
+            bins = 100
+            counts, bin_edges = np.histogram(data_np, bins, range=(limits[0], limits[1]))
+            mplhep.histplot((counts, bin_edges), yerr=True, color=&#39;black&#39;, histtype=&#39;errorbar&#39;,
+                            label=&#39;data&#39;)
+            norm = data_np.shape[0] / bins * obs.area()
+
+        x_plot = np.linspace(limits[0], limits[1], num=1000)
+        total_func = zfit.run(self._total_pdf_.pdf(x_plot, norm_range=obs))
+        signal_func = zfit.run(self._signal_pdf_.pdf(x_plot, norm_range=obs))
+
+        frac_signal = 1.
+        frac_secpeak = 0.
+        if self._frac_signal_:
+            frac_signal = self._fit_result_.params[&#39;frac_signal&#39;][&#39;value&#39;]
+        if self._frac_secpeak_:
+            frac_secpeak = self._fit_result_.params[&#39;frac_secpeak&#39;][&#39;value&#39;]
+
+        if self._name_background_pdf_ != &#34;nobkg&#34;:
+            bkg_func = zfit.run(self._background_pdf_.pdf(x_plot, norm_range=obs))
+            plt.plot(x_plot, bkg_func * norm * (1.-frac_signal-frac_secpeak), color=&#39;firebrick&#39;,
+                     ls=&#34;--&#34;, label=&#39;background&#39;)
+
+        if self._name_secpeak_pdf_ != &#34;nosecpeak&#34;:
+            secpeak_func = zfit.run(self._secpeak_pdf_.pdf(x_plot, norm_range=obs))
+            plt.plot(x_plot, secpeak_func * norm * frac_secpeak, color=&#39;teal&#39;)
+            plt.fill_between(x_plot, secpeak_func * norm * frac_secpeak, color=&#39;teal&#39;,
+                            alpha=0.5, label=&#39;second signal&#39;)
+
+        plt.plot(x_plot, signal_func * norm * frac_signal, color=&#39;seagreen&#39;)
+        plt.fill_between(x_plot, signal_func * norm * frac_signal, color=&#39;seagreen&#39;,
+                         alpha=0.5, label=&#39;signal&#39;)
+        plt.plot(x_plot, total_func * norm, color=&#39;xkcd:blue&#39;, label=&#39;total fit&#39;)
+        plt.xlabel(self._data_handler_.get_var_name())
+        plt.xlim(limits[0], limits[1])
+        plt.ylabel(rf&#39;counts / {(limits[1]-limits[0])/bins*1000:0.1f} MeV/$c^2$&#39;)
+        plt.legend(loc=&#39;best&#39;)
+        if logy:
+            plt.yscale(&#39;log&#39;)
+            plt.ylim(min(total_func) * norm / 5, max(total_func) * norm * 5)
+
+        return fig
+
+    def get_fit_result(self):
+        &#34;&#34;&#34;
+        Get the fit result
+
+        Returns
+        -------------------------------------------------
+        fit_result: zfit.minimizers.fitresult.FitResult
+            The fit result
+        &#34;&#34;&#34;
+        return self._fit_result_
+
+    def get_raw_yield(self):
+        &#34;&#34;&#34;
+        Get the raw yield and its error
+
+        Returns
+        -------------------------------------------------
+        raw_yield: float
+            The raw yield obtained from the fit
+        raw_yield_err: float
+            The raw yield error obtained from the fit
+        &#34;&#34;&#34;
+        return self._rawyield_, self._rawyield_err_
+
+    def get_raw_yield_secpeak(self):
+        &#34;&#34;&#34;
+        Get the second peak raw yield and its error
+
+        Returns
+        -------------------------------------------------
+        raw_yield: float
+            The raw yield obtained from the fit
+        raw_yield_err: float
+            The raw yield error obtained from the fit
+        &#34;&#34;&#34;
+        return self._rawyield_secpeak_, self._rawyield_err_secpeak_
+
+    def get_mass(self):
+        &#34;&#34;&#34;
+        Get the mass and its error
+
+        Returns
+        -------------------------------------------------
+        mass: float
+            The mass value obtained from the fit
+        mass_err: float
+            The mass error obtained from the fit
+        &#34;&#34;&#34;
+        return self._fit_result_.params[&#39;mass_signal&#39;][&#39;value&#39;], \
+            self._fit_result_.params[&#39;mass_signal&#39;][&#39;hesse&#39;][&#39;error&#39;]
+
+    def get_width(self):
+        &#34;&#34;&#34;
+        Get the width and its error
+
+        Returns
+        -------------------------------------------------
+        width: float
+            The width value obtained from the fit
+        width_err: float
+            The width error obtained from the fit
+        &#34;&#34;&#34;
+        return self._fit_result_.params[&#39;width_signal&#39;][&#39;value&#39;], \
+            self._fit_result_.params[&#39;width_signal&#39;][&#39;hesse&#39;][&#39;error&#39;]
+
+    def get_parameter(self, parameter):
+        &#34;&#34;&#34;
+        Get the width and its error
+
+        Parameters
+        -------------------------------------------------
+        parameter: str
+            parameter to return
+
+        Returns
+        -------------------------------------------------
+        parameter: float
+            The parameter value obtained from the fit
+        parameter_err: float
+            The parameter error obtained from the fit
+
+        &#34;&#34;&#34;
+        return self._fit_result_.params[parameter][&#39;value&#39;], \
+            self._fit_result_.params[parameter][&#39;hesse&#39;][&#39;error&#39;]
+
+    def get_signal(self, nsigma=3, second_peak=False):
+        &#34;&#34;&#34;
+        Get the signal and its error in mass +- nsigma * width
+        for main or second peak
+
+        Parameters
+        -------------------------------------------------
+        nsigma: float
+            nsigma window for signal computation
+        second_peak: bool
+            if True, compute signal for second peak
+            if False, compute signal for main peak
+
+        Returns
+        -------------------------------------------------
+        signal: float
+            The signal value obtained from the fit
+        signal_err: float
+            The signal error obtained from the fit
+        &#34;&#34;&#34;
+
+        if second_peak and not self._secpeak_pdf_:
+            Logger(&#39;Second peak not fitted&#39;, &#39;ERROR&#39;)
+            return 0., 0.
+
+        suffix = &#39;_secpeak&#39; if second_peak else &#39;_signal&#39;
+        min_value = self._fit_result_.params[f&#39;mass{suffix}&#39;][&#39;value&#39;] - \
+            nsigma * self._fit_result_.params[f&#39;width{suffix}&#39;][&#39;value&#39;]
+        max_value = self._fit_result_.params[f&#39;mass{suffix}&#39;][&#39;value&#39;] + \
+            nsigma * self._fit_result_.params[f&#39;width{suffix}&#39;][&#39;value&#39;]
+
+        # pylint: disable=missing-kwoa
+        if not second_peak:
+            signal = self._signal_pdf_.integrate((min_value, max_value))
+        else:
+            signal = self._secpeak_pdf_.integrate((min_value, max_value))
+
+        norm = self._data_handler_.get_norm()
+        norm_err = norm * self._fit_result_.params[f&#39;frac{suffix}&#39;][&#39;hesse&#39;][&#39;error&#39;]
+        norm *= self._fit_result_.params[f&#39;frac{suffix}&#39;][&#39;value&#39;]
+
+        return float(signal * norm), float(signal * norm_err)
+
+    def get_background(self, nsigma=3, second_peak=False):
+        &#34;&#34;&#34;
+        Get the background and its error in mass +- nsigma * width
+        for main or second peak
+
+        Parameters
+        -------------------------------------------------
+        nsigma: float
+            nsigma window for background computation
+        second_peak: bool
+            if True, compute background for second peak
+            if False, compute background for main peak
+
+        Returns
+        -------------------------------------------------
+        background: float
+            The background value obtained from the fit
+        background_err: float
+            The background error obtained from the fit
+        &#34;&#34;&#34;
+
+        if second_peak and not self._secpeak_pdf_:
+            Logger(&#39;Second peak not fitted&#39;, &#39;ERROR&#39;)
+            return 0., 0.
+
+        if not self._background_pdf_:
+            Logger(&#39;Background not fitted&#39;, &#39;ERROR&#39;)
+            return 0., 0.
+
+        suffix = &#39;_secpeak&#39; if second_peak else &#39;_signal&#39;
+        min_value = self._fit_result_.params[f&#39;mass{suffix}&#39;][&#39;value&#39;] - \
+            nsigma * self._fit_result_.params[f&#39;width{suffix}&#39;][&#39;value&#39;]
+        max_value = self._fit_result_.params[f&#39;mass{suffix}&#39;][&#39;value&#39;] + \
+            nsigma * self._fit_result_.params[f&#39;width{suffix}&#39;][&#39;value&#39;]
+
+        # pylint: disable=missing-kwoa
+        background = self._background_pdf_.integrate((min_value, max_value))
+
+        frac = 1. - self._fit_result_.params[&#39;frac_signal&#39;][&#39;value&#39;]
+        frac_err = self._fit_result_.params[&#39;frac_signal&#39;][&#39;hesse&#39;][&#39;error&#39;]
+        if self._secpeak_pdf_:
+            frac -= self._fit_result_.params[&#39;frac_secpeak&#39;][&#39;value&#39;]
+            frac_err = np.sqrt(
+                frac_err**2 + self._fit_result_.params[&#39;frac_secpeak&#39;][&#39;hesse&#39;][&#39;error&#39;]**2)
+
+        norm = self._data_handler_.get_norm()
+        norm_err = norm * frac_err
+        norm *= frac
+
+        return float(background * norm), float(background * norm_err)
+
+    def get_signal_over_background(self, nsigma=3, second_peak=False):
+        &#34;&#34;&#34;
+        Get the S/B ratio and its error in mass +- nsigma * width
+        for main or second peak
+
+        Parameters
+        -------------------------------------------------
+        nsigma: float
+            nsigma window for background computation
+        second_peak: bool
+            if True, compute background for second peak
+            if False, compute background for main peak
+
+        Returns
+        -------------------------------------------------
+        signal_over_background: float
+            The S/B value obtained from the fit
+        signal_over_background_err: float
+            The S/B error obtained from the fit
+        &#34;&#34;&#34;
+
+        signal = self.get_signal(nsigma, second_peak)
+        bkg = self.get_background(nsigma, second_peak)
+        signal_over_background = signal[0]/bkg[0]
+        signal_over_background_err = np.sqrt(signal[1]**2/signal[0]**2 + bkg[1]**2/bkg[0]**2)
+        signal_over_background_err *= signal_over_background
+
+        return signal_over_background, signal_over_background_err
+
+    def get_significance(self, nsigma, second_peak=False):
+        &#34;&#34;&#34;
+        Get the significance and its error in mass +- nsigma * width
+        for main or second peak
+
+        Parameters
+        -------------------------------------------------
+        nsigma: float
+            nsigma window for background computation
+        second_peak: bool
+            if True, compute background for second peak
+            if False, compute background for main peak
+
+        Returns
+        -------------------------------------------------
+        significance: float
+            The significance value obtained from the fit
+        significance_err: float
+            The significance error obtained from the fit
+        &#34;&#34;&#34;
+
+        signal = self.get_signal(nsigma, second_peak)
+        bkg = self.get_background(nsigma, second_peak)
+        significance = signal[0]/np.sqrt(signal[0]+bkg[0])
+        sig_plus_bkg = signal[0] + bkg[0]
+
+        significance_err = significance*np.sqrt(
+            (signal[1]**2 + bkg[1]**2) / (4. * sig_plus_bkg**2) + (
+                bkg[0]/sig_plus_bkg) * signal[1]**2 / signal[0]**2)
+
+        return significance, significance_err
+
+    def set_secpeak(self, pdf, mass, width):
+        &#34;&#34;&#34;
+        Enable second peak and set the second peak initial parameters
+        Parameters
+        -------------------------------------------------
+        pdf: str
+            pdf to be used for the second peak. The possible options are:
+            - &#39;gaussian&#39;
+            - &#39;crystalball&#39;
+        &#34;&#34;&#34;
+
+        self._name_secpeak_pdf_ = pdf
+        self._init_mass_secpeak_ = mass
+        self._init_width_secpeak_ = width</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="flarefly.fitter.F2MassFitter.get_background"><code class="name flex">
+<span>def <span class="ident">get_background</span></span>(<span>self, nsigma=3, second_peak=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the background and its error in mass +- nsigma * width
+for main or second peak</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>nsigma</code></strong> :&ensp;<code>float</code></dt>
+<dd>nsigma window for background computation</dd>
+<dt><strong><code>second_peak</code></strong> :&ensp;<code>bool</code></dt>
+<dd>if True, compute background for second peak
+if False, compute background for main peak</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>background</code></strong> :&ensp;<code>float</code></dt>
+<dd>The background value obtained from the fit</dd>
+<dt><strong><code>background_err</code></strong> :&ensp;<code>float</code></dt>
+<dd>The background error obtained from the fit</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_background(self, nsigma=3, second_peak=False):
+    &#34;&#34;&#34;
+    Get the background and its error in mass +- nsigma * width
+    for main or second peak
+
+    Parameters
+    -------------------------------------------------
+    nsigma: float
+        nsigma window for background computation
+    second_peak: bool
+        if True, compute background for second peak
+        if False, compute background for main peak
+
+    Returns
+    -------------------------------------------------
+    background: float
+        The background value obtained from the fit
+    background_err: float
+        The background error obtained from the fit
+    &#34;&#34;&#34;
+
+    if second_peak and not self._secpeak_pdf_:
+        Logger(&#39;Second peak not fitted&#39;, &#39;ERROR&#39;)
+        return 0., 0.
+
+    if not self._background_pdf_:
+        Logger(&#39;Background not fitted&#39;, &#39;ERROR&#39;)
+        return 0., 0.
+
+    suffix = &#39;_secpeak&#39; if second_peak else &#39;_signal&#39;
+    min_value = self._fit_result_.params[f&#39;mass{suffix}&#39;][&#39;value&#39;] - \
+        nsigma * self._fit_result_.params[f&#39;width{suffix}&#39;][&#39;value&#39;]
+    max_value = self._fit_result_.params[f&#39;mass{suffix}&#39;][&#39;value&#39;] + \
+        nsigma * self._fit_result_.params[f&#39;width{suffix}&#39;][&#39;value&#39;]
+
+    # pylint: disable=missing-kwoa
+    background = self._background_pdf_.integrate((min_value, max_value))
+
+    frac = 1. - self._fit_result_.params[&#39;frac_signal&#39;][&#39;value&#39;]
+    frac_err = self._fit_result_.params[&#39;frac_signal&#39;][&#39;hesse&#39;][&#39;error&#39;]
+    if self._secpeak_pdf_:
+        frac -= self._fit_result_.params[&#39;frac_secpeak&#39;][&#39;value&#39;]
+        frac_err = np.sqrt(
+            frac_err**2 + self._fit_result_.params[&#39;frac_secpeak&#39;][&#39;hesse&#39;][&#39;error&#39;]**2)
+
+    norm = self._data_handler_.get_norm()
+    norm_err = norm * frac_err
+    norm *= frac
+
+    return float(background * norm), float(background * norm_err)</code></pre>
+</details>
+</dd>
+<dt id="flarefly.fitter.F2MassFitter.get_fit_result"><code class="name flex">
+<span>def <span class="ident">get_fit_result</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the fit result</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>fit_result</code></strong> :&ensp;<code>zfit.minimizers.fitresult.FitResult</code></dt>
+<dd>The fit result</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_fit_result(self):
+    &#34;&#34;&#34;
+    Get the fit result
+
+    Returns
+    -------------------------------------------------
+    fit_result: zfit.minimizers.fitresult.FitResult
+        The fit result
+    &#34;&#34;&#34;
+    return self._fit_result_</code></pre>
+</details>
+</dd>
+<dt id="flarefly.fitter.F2MassFitter.get_mass"><code class="name flex">
+<span>def <span class="ident">get_mass</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the mass and its error</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>mass</code></strong> :&ensp;<code>float</code></dt>
+<dd>The mass value obtained from the fit</dd>
+<dt><strong><code>mass_err</code></strong> :&ensp;<code>float</code></dt>
+<dd>The mass error obtained from the fit</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_mass(self):
+    &#34;&#34;&#34;
+    Get the mass and its error
+
+    Returns
+    -------------------------------------------------
+    mass: float
+        The mass value obtained from the fit
+    mass_err: float
+        The mass error obtained from the fit
+    &#34;&#34;&#34;
+    return self._fit_result_.params[&#39;mass_signal&#39;][&#39;value&#39;], \
+        self._fit_result_.params[&#39;mass_signal&#39;][&#39;hesse&#39;][&#39;error&#39;]</code></pre>
+</details>
+</dd>
+<dt id="flarefly.fitter.F2MassFitter.get_parameter"><code class="name flex">
+<span>def <span class="ident">get_parameter</span></span>(<span>self, parameter)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the width and its error</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>parameter</code></strong> :&ensp;<code>str</code></dt>
+<dd>parameter to return</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>parameter</code></strong> :&ensp;<code>float</code></dt>
+<dd>The parameter value obtained from the fit</dd>
+<dt><strong><code>parameter_err</code></strong> :&ensp;<code>float</code></dt>
+<dd>The parameter error obtained from the fit</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_parameter(self, parameter):
+    &#34;&#34;&#34;
+    Get the width and its error
+
+    Parameters
+    -------------------------------------------------
+    parameter: str
+        parameter to return
+
+    Returns
+    -------------------------------------------------
+    parameter: float
+        The parameter value obtained from the fit
+    parameter_err: float
+        The parameter error obtained from the fit
+
+    &#34;&#34;&#34;
+    return self._fit_result_.params[parameter][&#39;value&#39;], \
+        self._fit_result_.params[parameter][&#39;hesse&#39;][&#39;error&#39;]</code></pre>
+</details>
+</dd>
+<dt id="flarefly.fitter.F2MassFitter.get_raw_yield"><code class="name flex">
+<span>def <span class="ident">get_raw_yield</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the raw yield and its error</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>raw_yield</code></strong> :&ensp;<code>float</code></dt>
+<dd>The raw yield obtained from the fit</dd>
+<dt><strong><code>raw_yield_err</code></strong> :&ensp;<code>float</code></dt>
+<dd>The raw yield error obtained from the fit</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_raw_yield(self):
+    &#34;&#34;&#34;
+    Get the raw yield and its error
+
+    Returns
+    -------------------------------------------------
+    raw_yield: float
+        The raw yield obtained from the fit
+    raw_yield_err: float
+        The raw yield error obtained from the fit
+    &#34;&#34;&#34;
+    return self._rawyield_, self._rawyield_err_</code></pre>
+</details>
+</dd>
+<dt id="flarefly.fitter.F2MassFitter.get_raw_yield_secpeak"><code class="name flex">
+<span>def <span class="ident">get_raw_yield_secpeak</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the second peak raw yield and its error</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>raw_yield</code></strong> :&ensp;<code>float</code></dt>
+<dd>The raw yield obtained from the fit</dd>
+<dt><strong><code>raw_yield_err</code></strong> :&ensp;<code>float</code></dt>
+<dd>The raw yield error obtained from the fit</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_raw_yield_secpeak(self):
+    &#34;&#34;&#34;
+    Get the second peak raw yield and its error
+
+    Returns
+    -------------------------------------------------
+    raw_yield: float
+        The raw yield obtained from the fit
+    raw_yield_err: float
+        The raw yield error obtained from the fit
+    &#34;&#34;&#34;
+    return self._rawyield_secpeak_, self._rawyield_err_secpeak_</code></pre>
+</details>
+</dd>
+<dt id="flarefly.fitter.F2MassFitter.get_signal"><code class="name flex">
+<span>def <span class="ident">get_signal</span></span>(<span>self, nsigma=3, second_peak=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the signal and its error in mass +- nsigma * width
+for main or second peak</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>nsigma</code></strong> :&ensp;<code>float</code></dt>
+<dd>nsigma window for signal computation</dd>
+<dt><strong><code>second_peak</code></strong> :&ensp;<code>bool</code></dt>
+<dd>if True, compute signal for second peak
+if False, compute signal for main peak</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>signal</code></strong> :&ensp;<code>float</code></dt>
+<dd>The signal value obtained from the fit</dd>
+<dt><strong><code>signal_err</code></strong> :&ensp;<code>float</code></dt>
+<dd>The signal error obtained from the fit</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_signal(self, nsigma=3, second_peak=False):
+    &#34;&#34;&#34;
+    Get the signal and its error in mass +- nsigma * width
+    for main or second peak
+
+    Parameters
+    -------------------------------------------------
+    nsigma: float
+        nsigma window for signal computation
+    second_peak: bool
+        if True, compute signal for second peak
+        if False, compute signal for main peak
+
+    Returns
+    -------------------------------------------------
+    signal: float
+        The signal value obtained from the fit
+    signal_err: float
+        The signal error obtained from the fit
+    &#34;&#34;&#34;
+
+    if second_peak and not self._secpeak_pdf_:
+        Logger(&#39;Second peak not fitted&#39;, &#39;ERROR&#39;)
+        return 0., 0.
+
+    suffix = &#39;_secpeak&#39; if second_peak else &#39;_signal&#39;
+    min_value = self._fit_result_.params[f&#39;mass{suffix}&#39;][&#39;value&#39;] - \
+        nsigma * self._fit_result_.params[f&#39;width{suffix}&#39;][&#39;value&#39;]
+    max_value = self._fit_result_.params[f&#39;mass{suffix}&#39;][&#39;value&#39;] + \
+        nsigma * self._fit_result_.params[f&#39;width{suffix}&#39;][&#39;value&#39;]
+
+    # pylint: disable=missing-kwoa
+    if not second_peak:
+        signal = self._signal_pdf_.integrate((min_value, max_value))
+    else:
+        signal = self._secpeak_pdf_.integrate((min_value, max_value))
+
+    norm = self._data_handler_.get_norm()
+    norm_err = norm * self._fit_result_.params[f&#39;frac{suffix}&#39;][&#39;hesse&#39;][&#39;error&#39;]
+    norm *= self._fit_result_.params[f&#39;frac{suffix}&#39;][&#39;value&#39;]
+
+    return float(signal * norm), float(signal * norm_err)</code></pre>
+</details>
+</dd>
+<dt id="flarefly.fitter.F2MassFitter.get_signal_over_background"><code class="name flex">
+<span>def <span class="ident">get_signal_over_background</span></span>(<span>self, nsigma=3, second_peak=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the S/B ratio and its error in mass +- nsigma * width
+for main or second peak</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>nsigma</code></strong> :&ensp;<code>float</code></dt>
+<dd>nsigma window for background computation</dd>
+<dt><strong><code>second_peak</code></strong> :&ensp;<code>bool</code></dt>
+<dd>if True, compute background for second peak
+if False, compute background for main peak</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>signal_over_background</code></strong> :&ensp;<code>float</code></dt>
+<dd>The S/B value obtained from the fit</dd>
+<dt><strong><code>signal_over_background_err</code></strong> :&ensp;<code>float</code></dt>
+<dd>The S/B error obtained from the fit</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_signal_over_background(self, nsigma=3, second_peak=False):
+    &#34;&#34;&#34;
+    Get the S/B ratio and its error in mass +- nsigma * width
+    for main or second peak
+
+    Parameters
+    -------------------------------------------------
+    nsigma: float
+        nsigma window for background computation
+    second_peak: bool
+        if True, compute background for second peak
+        if False, compute background for main peak
+
+    Returns
+    -------------------------------------------------
+    signal_over_background: float
+        The S/B value obtained from the fit
+    signal_over_background_err: float
+        The S/B error obtained from the fit
+    &#34;&#34;&#34;
+
+    signal = self.get_signal(nsigma, second_peak)
+    bkg = self.get_background(nsigma, second_peak)
+    signal_over_background = signal[0]/bkg[0]
+    signal_over_background_err = np.sqrt(signal[1]**2/signal[0]**2 + bkg[1]**2/bkg[0]**2)
+    signal_over_background_err *= signal_over_background
+
+    return signal_over_background, signal_over_background_err</code></pre>
+</details>
+</dd>
+<dt id="flarefly.fitter.F2MassFitter.get_significance"><code class="name flex">
+<span>def <span class="ident">get_significance</span></span>(<span>self, nsigma, second_peak=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the significance and its error in mass +- nsigma * width
+for main or second peak</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>nsigma</code></strong> :&ensp;<code>float</code></dt>
+<dd>nsigma window for background computation</dd>
+<dt><strong><code>second_peak</code></strong> :&ensp;<code>bool</code></dt>
+<dd>if True, compute background for second peak
+if False, compute background for main peak</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>significance</code></strong> :&ensp;<code>float</code></dt>
+<dd>The significance value obtained from the fit</dd>
+<dt><strong><code>significance_err</code></strong> :&ensp;<code>float</code></dt>
+<dd>The significance error obtained from the fit</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_significance(self, nsigma, second_peak=False):
+    &#34;&#34;&#34;
+    Get the significance and its error in mass +- nsigma * width
+    for main or second peak
+
+    Parameters
+    -------------------------------------------------
+    nsigma: float
+        nsigma window for background computation
+    second_peak: bool
+        if True, compute background for second peak
+        if False, compute background for main peak
+
+    Returns
+    -------------------------------------------------
+    significance: float
+        The significance value obtained from the fit
+    significance_err: float
+        The significance error obtained from the fit
+    &#34;&#34;&#34;
+
+    signal = self.get_signal(nsigma, second_peak)
+    bkg = self.get_background(nsigma, second_peak)
+    significance = signal[0]/np.sqrt(signal[0]+bkg[0])
+    sig_plus_bkg = signal[0] + bkg[0]
+
+    significance_err = significance*np.sqrt(
+        (signal[1]**2 + bkg[1]**2) / (4. * sig_plus_bkg**2) + (
+            bkg[0]/sig_plus_bkg) * signal[1]**2 / signal[0]**2)
+
+    return significance, significance_err</code></pre>
+</details>
+</dd>
+<dt id="flarefly.fitter.F2MassFitter.get_width"><code class="name flex">
+<span>def <span class="ident">get_width</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the width and its error</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>width</code></strong> :&ensp;<code>float</code></dt>
+<dd>The width value obtained from the fit</dd>
+<dt><strong><code>width_err</code></strong> :&ensp;<code>float</code></dt>
+<dd>The width error obtained from the fit</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_width(self):
+    &#34;&#34;&#34;
+    Get the width and its error
+
+    Returns
+    -------------------------------------------------
+    width: float
+        The width value obtained from the fit
+    width_err: float
+        The width error obtained from the fit
+    &#34;&#34;&#34;
+    return self._fit_result_.params[&#39;width_signal&#39;][&#39;value&#39;], \
+        self._fit_result_.params[&#39;width_signal&#39;][&#39;hesse&#39;][&#39;error&#39;]</code></pre>
+</details>
+</dd>
+<dt id="flarefly.fitter.F2MassFitter.mass_zfit"><code class="name flex">
+<span>def <span class="ident">mass_zfit</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Perform a mass fit with the zfit library</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>fit_result</code></strong> :&ensp;<code>zfit.minimizers.fitresult.FitResult</code></dt>
+<dd>The fit result</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def mass_zfit(self):
+    &#34;&#34;&#34;
+    Perform a mass fit with the zfit library
+
+    Returns
+    -------------------------------------------------
+    fit_result: zfit.minimizers.fitresult.FitResult
+        The fit result
+    &#34;&#34;&#34;
+    if self._data_handler_ is None:
+        Logger(&#39;Data handler not specified&#39;, &#39;FATAL&#39;)
+
+    self.__build_total_pdf()
+    self.__prefit()
+
+    if self._data_handler_.get_is_binned():
+        self._total_pdf_binned_ = zfit.pdf.BinnedFromUnbinnedPDF(self._total_pdf_,
+                                                                 self._data_handler_.get_obs())
+        nll = zfit.loss.BinnedNLL(self._total_pdf_binned_,
+                                  self._data_handler_.get_binned_data())
+    else:
+        nll = zfit.loss.UnbinnedNLL(
+            model=self._total_pdf_, data=self._data_handler_.get_data())
+
+    self._fit_result_ = self._minimizer_.minimize(loss=nll)
+    self._fit_result_.hesse()
+    Logger(self._fit_result_, &#39;RESULT&#39;)
+
+    norm = self._data_handler_.get_norm()
+    if self._frac_signal_:
+        self._rawyield_ = self._fit_result_.params[&#39;frac_signal&#39;][&#39;value&#39;] * norm
+        self._rawyield_err_ = self._fit_result_.params[&#39;frac_signal&#39;][&#39;hesse&#39;][&#39;error&#39;] * norm
+    else:
+        self._rawyield_ = self._data_handler_.get_norm()
+        self._rawyield_err_ = np.sqrt(self._rawyield_)
+
+    if self._frac_secpeak_:
+        self._rawyield_secpeak_ = self._fit_result_.params[&#39;frac_secpeak&#39;][&#39;value&#39;] * norm
+        self._rawyield_err_secpeak_ = self._fit_result_.params[
+            &#39;frac_secpeak&#39;][&#39;hesse&#39;][&#39;error&#39;] * norm
+
+    return self._fit_result_</code></pre>
+</details>
+</dd>
+<dt id="flarefly.fitter.F2MassFitter.plot_mass_fit"><code class="name flex">
+<span>def <span class="ident">plot_mass_fit</span></span>(<span>self, style='LHCb2', logy=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plot the mass fit</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>style</code></strong> :&ensp;<code>str</code></dt>
+<dd>style to be used (see <a href="https://github.com/scikit-hep/mplhep">https://github.com/scikit-hep/mplhep</a> for more details)</dd>
+<dt><strong><code>logy</code></strong> :&ensp;<code>bool</code></dt>
+<dd>log scale in y axis</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>fig</code></strong> :&ensp;<code>matplotlib.figure.Figure</code></dt>
+<dd>figure containing the mass fit plot</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def plot_mass_fit(self, style=&#39;LHCb2&#39;, logy=False):
+    &#34;&#34;&#34;
+    Plot the mass fit
+
+    Parameters
+    -------------------------------------------------
+    style: str
+        style to be used (see https://github.com/scikit-hep/mplhep for more details)
+    logy: bool
+        log scale in y axis
+
+    Returns
+    -------------------------------------------------
+    fig: matplotlib.figure.Figure
+        figure containing the mass fit plot
+    &#34;&#34;&#34;
+    mplhep.style.use(style)
+
+    obs = self._data_handler_.get_obs()
+    limits = self._data_handler_.get_limits()
+
+    fig = plt.figure(figsize=(7, 7))
+    if self._data_handler_.get_is_binned():
+        hist = self._data_handler_.get_binned_data().to_hist()
+        hist.plot(yerr=True, color=&#39;black&#39;, histtype=&#39;errorbar&#39;,
+                  label=&#39;data&#39;)
+        bins = len(self._data_handler_.get_binned_data().values())
+        bin_width = (limits[1] - limits[0]) / bins
+        norm = self._data_handler_.get_norm() * bin_width
+    else:
+        data_np = zfit.run(self._data_handler_.get_data()[:, 0])
+        bins = 100
+        counts, bin_edges = np.histogram(data_np, bins, range=(limits[0], limits[1]))
+        mplhep.histplot((counts, bin_edges), yerr=True, color=&#39;black&#39;, histtype=&#39;errorbar&#39;,
+                        label=&#39;data&#39;)
+        norm = data_np.shape[0] / bins * obs.area()
+
+    x_plot = np.linspace(limits[0], limits[1], num=1000)
+    total_func = zfit.run(self._total_pdf_.pdf(x_plot, norm_range=obs))
+    signal_func = zfit.run(self._signal_pdf_.pdf(x_plot, norm_range=obs))
+
+    frac_signal = 1.
+    frac_secpeak = 0.
+    if self._frac_signal_:
+        frac_signal = self._fit_result_.params[&#39;frac_signal&#39;][&#39;value&#39;]
+    if self._frac_secpeak_:
+        frac_secpeak = self._fit_result_.params[&#39;frac_secpeak&#39;][&#39;value&#39;]
+
+    if self._name_background_pdf_ != &#34;nobkg&#34;:
+        bkg_func = zfit.run(self._background_pdf_.pdf(x_plot, norm_range=obs))
+        plt.plot(x_plot, bkg_func * norm * (1.-frac_signal-frac_secpeak), color=&#39;firebrick&#39;,
+                 ls=&#34;--&#34;, label=&#39;background&#39;)
+
+    if self._name_secpeak_pdf_ != &#34;nosecpeak&#34;:
+        secpeak_func = zfit.run(self._secpeak_pdf_.pdf(x_plot, norm_range=obs))
+        plt.plot(x_plot, secpeak_func * norm * frac_secpeak, color=&#39;teal&#39;)
+        plt.fill_between(x_plot, secpeak_func * norm * frac_secpeak, color=&#39;teal&#39;,
+                        alpha=0.5, label=&#39;second signal&#39;)
+
+    plt.plot(x_plot, signal_func * norm * frac_signal, color=&#39;seagreen&#39;)
+    plt.fill_between(x_plot, signal_func * norm * frac_signal, color=&#39;seagreen&#39;,
+                     alpha=0.5, label=&#39;signal&#39;)
+    plt.plot(x_plot, total_func * norm, color=&#39;xkcd:blue&#39;, label=&#39;total fit&#39;)
+    plt.xlabel(self._data_handler_.get_var_name())
+    plt.xlim(limits[0], limits[1])
+    plt.ylabel(rf&#39;counts / {(limits[1]-limits[0])/bins*1000:0.1f} MeV/$c^2$&#39;)
+    plt.legend(loc=&#39;best&#39;)
+    if logy:
+        plt.yscale(&#39;log&#39;)
+        plt.ylim(min(total_func) * norm / 5, max(total_func) * norm * 5)
+
+    return fig</code></pre>
+</details>
+</dd>
+<dt id="flarefly.fitter.F2MassFitter.set_particle_mass"><code class="name flex">
+<span>def <span class="ident">set_particle_mass</span></span>(<span>self, mass)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set the particle mass</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>mass</code></strong> :&ensp;<code>float</code></dt>
+<dd>The mass to be set</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_particle_mass(self, mass):
+    &#34;&#34;&#34;
+    Set the particle mass
+
+    Parameters
+    -------------------------------------------------
+    mass: float
+        The mass to be set
+    &#34;&#34;&#34;
+    self._init_mass_ = mass</code></pre>
+</details>
+</dd>
+<dt id="flarefly.fitter.F2MassFitter.set_peak_width"><code class="name flex">
+<span>def <span class="ident">set_peak_width</span></span>(<span>self, width)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set the expected particle peak width</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>width</code></strong> :&ensp;<code>float</code></dt>
+<dd>The width to be set</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_peak_width(self, width):
+    &#34;&#34;&#34;
+    Set the expected particle peak width
+
+    Parameters
+    -------------------------------------------------
+    width: float
+        The width to be set
+    &#34;&#34;&#34;
+    self._init_width_ = width</code></pre>
+</details>
+</dd>
+<dt id="flarefly.fitter.F2MassFitter.set_secpeak"><code class="name flex">
+<span>def <span class="ident">set_secpeak</span></span>(<span>self, pdf, mass, width)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Enable second peak and set the second peak initial parameters
+Parameters</p>
+<hr>
+<dl>
+<dt><strong><code>pdf</code></strong> :&ensp;<code>str</code></dt>
+<dd>pdf to be used for the second peak. The possible options are:
+- 'gaussian'
+- 'crystalball'</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_secpeak(self, pdf, mass, width):
+    &#34;&#34;&#34;
+    Enable second peak and set the second peak initial parameters
+    Parameters
+    -------------------------------------------------
+    pdf: str
+        pdf to be used for the second peak. The possible options are:
+        - &#39;gaussian&#39;
+        - &#39;crystalball&#39;
+    &#34;&#34;&#34;
+
+    self._name_secpeak_pdf_ = pdf
+    self._init_mass_secpeak_ = mass
+    self._init_width_secpeak_ = width</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="flarefly" href="index.html">flarefly</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="flarefly.fitter.F2MassFitter" href="#flarefly.fitter.F2MassFitter">F2MassFitter</a></code></h4>
+<ul class="">
+<li><code><a title="flarefly.fitter.F2MassFitter.get_background" href="#flarefly.fitter.F2MassFitter.get_background">get_background</a></code></li>
+<li><code><a title="flarefly.fitter.F2MassFitter.get_fit_result" href="#flarefly.fitter.F2MassFitter.get_fit_result">get_fit_result</a></code></li>
+<li><code><a title="flarefly.fitter.F2MassFitter.get_mass" href="#flarefly.fitter.F2MassFitter.get_mass">get_mass</a></code></li>
+<li><code><a title="flarefly.fitter.F2MassFitter.get_parameter" href="#flarefly.fitter.F2MassFitter.get_parameter">get_parameter</a></code></li>
+<li><code><a title="flarefly.fitter.F2MassFitter.get_raw_yield" href="#flarefly.fitter.F2MassFitter.get_raw_yield">get_raw_yield</a></code></li>
+<li><code><a title="flarefly.fitter.F2MassFitter.get_raw_yield_secpeak" href="#flarefly.fitter.F2MassFitter.get_raw_yield_secpeak">get_raw_yield_secpeak</a></code></li>
+<li><code><a title="flarefly.fitter.F2MassFitter.get_signal" href="#flarefly.fitter.F2MassFitter.get_signal">get_signal</a></code></li>
+<li><code><a title="flarefly.fitter.F2MassFitter.get_signal_over_background" href="#flarefly.fitter.F2MassFitter.get_signal_over_background">get_signal_over_background</a></code></li>
+<li><code><a title="flarefly.fitter.F2MassFitter.get_significance" href="#flarefly.fitter.F2MassFitter.get_significance">get_significance</a></code></li>
+<li><code><a title="flarefly.fitter.F2MassFitter.get_width" href="#flarefly.fitter.F2MassFitter.get_width">get_width</a></code></li>
+<li><code><a title="flarefly.fitter.F2MassFitter.mass_zfit" href="#flarefly.fitter.F2MassFitter.mass_zfit">mass_zfit</a></code></li>
+<li><code><a title="flarefly.fitter.F2MassFitter.plot_mass_fit" href="#flarefly.fitter.F2MassFitter.plot_mass_fit">plot_mass_fit</a></code></li>
+<li><code><a title="flarefly.fitter.F2MassFitter.set_particle_mass" href="#flarefly.fitter.F2MassFitter.set_particle_mass">set_particle_mass</a></code></li>
+<li><code><a title="flarefly.fitter.F2MassFitter.set_peak_width" href="#flarefly.fitter.F2MassFitter.set_peak_width">set_peak_width</a></code></li>
+<li><code><a title="flarefly.fitter.F2MassFitter.set_secpeak" href="#flarefly.fitter.F2MassFitter.set_secpeak">set_secpeak</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
