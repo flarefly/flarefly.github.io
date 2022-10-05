@@ -35,6 +35,7 @@ import numpy as np
 import zfit
 import pandas as pd
 import uproot
+from hist import Hist
 from flarefly.utils import Logger
 
 # pylint: disable=too-many-instance-attributes,too-many-statements,too-many-branches
@@ -59,6 +60,7 @@ class DataHandler:
             If True, zfit package is used to fit the data
         **kwargs: dict
             Additional optional arguments:
+
             - histoname: str
                 Name of the histogram to be used in the fit in case of ROOT file
         &#34;&#34;&#34;
@@ -84,10 +86,12 @@ class DataHandler:
                             nbins = len(hist_array[1]) - 1
                             self._limits_[0] = hist_array[1][0]
                             self._limits_[1] = hist_array[1][-1]
+                            idx_min = 0
+                            idx_max = len(hist_array[1])-1
                         else:
                             idx_min = np.argmin(np.abs(hist_array[1]-self._limits_[0]))
                             idx_max = np.argmin(np.abs(hist_array[1]-self._limits_[1]))
-                            nbins = len(hist_array[1][idx_min:idx_max+1])
+                            nbins = len(hist_array[1][idx_min:idx_max])
                             self._limits_[0] = hist_array[1][idx_min]
                             self._limits_[1] = hist_array[1][idx_max]
                         binning = zfit.binned.RegularBinning(
@@ -98,8 +102,8 @@ class DataHandler:
                         )
                         self._obs_ = zfit.Space(&#34;xaxis&#34;, binning=binning)
                         self._binned_data_ = zfit.data.BinnedData.from_tensor(
-                            self._obs_, hist_array[0][idx_min:idx_max+1],
-                            np.sqrt(hist_array[0][idx_min:idx_max+1]))
+                            self._obs_, hist.values()[idx_min:idx_max],
+                            [err**2 for err in hist.errors()[idx_min:idx_max]])
                         self._isbinned_ = True
                     elif &#39;treename&#39; in kwargs:
                         input_df = uproot.open(data)[kwargs[&#39;treename&#39;]].arrays(library=&#39;pd&#39;)
@@ -264,7 +268,54 @@ class DataHandler:
             return self._data_.to_pandas()
 
         Logger(&#39;Data format not supported yet for pandas conversion.&#39;, &#39;ERROR&#39;)
-        return None</code></pre>
+        return None
+
+    def to_hist(self, **kwargs):
+        &#34;&#34;&#34;
+        returns data in NamedHist
+
+        Returns
+        -------------------------------------------------
+        hist: Hist
+            The data in a hist.Hist
+        **kwargs: dict
+            Additional optional arguments:
+
+            - lower_edge: float
+                lower edge (only used in case of originally unbinned data)
+
+            - upper_edge: float
+                upper edge (only used in case of originally unbinned data)
+
+            - nbins: int
+                number of bins (only used in case of originally unbinned data)
+
+            - axis_title: str
+                label of x-axis (only used in case of originally unbinned data)
+
+            - varname: str
+                name of variable (needed in case of originally unbinned data)
+        &#34;&#34;&#34;
+
+        if self._isbinned_:
+            return self._binned_data_.to_hist()
+
+        if &#39;varname&#39; not in kwargs:
+            Logger(&#39;Name of variable needed in case of unbinned data.&#39;, &#39;FATAL&#39;)
+
+        varname = kwargs[&#39;varname&#39;]
+        df_unbinned = self._data_.to_pandas()
+        data = df_unbinned[varname].to_numpy()
+
+        nbins = kwargs.get(&#39;nbins&#39;, 100)
+        lower_edge = kwargs.get(&#39;lower_edge&#39;, min(data))
+        upper_edge = kwargs.get(&#39;upper_edge&#39;, max(data))
+        axis_title = kwargs.get(&#39;axis_title&#39;, varname)
+
+        hist = Hist.new.Reg(nbins, lower_edge, upper_edge, name=&#34;x&#34;, label=axis_title).Double()
+        hist.fill(x=data)
+
+        return hist</code></pre>
 </details>
 </section>
 <section>
@@ -294,9 +345,13 @@ class DataHandler:
 <dt><strong><code>use_zfit</code></strong> :&ensp;<code>bool</code></dt>
 <dd>If True, zfit package is used to fit the data</dd>
 <dt><strong><code>**kwargs</code></strong> :&ensp;<code>dict</code></dt>
-<dd>Additional optional arguments:
-- histoname: str
-Name of the histogram to be used in the fit in case of ROOT file</dd>
+<dd>
+<p>Additional optional arguments:</p>
+<ul>
+<li>histoname: str
+Name of the histogram to be used in the fit in case of ROOT file</li>
+</ul>
+</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -323,6 +378,7 @@ Name of the histogram to be used in the fit in case of ROOT file</dd>
             If True, zfit package is used to fit the data
         **kwargs: dict
             Additional optional arguments:
+
             - histoname: str
                 Name of the histogram to be used in the fit in case of ROOT file
         &#34;&#34;&#34;
@@ -348,10 +404,12 @@ Name of the histogram to be used in the fit in case of ROOT file</dd>
                             nbins = len(hist_array[1]) - 1
                             self._limits_[0] = hist_array[1][0]
                             self._limits_[1] = hist_array[1][-1]
+                            idx_min = 0
+                            idx_max = len(hist_array[1])-1
                         else:
                             idx_min = np.argmin(np.abs(hist_array[1]-self._limits_[0]))
                             idx_max = np.argmin(np.abs(hist_array[1]-self._limits_[1]))
-                            nbins = len(hist_array[1][idx_min:idx_max+1])
+                            nbins = len(hist_array[1][idx_min:idx_max])
                             self._limits_[0] = hist_array[1][idx_min]
                             self._limits_[1] = hist_array[1][idx_max]
                         binning = zfit.binned.RegularBinning(
@@ -362,8 +420,8 @@ Name of the histogram to be used in the fit in case of ROOT file</dd>
                         )
                         self._obs_ = zfit.Space(&#34;xaxis&#34;, binning=binning)
                         self._binned_data_ = zfit.data.BinnedData.from_tensor(
-                            self._obs_, hist_array[0][idx_min:idx_max+1],
-                            np.sqrt(hist_array[0][idx_min:idx_max+1]))
+                            self._obs_, hist.values()[idx_min:idx_max],
+                            [err**2 for err in hist.errors()[idx_min:idx_max]])
                         self._isbinned_ = True
                     elif &#39;treename&#39; in kwargs:
                         input_df = uproot.open(data)[kwargs[&#39;treename&#39;]].arrays(library=&#39;pd&#39;)
@@ -528,7 +586,54 @@ Name of the histogram to be used in the fit in case of ROOT file</dd>
             return self._data_.to_pandas()
 
         Logger(&#39;Data format not supported yet for pandas conversion.&#39;, &#39;ERROR&#39;)
-        return None</code></pre>
+        return None
+
+    def to_hist(self, **kwargs):
+        &#34;&#34;&#34;
+        returns data in NamedHist
+
+        Returns
+        -------------------------------------------------
+        hist: Hist
+            The data in a hist.Hist
+        **kwargs: dict
+            Additional optional arguments:
+
+            - lower_edge: float
+                lower edge (only used in case of originally unbinned data)
+
+            - upper_edge: float
+                upper edge (only used in case of originally unbinned data)
+
+            - nbins: int
+                number of bins (only used in case of originally unbinned data)
+
+            - axis_title: str
+                label of x-axis (only used in case of originally unbinned data)
+
+            - varname: str
+                name of variable (needed in case of originally unbinned data)
+        &#34;&#34;&#34;
+
+        if self._isbinned_:
+            return self._binned_data_.to_hist()
+
+        if &#39;varname&#39; not in kwargs:
+            Logger(&#39;Name of variable needed in case of unbinned data.&#39;, &#39;FATAL&#39;)
+
+        varname = kwargs[&#39;varname&#39;]
+        df_unbinned = self._data_.to_pandas()
+        data = df_unbinned[varname].to_numpy()
+
+        nbins = kwargs.get(&#39;nbins&#39;, 100)
+        lower_edge = kwargs.get(&#39;lower_edge&#39;, min(data))
+        upper_edge = kwargs.get(&#39;upper_edge&#39;, max(data))
+        axis_title = kwargs.get(&#39;axis_title&#39;, varname)
+
+        hist = Hist.new.Reg(nbins, lower_edge, upper_edge, name=&#34;x&#34;, label=axis_title).Double()
+        hist.fill(x=data)
+
+        return hist</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -757,6 +862,94 @@ Name of the histogram to be used in the fit in case of ROOT file</dd>
     return self._var_name_</code></pre>
 </details>
 </dd>
+<dt id="flarefly.data_handler.DataHandler.to_hist"><code class="name flex">
+<span>def <span class="ident">to_hist</span></span>(<span>self, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>returns data in NamedHist</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>hist</code></strong> :&ensp;<code>Hist</code></dt>
+<dd>The data in a hist.Hist</dd>
+<dt><strong><code>**kwargs</code></strong> :&ensp;<code>dict</code></dt>
+<dd>
+<p>Additional optional arguments:</p>
+<ul>
+<li>
+<p>lower_edge: float
+lower edge (only used in case of originally unbinned data)</p>
+</li>
+<li>
+<p>upper_edge: float
+upper edge (only used in case of originally unbinned data)</p>
+</li>
+<li>
+<p>nbins: int
+number of bins (only used in case of originally unbinned data)</p>
+</li>
+<li>
+<p>axis_title: str
+label of x-axis (only used in case of originally unbinned data)</p>
+</li>
+<li>
+<p>varname: str
+name of variable (needed in case of originally unbinned data)</p>
+</li>
+</ul>
+</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_hist(self, **kwargs):
+    &#34;&#34;&#34;
+    returns data in NamedHist
+
+    Returns
+    -------------------------------------------------
+    hist: Hist
+        The data in a hist.Hist
+    **kwargs: dict
+        Additional optional arguments:
+
+        - lower_edge: float
+            lower edge (only used in case of originally unbinned data)
+
+        - upper_edge: float
+            upper edge (only used in case of originally unbinned data)
+
+        - nbins: int
+            number of bins (only used in case of originally unbinned data)
+
+        - axis_title: str
+            label of x-axis (only used in case of originally unbinned data)
+
+        - varname: str
+            name of variable (needed in case of originally unbinned data)
+    &#34;&#34;&#34;
+
+    if self._isbinned_:
+        return self._binned_data_.to_hist()
+
+    if &#39;varname&#39; not in kwargs:
+        Logger(&#39;Name of variable needed in case of unbinned data.&#39;, &#39;FATAL&#39;)
+
+    varname = kwargs[&#39;varname&#39;]
+    df_unbinned = self._data_.to_pandas()
+    data = df_unbinned[varname].to_numpy()
+
+    nbins = kwargs.get(&#39;nbins&#39;, 100)
+    lower_edge = kwargs.get(&#39;lower_edge&#39;, min(data))
+    upper_edge = kwargs.get(&#39;upper_edge&#39;, max(data))
+    axis_title = kwargs.get(&#39;axis_title&#39;, varname)
+
+    hist = Hist.new.Reg(nbins, lower_edge, upper_edge, name=&#34;x&#34;, label=axis_title).Double()
+    hist.fill(x=data)
+
+    return hist</code></pre>
+</details>
+</dd>
 <dt id="flarefly.data_handler.DataHandler.to_pandas"><code class="name flex">
 <span>def <span class="ident">to_pandas</span></span>(<span>self)</span>
 </code></dt>
@@ -819,6 +1012,7 @@ Name of the histogram to be used in the fit in case of ROOT file</dd>
 <li><code><a title="flarefly.data_handler.DataHandler.get_obs" href="#flarefly.data_handler.DataHandler.get_obs">get_obs</a></code></li>
 <li><code><a title="flarefly.data_handler.DataHandler.get_use_zfit" href="#flarefly.data_handler.DataHandler.get_use_zfit">get_use_zfit</a></code></li>
 <li><code><a title="flarefly.data_handler.DataHandler.get_var_name" href="#flarefly.data_handler.DataHandler.get_var_name">get_var_name</a></code></li>
+<li><code><a title="flarefly.data_handler.DataHandler.to_hist" href="#flarefly.data_handler.DataHandler.to_hist">to_hist</a></code></li>
 <li><code><a title="flarefly.data_handler.DataHandler.to_pandas" href="#flarefly.data_handler.DataHandler.to_pandas">to_pandas</a></code></li>
 </ul>
 </li>

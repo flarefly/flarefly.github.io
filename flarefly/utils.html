@@ -72,74 +72,7 @@ class Logger:
         elif level == &#39;RESULT&#39;:
             print(f&#39;\n\n{text}\n\n&#39;)
         else:
-            print(text)
-
-pdg_dict = {&#39;22&#39;: {&#39;name&#39;: &#39;photon&#39;, &#39;mass&#39;: 0.0},
-            &#39;-2112&#39;: {&#39;name&#39;: &#39;anti-neutron&#39;, &#39;mass&#39;: 939.565},
-            &#39;-11&#39;: {&#39;name&#39;: &#39;e-&#39;, &#39;mass&#39;: 0.510998928},
-            &#39;-3122&#39;: {&#39;name&#39;: &#39;Lambda&#39;, &#39;mass&#39;: 1.115683},
-            &#39;11&#39;: {&#39;name&#39;: &#39;e+&#39;, &#39;mass&#39;: 0.510998928},
-            &#39;-3222&#39;: {&#39;name&#39;: &#39;Sigma&#39;, &#39;mass&#39;: 1.18937},
-            &#39;12&#39;: {&#39;name&#39;: &#39;e-neutrino&#39;, &#39;mass&#39;: 0.0},
-            &#39;-3212&#39;: {&#39;name&#39;: &#39;Sigma-&#39;, &#39;mass&#39;: 1.18937},
-            &#39;-13&#39;: {&#39;name&#39;: &#39;mu+&#39;, &#39;mass&#39;: 0.1056583715},
-            &#39;-3112&#39;: {&#39;name&#39;: &#39;Sigma-&#39;, &#39;mass&#39;: 1.18937},
-            &#39;13&#39;: {&#39;name&#39;: &#39;mu-&#39;, &#39;mass&#39;: 0.1056583715},
-            &#39;-3322&#39;: {&#39;name&#39;: &#39;Xi0&#39;, &#39;mass&#39;: 1.32132},
-            &#39;111&#39;: {&#39;name&#39;: &#39;pi0&#39;, &#39;mass&#39;: 0.1349766},
-            &#39;-3312&#39;: {&#39;name&#39;: &#39;Xi+&#39;, &#39;mass&#39;: 1.32132},
-            &#39;211&#39;: {&#39;name&#39;: &#39;pi+&#39;, &#39;mass&#39;: 0.13957018},
-            &#39;-3334&#39;: {&#39;name&#39;: &#39;Omega+&#39;, &#39;mass&#39;: 1.67245},
-            &#39;-211&#39;: {&#39;name&#39;: &#39;pi-&#39;, &#39;mass&#39;: 0.13957018},
-            &#39;-15&#39;: {&#39;name&#39;: &#39;tau+&#39;, &#39;mass&#39;: 1.77682},
-            &#39;130&#39;: {&#39;name&#39;: &#39;KL0&#39;, &#39;mass&#39;: 0.497614},
-            &#39;15&#39;: {&#39;name&#39;: &#39;tau-&#39;, &#39;mass&#39;: 1.77682},
-            &#39;321&#39;: {&#39;name&#39;: &#39;K+&#39;, &#39;mass&#39;: 0.493677},
-            &#39;411&#39;: {&#39;name&#39;: &#39;D+&#39;, &#39;mass&#39;: 1.86962},
-            &#39;-321&#39;: {&#39;name&#39;: &#39;K-&#39;, &#39;mass&#39;: 0.493677},
-            &#39;-411&#39;: {&#39;name&#39;: &#39;D-&#39;, &#39;mass&#39;: 1.86962},
-            &#39;2112&#39;: {&#39;name&#39;: &#39;neutron&#39;, &#39;mass&#39;: 939.565},
-            &#39;421&#39;: {&#39;name&#39;: &#39;D0&#39;, &#39;mass&#39;: 1.8646},
-            &#39;2212&#39;: {&#39;name&#39;: &#39;proton&#39;, &#39;mass&#39;: 938.272},
-            &#39;-421&#39;: {&#39;name&#39;: &#39;D0bar&#39;, &#39;mass&#39;: 1.8646},
-            &#39;-2212&#39;: {&#39;name&#39;: &#39;anti-proton&#39;, &#39;mass&#39;: 938.272},
-            &#39;431&#39;: {&#39;name&#39;: &#39;D_s+&#39;, &#39;mass&#39;: 1.96847},
-            &#39;310&#39;: {&#39;name&#39;: &#39;KS0&#39;, &#39;mass&#39;: 0.497614},
-            &#39;-431&#39;: {&#39;name&#39;: &#39;D_s^-&#39;, &#39;mass&#39;: 1.96847},
-            &#39;4122&#39;: {&#39;name&#39;: &#39;Lambda_c+&#39;, &#39;mass&#39;: 2.2849},
-            &#39;3122&#39;: {&#39;name&#39;: &#39;Lambda0&#39;, &#39;mass&#39;: 1.115683},
-            &#39;2&#39;: {&#39;name&#39;: &#39;W+&#39;, &#39;mass&#39;: 80.399},
-            &#39;3222&#39;: {&#39;name&#39;: &#39;Sigma+&#39;, &#39;mass&#39;: 1.18937},
-            &#39;-24&#39;: {&#39;name&#39;: &#39;W-&#39;, &#39;mass&#39;: 80.399},
-            &#39;3212&#39;: {&#39;name&#39;: &#39;Sigma0&#39;, &#39;mass&#39;: 1.18937},
-            &#39;23&#39;: {&#39;name&#39;: &#39;Z0&#39;, &#39;mass&#39;: 91.1876},
-            &#39;3112&#39;: {&#39;name&#39;: &#39;Sigma+&#39;, &#39;mass&#39;: 1.18937},
-            &#39;3322&#39;: {&#39;name&#39;: &#39;Xi0&#39;, &#39;mass&#39;: 1.32132},
-            &#39;3312&#39;: {&#39;name&#39;: &#39;Xi-&#39;, &#39;mass&#39;: 1.32132},
-            &#39;3334&#39;: {&#39;name&#39;: &#39;Omega-&#39;, &#39;mass&#39;: 1.67245}}
-
-def get_particle_mass(pdg_id=None, pdg_name=None): # pylint: disable=inconsistent-return-statements
-    &#34;&#34;&#34;
-    Get particle mass from PDG dictionary
-
-    Parameters
-    -------------------------------------------------
-    pdg_name: str
-        Name of particle
-    pdg_id: int
-        PDG id of particle
-
-    Returns
-    -------------------------------------------------
-    mass: float
-        Mass of particle
-    &#34;&#34;&#34;
-    if pdg_id:
-        return pdg_dict[str(pdg_id)][&#39;mass&#39;]
-    if pdg_name:
-        for item in pdg_dict.items():
-            if pdg_name == item[1][&#39;name&#39;]:
-                return item[1][&#39;mass&#39;]</code></pre>
+            print(text)</code></pre>
 </details>
 </section>
 <section>
@@ -147,54 +80,6 @@ def get_particle_mass(pdg_id=None, pdg_name=None): # pylint: disable=inconsisten
 <section>
 </section>
 <section>
-<h2 class="section-title" id="header-functions">Functions</h2>
-<dl>
-<dt id="flarefly.utils.get_particle_mass"><code class="name flex">
-<span>def <span class="ident">get_particle_mass</span></span>(<span>pdg_id=None, pdg_name=None)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Get particle mass from PDG dictionary</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>pdg_name</code></strong> :&ensp;<code>str</code></dt>
-<dd>Name of particle</dd>
-<dt><strong><code>pdg_id</code></strong> :&ensp;<code>int</code></dt>
-<dd>PDG id of particle</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><strong><code>mass</code></strong> :&ensp;<code>float</code></dt>
-<dd>Mass of particle</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_particle_mass(pdg_id=None, pdg_name=None): # pylint: disable=inconsistent-return-statements
-    &#34;&#34;&#34;
-    Get particle mass from PDG dictionary
-
-    Parameters
-    -------------------------------------------------
-    pdg_name: str
-        Name of particle
-    pdg_id: int
-        PDG id of particle
-
-    Returns
-    -------------------------------------------------
-    mass: float
-        Mass of particle
-    &#34;&#34;&#34;
-    if pdg_id:
-        return pdg_dict[str(pdg_id)][&#39;mass&#39;]
-    if pdg_name:
-        for item in pdg_dict.items():
-            if pdg_name == item[1][&#39;name&#39;]:
-                return item[1][&#39;mass&#39;]</code></pre>
-</details>
-</dd>
-</dl>
 </section>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
@@ -298,11 +183,6 @@ Parameters</p>
 <li><h3>Super-module</h3>
 <ul>
 <li><code><a title="flarefly" href="index.html">flarefly</a></code></li>
-</ul>
-</li>
-<li><h3><a href="#header-functions">Functions</a></h3>
-<ul class="">
-<li><code><a title="flarefly.utils.get_particle_mass" href="#flarefly.utils.get_particle_mass">get_particle_mass</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
