@@ -173,7 +173,7 @@ class Voigtian(zfit.pdf.ZPDF):
 <dl>
 <dt id="flarefly.custom_pdfs.DoubleGauss"><code class="flex name class">
 <span>class <span class="ident">DoubleGauss</span></span>
-<span>(</span><span>obs: Union[str, Iterable[str], ForwardRef('zfit.Space')], name: str = 'ZPDF', **params)</span>
+<span>(</span><span>obs: ztyping.ObsTypeInput, name: str = 'ZPDF', **params)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>PDF composed by the sum of two gaussians sharing the same mean parameter</p>
@@ -260,7 +260,7 @@ class Voigtian(zfit.pdf.ZPDF):
 </dd>
 <dt id="flarefly.custom_pdfs.ExpoPow"><code class="flex name class">
 <span>class <span class="ident">ExpoPow</span></span>
-<span>(</span><span>obs: Union[str, Iterable[str], ForwardRef('zfit.Space')], name: str = 'ZPDF', **params)</span>
+<span>(</span><span>obs: ztyping.ObsTypeInput, name: str = 'ZPDF', **params)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>PDF composed by an exponential power-law function
@@ -337,7 +337,7 @@ f(x) = sqrt(x - m) * exp( -lam * (x - m) )</p>
 </dd>
 <dt id="flarefly.custom_pdfs.Pow"><code class="flex name class">
 <span>class <span class="ident">Pow</span></span>
-<span>(</span><span>obs: Union[str, Iterable[str], ForwardRef('zfit.Space')], name: str = 'ZPDF', **params)</span>
+<span>(</span><span>obs: ztyping.ObsTypeInput, name: str = 'ZPDF', **params)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>PDF composed by a power-law function
@@ -413,7 +413,7 @@ f(x) = (x - m)^power</p>
 </dd>
 <dt id="flarefly.custom_pdfs.Voigtian"><code class="flex name class">
 <span>class <span class="ident">Voigtian</span></span>
-<span>(</span><span>obs: Union[str, Iterable[str], ForwardRef('zfit.Space')], name: str = 'ZPDF', **params)</span>
+<span>(</span><span>obs: ztyping.ObsTypeInput, name: str = 'ZPDF', **params)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Voigtian PDF defined starting from the scipy.special definition
