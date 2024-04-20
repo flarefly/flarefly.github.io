@@ -33,11 +33,9 @@ Module containing custom pdfs
 
 import zfit
 import tensorflow as tf
-from zfit import z
-from scipy import special
 
 # pylint: disable=too-many-ancestors
-
+# pylint: disable=arguments-differ
 
 class DoubleGauss(zfit.pdf.ZPDF):
     &#34;&#34;&#34;
@@ -81,7 +79,7 @@ class Pow(zfit.pdf.ZPDF):
 
         - mass: mass parameter
 
-        - power: exponential power
+        - power: power
     &#34;&#34;&#34;
 
     # override the name of the parameters
@@ -126,40 +124,41 @@ class ExpoPow(zfit.pdf.ZPDF):
         lam = self.params[&#39;lam&#39;]
         return tf.sqrt(x - mass) * tf.exp(-lam * (x - mass))
 
-class Voigtian(zfit.pdf.ZPDF):
+class ExpoPowExt(zfit.pdf.ZPDF):
     &#34;&#34;&#34;
-    Voigtian PDF defined starting from the scipy.special definition
-    See https://docs.scipy.org/doc/scipy/reference/generated/scipy.special.voigt_profile.html
-    for more details
+    PDF composed by an exponential power-law function
+    f(x) = (x - m)^power * exp( c1 * (x - m) + c2 * (x - m)^2  + c3 * (x - m)^3 )
 
     Parameters:
 
-        - mu: mass parameter
+        - mass: mass parameter
 
-        - sigma: sigma of the gaussian
+        - power: power
 
-        - gamma: gamma of the cauchy
+        - c1: coefficient of the first-order term in the exponential
+
+        - c2: coefficient of the second-order term in the exponential
+
+        - c3: coefficient of the third-order term in the exponential
     &#34;&#34;&#34;
 
     # override the name of the parameters
-    _PARAMS = [&#39;mu&#39;, &#39;sigma&#39;, &#39;gamma&#39;]
+    _PARAMS = [&#39;mass&#39;, &#39;power&#39;, &#39;c1&#39;, &#39;c2&#39;, &#39;c3&#39;]
 
+    @tf.function
     def _unnormalized_pdf(self, x):
         &#34;&#34;&#34;
         PDF &#39;unnormalized&#39;.
         See https://zfit.github.io/zfit/_modules/zfit/core/basepdf.html#BasePDF.unnormalized_pdf
         for more details
         &#34;&#34;&#34;
-
         x = zfit.z.unstack_x(x)
-        mass = self.params[&#39;mu&#39;]
-        gamma = self.params[&#39;gamma&#39;]
-        sigma = self.params[&#39;sigma&#39;]
-
-        # pylint: disable=no-member
-        voigt_tf = z.py_function(func=special.voigt_profile, inp=[x - mass, sigma, gamma], Tout=tf.float64)
-
-        return voigt_tf</code></pre>
+        mass = self.params[&#39;mass&#39;]
+        power = self.params[&#39;power&#39;]
+        c1 = self.params[&#39;c1&#39;]
+        c2 = self.params[&#39;c2&#39;]
+        c3 = self.params[&#39;c3&#39;]
+        return tf.pow(x - mass, power) * tf.exp(c1 * (x - mass) + c2 * (x - mass)**2 + c3 * (x - mass)**3)</code></pre>
 </details>
 </section>
 <section>
@@ -173,7 +172,7 @@ class Voigtian(zfit.pdf.ZPDF):
 <dl>
 <dt id="flarefly.custom_pdfs.DoubleGauss"><code class="flex name class">
 <span>class <span class="ident">DoubleGauss</span></span>
-<span>(</span><span>obs: ztyping.ObsTypeInput, name: str = 'ZPDF', **params)</span>
+<span>(</span><span>obs: ztyping.ObsTypeInput, *, name: str = 'ZPDF', label: str | None = None, norm=None, extended=None, **params)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>PDF composed by the sum of two gaussians sharing the same mean parameter</p>
@@ -248,7 +247,6 @@ class Voigtian(zfit.pdf.ZPDF):
 <li>zfit.core.interfaces.ZfitDependenciesMixin</li>
 <li>zfit.core.interfaces.ZfitDimensional</li>
 <li>zfit.core.interfaces.ZfitObject</li>
-<li>abc.ABC</li>
 </ul>
 <h3>Class variables</h3>
 <dl>
@@ -260,7 +258,7 @@ class Voigtian(zfit.pdf.ZPDF):
 </dd>
 <dt id="flarefly.custom_pdfs.ExpoPow"><code class="flex name class">
 <span>class <span class="ident">ExpoPow</span></span>
-<span>(</span><span>obs: ztyping.ObsTypeInput, name: str = 'ZPDF', **params)</span>
+<span>(</span><span>obs: ztyping.ObsTypeInput, *, name: str = 'ZPDF', label: str | None = None, norm=None, extended=None, **params)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>PDF composed by an exponential power-law function
@@ -325,7 +323,6 @@ f(x) = sqrt(x - m) * exp( -lam * (x - m) )</p>
 <li>zfit.core.interfaces.ZfitDependenciesMixin</li>
 <li>zfit.core.interfaces.ZfitDimensional</li>
 <li>zfit.core.interfaces.ZfitObject</li>
-<li>abc.ABC</li>
 </ul>
 <h3>Class variables</h3>
 <dl>
@@ -335,9 +332,104 @@ f(x) = sqrt(x - m) * exp( -lam * (x - m) )</p>
 </dd>
 </dl>
 </dd>
+<dt id="flarefly.custom_pdfs.ExpoPowExt"><code class="flex name class">
+<span>class <span class="ident">ExpoPowExt</span></span>
+<span>(</span><span>obs: ztyping.ObsTypeInput, *, name: str = 'ZPDF', label: str | None = None, norm=None, extended=None, **params)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>PDF composed by an exponential power-law function
+f(x) = (x - m)^power * exp( c1 * (x - m) + c2 * (x - m)^2
++ c3 * (x - m)^3 )</p>
+<h2 id="parameters">Parameters</h2>
+<ul>
+<li>
+<p>mass: mass parameter</p>
+</li>
+<li>
+<p>power: power</p>
+</li>
+<li>
+<p>c1: coefficient of the first-order term in the exponential</p>
+</li>
+<li>
+<p>c2: coefficient of the second-order term in the exponential</p>
+</li>
+<li>
+<p>c3: coefficient of the third-order term in the exponential</p>
+</li>
+</ul></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ExpoPowExt(zfit.pdf.ZPDF):
+    &#34;&#34;&#34;
+    PDF composed by an exponential power-law function
+    f(x) = (x - m)^power * exp( c1 * (x - m) + c2 * (x - m)^2  + c3 * (x - m)^3 )
+
+    Parameters:
+
+        - mass: mass parameter
+
+        - power: power
+
+        - c1: coefficient of the first-order term in the exponential
+
+        - c2: coefficient of the second-order term in the exponential
+
+        - c3: coefficient of the third-order term in the exponential
+    &#34;&#34;&#34;
+
+    # override the name of the parameters
+    _PARAMS = [&#39;mass&#39;, &#39;power&#39;, &#39;c1&#39;, &#39;c2&#39;, &#39;c3&#39;]
+
+    @tf.function
+    def _unnormalized_pdf(self, x):
+        &#34;&#34;&#34;
+        PDF &#39;unnormalized&#39;.
+        See https://zfit.github.io/zfit/_modules/zfit/core/basepdf.html#BasePDF.unnormalized_pdf
+        for more details
+        &#34;&#34;&#34;
+        x = zfit.z.unstack_x(x)
+        mass = self.params[&#39;mass&#39;]
+        power = self.params[&#39;power&#39;]
+        c1 = self.params[&#39;c1&#39;]
+        c2 = self.params[&#39;c2&#39;]
+        c3 = self.params[&#39;c3&#39;]
+        return tf.pow(x - mass, power) * tf.exp(c1 * (x - mass) + c2 * (x - mass)**2 + c3 * (x - mass)**3)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>zfit.models.special.ZPDF</li>
+<li>zfit.core.basemodel.SimpleModelSubclassMixin</li>
+<li>zfit.core.basepdf.BasePDF</li>
+<li>zfit.core.interfaces.ZfitPDF</li>
+<li>zfit.core.basemodel.BaseModel</li>
+<li>zfit.core.baseobject.BaseNumeric</li>
+<li>zfit.util.cache.GraphCachable</li>
+<li>zfit.util.cache.ZfitGraphCachable</li>
+<li>zfit.core.dependents.BaseDependentsMixin</li>
+<li>zfit.core.baseobject.BaseParametrized</li>
+<li>zfit.core.dimension.BaseDimensional</li>
+<li>zfit.core.interfaces.ZfitModel</li>
+<li>zfit.core.interfaces.ZfitNumericParametrized</li>
+<li>zfit.core.baseobject.BaseObject</li>
+<li>zfit.core.interfaces.ZfitParametrized</li>
+<li>zfit.core.interfaces.ZfitDependenciesMixin</li>
+<li>zfit.core.interfaces.ZfitDimensional</li>
+<li>zfit.core.interfaces.ZfitObject</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="flarefly.custom_pdfs.ExpoPowExt.graph_caching_methods"><code class="name">var <span class="ident">graph_caching_methods</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
 <dt id="flarefly.custom_pdfs.Pow"><code class="flex name class">
 <span>class <span class="ident">Pow</span></span>
-<span>(</span><span>obs: ztyping.ObsTypeInput, name: str = 'ZPDF', **params)</span>
+<span>(</span><span>obs: ztyping.ObsTypeInput, *, name: str = 'ZPDF', label: str | None = None, norm=None, extended=None, **params)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>PDF composed by a power-law function
@@ -348,7 +440,7 @@ f(x) = (x - m)^power</p>
 <p>mass: mass parameter</p>
 </li>
 <li>
-<p>power: exponential power</p>
+<p>power: power</p>
 </li>
 </ul></div>
 <details class="source">
@@ -364,7 +456,7 @@ f(x) = (x - m)^power</p>
 
         - mass: mass parameter
 
-        - power: exponential power
+        - power: power
     &#34;&#34;&#34;
 
     # override the name of the parameters
@@ -401,100 +493,10 @@ f(x) = (x - m)^power</p>
 <li>zfit.core.interfaces.ZfitDependenciesMixin</li>
 <li>zfit.core.interfaces.ZfitDimensional</li>
 <li>zfit.core.interfaces.ZfitObject</li>
-<li>abc.ABC</li>
 </ul>
 <h3>Class variables</h3>
 <dl>
 <dt id="flarefly.custom_pdfs.Pow.graph_caching_methods"><code class="name">var <span class="ident">graph_caching_methods</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-</dl>
-</dd>
-<dt id="flarefly.custom_pdfs.Voigtian"><code class="flex name class">
-<span>class <span class="ident">Voigtian</span></span>
-<span>(</span><span>obs: ztyping.ObsTypeInput, name: str = 'ZPDF', **params)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Voigtian PDF defined starting from the scipy.special definition
-See <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.special.voigt_profile.html">https://docs.scipy.org/doc/scipy/reference/generated/scipy.special.voigt_profile.html</a>
-for more details</p>
-<h2 id="parameters">Parameters</h2>
-<ul>
-<li>
-<p>mu: mass parameter</p>
-</li>
-<li>
-<p>sigma: sigma of the gaussian</p>
-</li>
-<li>
-<p>gamma: gamma of the cauchy</p>
-</li>
-</ul></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Voigtian(zfit.pdf.ZPDF):
-    &#34;&#34;&#34;
-    Voigtian PDF defined starting from the scipy.special definition
-    See https://docs.scipy.org/doc/scipy/reference/generated/scipy.special.voigt_profile.html
-    for more details
-
-    Parameters:
-
-        - mu: mass parameter
-
-        - sigma: sigma of the gaussian
-
-        - gamma: gamma of the cauchy
-    &#34;&#34;&#34;
-
-    # override the name of the parameters
-    _PARAMS = [&#39;mu&#39;, &#39;sigma&#39;, &#39;gamma&#39;]
-
-    def _unnormalized_pdf(self, x):
-        &#34;&#34;&#34;
-        PDF &#39;unnormalized&#39;.
-        See https://zfit.github.io/zfit/_modules/zfit/core/basepdf.html#BasePDF.unnormalized_pdf
-        for more details
-        &#34;&#34;&#34;
-
-        x = zfit.z.unstack_x(x)
-        mass = self.params[&#39;mu&#39;]
-        gamma = self.params[&#39;gamma&#39;]
-        sigma = self.params[&#39;sigma&#39;]
-
-        # pylint: disable=no-member
-        voigt_tf = z.py_function(func=special.voigt_profile, inp=[x - mass, sigma, gamma], Tout=tf.float64)
-
-        return voigt_tf</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>zfit.models.special.ZPDF</li>
-<li>zfit.core.basemodel.SimpleModelSubclassMixin</li>
-<li>zfit.core.basepdf.BasePDF</li>
-<li>zfit.core.interfaces.ZfitPDF</li>
-<li>zfit.core.basemodel.BaseModel</li>
-<li>zfit.core.baseobject.BaseNumeric</li>
-<li>zfit.util.cache.GraphCachable</li>
-<li>zfit.util.cache.ZfitGraphCachable</li>
-<li>zfit.core.dependents.BaseDependentsMixin</li>
-<li>zfit.core.baseobject.BaseParametrized</li>
-<li>zfit.core.dimension.BaseDimensional</li>
-<li>zfit.core.interfaces.ZfitModel</li>
-<li>zfit.core.interfaces.ZfitNumericParametrized</li>
-<li>zfit.core.baseobject.BaseObject</li>
-<li>zfit.core.interfaces.ZfitParametrized</li>
-<li>zfit.core.interfaces.ZfitDependenciesMixin</li>
-<li>zfit.core.interfaces.ZfitDimensional</li>
-<li>zfit.core.interfaces.ZfitObject</li>
-<li>abc.ABC</li>
-</ul>
-<h3>Class variables</h3>
-<dl>
-<dt id="flarefly.custom_pdfs.Voigtian.graph_caching_methods"><code class="name">var <span class="ident">graph_caching_methods</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -529,15 +531,15 @@ for more details</p>
 </ul>
 </li>
 <li>
-<h4><code><a title="flarefly.custom_pdfs.Pow" href="#flarefly.custom_pdfs.Pow">Pow</a></code></h4>
+<h4><code><a title="flarefly.custom_pdfs.ExpoPowExt" href="#flarefly.custom_pdfs.ExpoPowExt">ExpoPowExt</a></code></h4>
 <ul class="">
-<li><code><a title="flarefly.custom_pdfs.Pow.graph_caching_methods" href="#flarefly.custom_pdfs.Pow.graph_caching_methods">graph_caching_methods</a></code></li>
+<li><code><a title="flarefly.custom_pdfs.ExpoPowExt.graph_caching_methods" href="#flarefly.custom_pdfs.ExpoPowExt.graph_caching_methods">graph_caching_methods</a></code></li>
 </ul>
 </li>
 <li>
-<h4><code><a title="flarefly.custom_pdfs.Voigtian" href="#flarefly.custom_pdfs.Voigtian">Voigtian</a></code></h4>
+<h4><code><a title="flarefly.custom_pdfs.Pow" href="#flarefly.custom_pdfs.Pow">Pow</a></code></h4>
 <ul class="">
-<li><code><a title="flarefly.custom_pdfs.Voigtian.graph_caching_methods" href="#flarefly.custom_pdfs.Voigtian.graph_caching_methods">graph_caching_methods</a></code></li>
+<li><code><a title="flarefly.custom_pdfs.Pow.graph_caching_methods" href="#flarefly.custom_pdfs.Pow.graph_caching_methods">graph_caching_methods</a></code></li>
 </ul>
 </li>
 </ul>

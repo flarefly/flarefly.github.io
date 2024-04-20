@@ -126,7 +126,7 @@ class DataHandler:
                         if limits is None:
                             self._limits_[0] = min(input_df[self._var_name_])
                             self._limits_[1] = max(input_df[self._var_name_])
-                        self._obs_ = zfit.Space(self._var_name_, limits=(self._limits_[0], self._limits_[1]))
+                        self._obs_ = zfit.Space(self._var_name_, lower=self._limits_[0], upper=self._limits_[1])
                         self._data_ = zfit.data.Data.from_pandas(obs=self._obs_, df=input_df)
                     else:
                         Logger(&#39;&#34;histoname&#34; not specified. Please specify the &#39;
@@ -137,7 +137,7 @@ class DataHandler:
                     if limits is None:
                         self._limits_[0] = min(input_df[self._var_name_])
                         self._limits_[1] = max(input_df[self._var_name_])
-                    self._obs_ = zfit.Space(self._var_name_, limits=(self._limits_[0], self._limits_[1]))
+                    self._obs_ = zfit.Space(self._var_name_, lower=self._limits_[0], upper=self._limits_[1])
                     self._data_ = zfit.data.Data.from_pandas(obs=self._obs_, df=input_df)
                 else:
                     Logger(&#39;Data format not supported yet. Please use .root or .parquet&#39;, &#39;FATAL&#39;)
@@ -147,7 +147,7 @@ class DataHandler:
                 if limits is None:
                     self._limits_[0] = min(data)
                     self._limits_[1] = max(data)
-                self._obs_ = zfit.Space(self._var_name_, limits=(self._limits_[0], self._limits_[1]))
+                self._obs_ = zfit.Space(self._var_name_, lower=self._limits_[0], upper=self._limits_[1])
                 self._data_ = zfit.data.Data.from_numpy(obs=self._obs_, array=data)
 
             elif isinstance(data, pd.DataFrame):
@@ -155,7 +155,7 @@ class DataHandler:
                 if limits is None:
                     self._limits_[0] = min(data[self._var_name_])
                     self._limits_[1] = max(data[self._var_name_])
-                self._obs_ = zfit.Space(self._var_name_, limits=(self._limits_[0], self._limits_[1]))
+                self._obs_ = zfit.Space(self._var_name_, lower=self._limits_[0], upper=self._limits_[1])
                 self._data_ = zfit.data.Data.from_pandas(obs=self._obs_, df=data)
 
             elif isinstance(data, uproot.behaviors.TH1.Histogram):
@@ -269,13 +269,27 @@ class DataHandler:
 
         Returns
         -------------------------------------------------
-        binned_data: zfit.core.space.Space
+        binned_obs: zfit.core.space.Space
             The observation space for unbinned data converted to binned data
         &#34;&#34;&#34;
         bins = self.get_nbins()
         limits = self.get_limits()
         binning = zfit.binned.RegularBinning(bins, limits[0], limits[1], name=self._var_name_)
         obs = zfit.Space(self._var_name_, binning=binning)
+
+        return obs
+
+    def get_unbinned_obs_from_binned_data(self):
+        &#34;&#34;&#34;
+        Get the unbinned obs from binned obs
+
+        Returns
+        -------------------------------------------------
+        unbinned_obs: zfit.core.space.Space
+            The observation space for binned data converted to unbinned data
+        &#34;&#34;&#34;
+        limits = self.get_limits()
+        obs = zfit.Space(&#34;xaxis&#34;, lower=limits[0], upper=limits[1])
 
         return obs
 
@@ -566,7 +580,7 @@ Name of the tree to be used in the fit in case of ROOT file</p>
                         if limits is None:
                             self._limits_[0] = min(input_df[self._var_name_])
                             self._limits_[1] = max(input_df[self._var_name_])
-                        self._obs_ = zfit.Space(self._var_name_, limits=(self._limits_[0], self._limits_[1]))
+                        self._obs_ = zfit.Space(self._var_name_, lower=self._limits_[0], upper=self._limits_[1])
                         self._data_ = zfit.data.Data.from_pandas(obs=self._obs_, df=input_df)
                     else:
                         Logger(&#39;&#34;histoname&#34; not specified. Please specify the &#39;
@@ -577,7 +591,7 @@ Name of the tree to be used in the fit in case of ROOT file</p>
                     if limits is None:
                         self._limits_[0] = min(input_df[self._var_name_])
                         self._limits_[1] = max(input_df[self._var_name_])
-                    self._obs_ = zfit.Space(self._var_name_, limits=(self._limits_[0], self._limits_[1]))
+                    self._obs_ = zfit.Space(self._var_name_, lower=self._limits_[0], upper=self._limits_[1])
                     self._data_ = zfit.data.Data.from_pandas(obs=self._obs_, df=input_df)
                 else:
                     Logger(&#39;Data format not supported yet. Please use .root or .parquet&#39;, &#39;FATAL&#39;)
@@ -587,7 +601,7 @@ Name of the tree to be used in the fit in case of ROOT file</p>
                 if limits is None:
                     self._limits_[0] = min(data)
                     self._limits_[1] = max(data)
-                self._obs_ = zfit.Space(self._var_name_, limits=(self._limits_[0], self._limits_[1]))
+                self._obs_ = zfit.Space(self._var_name_, lower=self._limits_[0], upper=self._limits_[1])
                 self._data_ = zfit.data.Data.from_numpy(obs=self._obs_, array=data)
 
             elif isinstance(data, pd.DataFrame):
@@ -595,7 +609,7 @@ Name of the tree to be used in the fit in case of ROOT file</p>
                 if limits is None:
                     self._limits_[0] = min(data[self._var_name_])
                     self._limits_[1] = max(data[self._var_name_])
-                self._obs_ = zfit.Space(self._var_name_, limits=(self._limits_[0], self._limits_[1]))
+                self._obs_ = zfit.Space(self._var_name_, lower=self._limits_[0], upper=self._limits_[1])
                 self._data_ = zfit.data.Data.from_pandas(obs=self._obs_, df=data)
 
             elif isinstance(data, uproot.behaviors.TH1.Histogram):
@@ -709,13 +723,27 @@ Name of the tree to be used in the fit in case of ROOT file</p>
 
         Returns
         -------------------------------------------------
-        binned_data: zfit.core.space.Space
+        binned_obs: zfit.core.space.Space
             The observation space for unbinned data converted to binned data
         &#34;&#34;&#34;
         bins = self.get_nbins()
         limits = self.get_limits()
         binning = zfit.binned.RegularBinning(bins, limits[0], limits[1], name=self._var_name_)
         obs = zfit.Space(self._var_name_, binning=binning)
+
+        return obs
+
+    def get_unbinned_obs_from_binned_data(self):
+        &#34;&#34;&#34;
+        Get the unbinned obs from binned obs
+
+        Returns
+        -------------------------------------------------
+        unbinned_obs: zfit.core.space.Space
+            The observation space for binned data converted to unbinned data
+        &#34;&#34;&#34;
+        limits = self.get_limits()
+        obs = zfit.Space(&#34;xaxis&#34;, lower=limits[0], upper=limits[1])
 
         return obs
 
@@ -963,7 +991,7 @@ Name of the tree to be used in the fit in case of ROOT file</p>
 <div class="desc"><p>Get the binned obs from unbinned obs</p>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><strong><code>binned_data</code></strong> :&ensp;<code>zfit.core.space.Space</code></dt>
+<dt><strong><code>binned_obs</code></strong> :&ensp;<code>zfit.core.space.Space</code></dt>
 <dd>The observation space for unbinned data converted to binned data</dd>
 </dl></div>
 <details class="source">
@@ -976,7 +1004,7 @@ Name of the tree to be used in the fit in case of ROOT file</p>
 
     Returns
     -------------------------------------------------
-    binned_data: zfit.core.space.Space
+    binned_obs: zfit.core.space.Space
         The observation space for unbinned data converted to binned data
     &#34;&#34;&#34;
     bins = self.get_nbins()
@@ -1158,6 +1186,35 @@ Name of the tree to be used in the fit in case of ROOT file</p>
 
     Logger(&#39;Observable not available for non-zfit data&#39;, &#39;ERROR&#39;)
     return None</code></pre>
+</details>
+</dd>
+<dt id="flarefly.data_handler.DataHandler.get_unbinned_obs_from_binned_data"><code class="name flex">
+<span>def <span class="ident">get_unbinned_obs_from_binned_data</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the unbinned obs from binned obs</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>unbinned_obs</code></strong> :&ensp;<code>zfit.core.space.Space</code></dt>
+<dd>The observation space for binned data converted to unbinned data</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_unbinned_obs_from_binned_data(self):
+    &#34;&#34;&#34;
+    Get the unbinned obs from binned obs
+
+    Returns
+    -------------------------------------------------
+    unbinned_obs: zfit.core.space.Space
+        The observation space for binned data converted to unbinned data
+    &#34;&#34;&#34;
+    limits = self.get_limits()
+    obs = zfit.Space(&#34;xaxis&#34;, lower=limits[0], upper=limits[1])
+
+    return obs</code></pre>
 </details>
 </dd>
 <dt id="flarefly.data_handler.DataHandler.get_use_zfit"><code class="name flex">
@@ -1370,6 +1427,7 @@ name of variable (needed in case of originally unbinned data)</p>
 <li><code><a title="flarefly.data_handler.DataHandler.get_nbins" href="#flarefly.data_handler.DataHandler.get_nbins">get_nbins</a></code></li>
 <li><code><a title="flarefly.data_handler.DataHandler.get_norm" href="#flarefly.data_handler.DataHandler.get_norm">get_norm</a></code></li>
 <li><code><a title="flarefly.data_handler.DataHandler.get_obs" href="#flarefly.data_handler.DataHandler.get_obs">get_obs</a></code></li>
+<li><code><a title="flarefly.data_handler.DataHandler.get_unbinned_obs_from_binned_data" href="#flarefly.data_handler.DataHandler.get_unbinned_obs_from_binned_data">get_unbinned_obs_from_binned_data</a></code></li>
 <li><code><a title="flarefly.data_handler.DataHandler.get_use_zfit" href="#flarefly.data_handler.DataHandler.get_use_zfit">get_use_zfit</a></code></li>
 <li><code><a title="flarefly.data_handler.DataHandler.get_var_name" href="#flarefly.data_handler.DataHandler.get_var_name">get_var_name</a></code></li>
 <li><code><a title="flarefly.data_handler.DataHandler.to_hist" href="#flarefly.data_handler.DataHandler.to_hist">to_hist</a></code></li>
