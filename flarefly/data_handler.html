@@ -3,19 +3,30 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-<meta name="generator" content="pdoc3 0.11.1">
+<meta name="generator" content="pdoc3 0.11.6">
 <title>flarefly.data_handler API documentation</title>
 <meta name="description" content="Simple module with a class to manage the data used in the analysis">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
-<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source > summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible;min-width:max-content}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
 <style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
 <script>window.addEventListener('DOMContentLoaded', () => {
 hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
 hljs.highlightAll();
+/* Collapse source docstrings */
+setTimeout(() => {
+[...document.querySelectorAll('.hljs.language-python > .hljs-string')]
+.filter(el => el.innerHTML.length > 200 && ['"""', "'''"].includes(el.innerHTML.substring(0, 3)))
+.forEach(el => {
+let d = document.createElement('details');
+d.classList.add('hljs-string');
+d.innerHTML = '<summary>"""</summary>' + el.innerHTML.substring(3);
+el.replaceWith(d);
+});
+}, 100);
 })</script>
 </head>
 <body>
@@ -41,41 +52,6 @@ hljs.highlightAll();
 <span>(</span><span>data=None, var_name='', limits=None, use_zfit=True, **kwargs)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Class for storing and managing the data of (ROOT tree, TH1, numpy array, etc.)</p>
-<p>Initialize the DataHandler class</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>data</code></strong> :&ensp;<code>numpy.array / pandas.DataFrame / uproot.behaviors.TH1.Histogram / string</code></dt>
-<dd>Data or path to data to be used in the fit</dd>
-<dt><strong><code>var_name</code></strong> :&ensp;<code>str</code></dt>
-<dd>Name of the variable used in the fit</dd>
-<dt><strong><code>limits</code></strong> :&ensp;<code>list</code> of <code>floats</code></dt>
-<dd>Limits of the x axis used in the fit</dd>
-<dt><strong><code>use_zfit</code></strong> :&ensp;<code>bool</code></dt>
-<dd>If True, zfit package is used to fit the data</dd>
-<dt><strong><code>**kwargs</code></strong> :&ensp;<code>dict</code></dt>
-<dd>
-<p>Additional optional arguments:</p>
-<ul>
-<li>
-<p>nbins: int
-Number of bins chosen by user to bin data in case of unbinned data</p>
-</li>
-<li>
-<p>rebin: int
-Rebin factor in case of binned data</p>
-</li>
-<li>
-<p>histoname: str
-Name of the histogram to be used in the fit in case of ROOT file</p>
-</li>
-<li>
-<p>treename: str
-Name of the tree to be used in the fit in case of ROOT file</p>
-</li>
-</ul>
-</dd>
-</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -115,128 +91,273 @@ Name of the tree to be used in the fit in case of ROOT file</p>
             - treename: str
                 Name of the tree to be used in the fit in case of ROOT file
         &#34;&#34;&#34;
+        # Default keyword arguments
         nbins = kwargs.get(&#39;nbins&#39;, 100)
         rebin = kwargs.get(&#39;rebin&#39;, 1)
 
         self._input_ = data
         self._var_name_ = var_name
-        self._limits_ = limits if limits is not None else [-1, -1]
+        self._limits_ = [None, None]
         self._use_zfit_ = use_zfit
         self._obs_ = None
         self._data_ = None
         self._binned_data_ = None
         self._nbins_ = nbins
-        self._isbinned_ = False
-        self._norm_ = 1.
+        self._isbinned_ = None
+        self._norm_ = 1.0
         self._rebin_ = rebin
+        self.__format__ = None
 
         if use_zfit:
-            if isinstance(data, str):
-                if data.endswith(&#39;.root&#39;):
-                    self.__format__ = &#39;root&#39;
-                    if &#39;histoname&#39; in kwargs:
-                        hist = uproot.open(data)[kwargs[&#39;histoname&#39;]]
-                        hist = hist.to_hist()
-                        hist = eval(f&#34;hist[::{self._rebin_}j]&#34;) # pylint: disable=eval-used
-                        hist_array = hist.to_numpy()
-                        if limits is None:
-                            self._binned_data_ = zfit.data.BinnedData.from_hist(hist)
-                            self._nbins_ = len(hist_array[1]) - 1
-                            self._limits_[0] = hist_array[1][0]
-                            self._limits_[1] = hist_array[1][-1]
-                            idx_min = 0
-                            idx_max = len(hist_array[1])-1
-                        else:
-                            idx_min = np.argmin(np.abs(hist_array[1]-self._limits_[0]))
-                            idx_max = np.argmin(np.abs(hist_array[1]-self._limits_[1]))
-                            self._nbins_ = len(hist_array[1][idx_min:idx_max])
-                            self._limits_[0] = hist_array[1][idx_min]
-                            self._limits_[1] = hist_array[1][idx_max]
-                        binning = zfit.binned.RegularBinning(
-                            self._nbins_,
-                            self._limits_[0],
-                            self._limits_[1],
-                            name=&#34;xaxis&#34;
-                        )
-                        self._obs_ = zfit.Space(&#34;xaxis&#34;, binning=binning)
-                        self._binned_data_ = zfit.data.BinnedData.from_tensor(
-                            self._obs_, hist.values()[idx_min:idx_max], hist.variances()[idx_min:idx_max])
-                        self._isbinned_ = True
-                    elif &#39;treename&#39; in kwargs:
-                        input_df = uproot.open(data)[kwargs[&#39;treename&#39;]].arrays(library=&#39;pd&#39;)
-                        if limits is None:
-                            self._limits_[0] = min(input_df[self._var_name_])
-                            self._limits_[1] = max(input_df[self._var_name_])
-                        self._obs_ = zfit.Space(self._var_name_, lower=self._limits_[0], upper=self._limits_[1])
-                        self._data_ = zfit.data.Data.from_pandas(obs=self._obs_, df=input_df)
-                    else:
-                        Logger(&#39;&#34;histoname&#34; not specified. Please specify the &#39;
-                               &#39;name of the histogram to be used&#39;, &#39;FATAL&#39;)
-                elif data.endswith(&#39;.parquet&#39;) or data.endswith(&#39;.parquet.gzip&#39;):
-                    self.__format__ = &#39;parquet&#39;
-                    input_df = pd.read_parquet(data)
-                    if limits is None:
-                        self._limits_[0] = min(input_df[self._var_name_])
-                        self._limits_[1] = max(input_df[self._var_name_])
-                    self._obs_ = zfit.Space(self._var_name_, lower=self._limits_[0], upper=self._limits_[1])
-                    self._data_ = zfit.data.Data.from_pandas(obs=self._obs_, df=input_df)
-                else:
-                    Logger(&#39;Data format not supported yet. Please use .root or .parquet&#39;, &#39;FATAL&#39;)
-
-            elif isinstance(data, np.ndarray):
-                self.__format__ = &#39;numpy&#39;
-                if limits is None:
-                    self._limits_[0] = min(data)
-                    self._limits_[1] = max(data)
-                self._obs_ = zfit.Space(self._var_name_, lower=self._limits_[0], upper=self._limits_[1])
-                self._data_ = zfit.data.Data.from_numpy(obs=self._obs_, array=data)
-
-            elif isinstance(data, pd.DataFrame):
-                self.__format__ = &#39;pandas&#39;
-                if limits is None:
-                    self._limits_[0] = min(data[self._var_name_])
-                    self._limits_[1] = max(data[self._var_name_])
-                self._obs_ = zfit.Space(self._var_name_, lower=self._limits_[0], upper=self._limits_[1])
-                self._data_ = zfit.data.Data.from_pandas(obs=self._obs_, df=data)
-
-            elif isinstance(data, uproot.behaviors.TH1.Histogram):
-                self.__format__ = &#39;uproot&#39;
-                hist = data.to_hist()
-                hist = eval(f&#34;hist[::{self._rebin_}j]&#34;) # pylint: disable=eval-used
-                hist_array = hist.to_numpy()
-                if limits is None:
-                    self._binned_data_ = zfit.data.BinnedData.from_hist(hist)
-                    self._nbins_ = len(hist_array[1]) - 1
-                    self._limits_[0] = hist_array[1][0]
-                    self._limits_[1] = hist_array[1][-1]
-                    idx_min = 0
-                    idx_max = len(hist_array[1])-1
-                else:
-                    idx_min = np.argmin(np.abs(hist_array[1]-self._limits_[0]))
-                    idx_max = np.argmin(np.abs(hist_array[1]-self._limits_[1]))
-                    self._nbins_ = len(hist_array[1][idx_min:idx_max])
-                    self._limits_[0] = hist_array[1][idx_min]
-                    self._limits_[1] = hist_array[1][idx_max]
-                binning = zfit.binned.RegularBinning(
-                    self._nbins_,
-                    self._limits_[0],
-                    self._limits_[1],
-                    name=&#34;xaxis&#34;
-                )
-                self._obs_ = zfit.Space(&#34;xaxis&#34;, binning=binning)
-                self._binned_data_ = zfit.data.BinnedData.from_tensor(
-                    self._obs_, hist.values()[idx_min:idx_max], hist.variances()[idx_min:idx_max])
-                self._isbinned_ = True
-
-            else:
-                Logger(&#39;Data format not supported&#39;, &#39;FATAL&#39;)
-
+            data = self.__load_data(data, limits, **kwargs)
+            # Update normalization: binned data sums over bin values, unbinned counts entries.
             if self._isbinned_:
+                self._binned_data_ = data
                 self._norm_ = float(sum(self._binned_data_.values()))
             else:
+                self._data_ = data
                 self._norm_ = float(len(self._data_.to_pandas()))
         else:
             Logger(&#39;Non-zfit data not available&#39;, &#39;FATAL&#39;)
+
+    def __check_set_format(self, format_name):
+        &#34;&#34;&#34;
+        Checks and sets the data format for the handler.
+
+        If the format is already set and does not match the provided format,
+        logs a fatal error. If the format is not set, assigns the provided format.
+
+        Parameters
+        ------------------------------------------------
+        format_name: str
+            The data format to check and set.
+        &#34;&#34;&#34;
+        if self.__format__ is not None and self.__format__ != format_name:
+            Logger(f&#39;Data format set to {self.__format__}, cannot use {format_name}&#39;, &#39;FATAL&#39;)
+        elif self.__format__ is None:
+            self.__format__ = format_name
+
+    def __check_set_limits_unbinned_obs_(self, data, limits):
+        &#34;&#34;&#34;
+        Check and set the limits for unbinned observations.
+
+        This method updates the limits and observation space for unbinned data if the limits are not already set.
+        It sets the lower limit to the minimum value in the data and the upper limit to the maximum value in the data.
+        The observation space is then updated with these new limits.
+
+        Parameters
+        ------------------------------------------------
+        data: iterable
+            The unbinned data to determine the limits from.
+        limits: list
+            The limits provided by the user.
+        &#34;&#34;&#34;
+        if None in self._limits_ and limits is not None:
+            self._limits_[0] = limits[0]
+            self._limits_[1] = limits[1]
+        elif None in self._limits_:
+            if isinstance(data, pd.DataFrame):
+                self._limits_[0] = min(data[self._var_name_])
+                self._limits_[1] = max(data[self._var_name_])
+            else:
+                self._limits_[0] = min(data)
+                self._limits_[1] = max(data)
+        if self._obs_ is None:
+            self._obs_ = zfit.Space(self._var_name_, lower=self._limits_[0], upper=self._limits_[1])
+
+    def __check_binned_unbinned_(self, isbinned):
+        &#34;&#34;&#34;
+        Checks and sets the binning status of the data.
+
+        This method ensures that the binning status of the data is consistent.
+        If the binning status has not been set, it sets it to the provided value.
+        If the binning status has already been set and the provided value is different,
+        it logs a fatal error indicating a data format mismatch.
+
+        Parameters
+        ------------------------------------------------
+        isbinned: bool
+            The binning status to check against the current status.
+        &#34;&#34;&#34;
+        if self._isbinned_ is None:
+            self._isbinned_ = isbinned
+        elif self._isbinned_ is not None and self._isbinned_ != isbinned:
+            Logger(&#39;Data format mismatch&#39;, &#39;FATAL&#39;)
+
+    def __check_set_limits_binned_obs_(self, data, limits):
+        &#34;&#34;&#34;
+        Check and set the limits and binning for binned observations.
+
+        This method checks if the limits for the binned observations are set. If not, it sets the number of bins,
+        the lower limit, and the upper limit based on the provided data. It then creates a regular binning and
+        observation space using zfit. If the limits are already set, it verifies that the bin edges match the
+        provided data. If the bin edges do not match, it logs a fatal error.
+
+        Parameters
+        ------------------------------------------------
+        data: tuple
+            A tuple where the second element is an array-like structure containing the bin edges.
+        limits: list
+            The limits provided by the user.
+        &#34;&#34;&#34;
+        if None in self._limits_ and limits is not None:
+            idx_min = np.argmin(np.abs(data[1] - limits[0]))
+            idx_max = np.argmin(np.abs(data[1] - limits[1]))
+            self._limits_[0] = data[1][idx_min]
+            self._limits_[1] = data[1][idx_max]
+        elif None in self._limits_:
+            self._limits_[0] = data[1][0]
+            self._limits_[1] = data[1][-1]
+        if self._obs_ is None:
+            idx_min = np.argmin(np.abs(data[1] - self._limits_[0]))
+            idx_max = np.argmin(np.abs(data[1] - self._limits_[1]))
+            self._nbins_ = idx_max - idx_min
+            binning = zfit.binned.RegularBinning(
+                self._nbins_,
+                self._limits_[0],
+                self._limits_[1],
+                name=&#34;xaxis&#34;
+            )
+            self._obs_ = zfit.Space(&#34;xaxis&#34;, binning=binning)
+        else:
+            idx_min = np.argmin(np.abs(data[1] - self._limits_[0]))
+            idx_max = np.argmin(np.abs(data[1] - self._limits_[1]))
+            binning = zfit.binned.RegularBinning(
+                self._nbins_,
+                self._limits_[0],
+                self._limits_[1],
+                name=&#34;xaxis&#34;
+            )
+            bin_edges = []
+            for i in range(self._nbins_):
+                bin_edges.append(binning.bin(i)[0])
+            if not np.allclose(bin_edges, data[1][idx_min:idx_max]):
+                Logger(&#39;Bin edges do not match&#39;, &#39;FATAL&#39;)
+
+    def __load_data(self, data, limits, **kwargs):
+        &#34;&#34;&#34;
+        Load data from various formats.
+
+        Parameters
+        ------------------------------------------------
+        data: str, np.ndarray, pd.DataFrame, or uproot.behaviors.TH1.Histogram
+            The data to be loaded. It can be a file path (str), a NumPy array,
+            a Pandas DataFrame, or an uproot Histogram.
+        limits: list
+            The limits provided by the user.
+        **kwargs:
+            Additional keyword arguments to be passed to the specific data loading functions.
+
+        Returns
+        -------------------------------------------------
+        data: zfit.core.data.Data or zfit.data.BinnedData:
+            The loaded data in the appropriate format.
+        &#34;&#34;&#34;
+        if isinstance(data, str):
+            data = self.__load_from_file(data, limits, **kwargs)
+        elif isinstance(data, np.ndarray):
+            self.__check_set_format(&#39;numpy&#39;)
+            data = self.__load_from_numpy(data, limits)
+        elif isinstance(data, pd.DataFrame):
+            self.__check_set_format(&#39;pandas&#39;)
+            data = self.__load_from_pandas(data, limits)
+        elif isinstance(data, uproot.behaviors.TH1.Histogram):
+            self.__check_set_format(&#39;uproot&#39;)
+            data = self.__load_from_histogram(data, limits)
+        else:
+            Logger(&#39;Data format not supported&#39;, &#39;FATAL&#39;)
+
+        return data
+
+    def __load_from_file(self, filename, limits, **kwargs):
+        &#34;&#34;&#34;
+        Load data from file-based sources (ROOT or parquet).
+
+        Parameters
+        ------------------------------------------------
+        filename: str
+            The path to the file to be loaded.
+        limits: list
+            The limits provided by the user.
+        **kwargs:
+            Additional keyword arguments to be passed to the specific data loading functions.
+        &#34;&#34;&#34;
+        if filename.endswith(&#39;.root&#39;):
+            if self.__format__ is None:
+                self.__check_set_format(&#39;root&#39;)
+            if &#39;histoname&#39; in kwargs:
+                with uproot.open(filename, encoding=&#34;utf-8&#34;) as file:
+                    hist = file[kwargs[&#39;histoname&#39;]]
+                return self.__load_from_histogram(hist, limits)
+            if &#39;treename&#39; in kwargs:
+                with uproot.open(filename, encoding=&#34;utf-8&#34;) as file:
+                    df = file[kwargs[&#39;treename&#39;]].arrays(library=&#39;pd&#39;)
+                return self.__load_from_pandas(df, limits)
+            Logger(&#39;&#34;histoname&#34; not specified. Please specify the name of the histogram to be used&#39;, &#39;FATAL&#39;)
+            return None
+        if filename.endswith(&#39;.parquet&#39;) or filename.endswith(&#39;.parquet.gzip&#39;):
+            self.__check_set_format(&#39;parquet&#39;)
+            df = pd.read_parquet(filename)
+            return self.__load_from_pandas(df, limits)
+        Logger(&#39;Data format not supported yet. Please use .root or .parquet&#39;, &#39;FATAL&#39;)
+        return None
+
+    def __load_from_numpy(self, data, limits):
+        &#34;&#34;&#34;Load a numpy array as unbinned data.&#34;&#34;&#34;
+        self.__check_binned_unbinned_(False)
+        self.__check_set_limits_unbinned_obs_(data, limits)
+        return zfit.data.Data.from_numpy(obs=self._obs_, array=data)
+
+    def __load_from_pandas(self, df, limits):
+        &#34;&#34;&#34;Load a pandas DataFrame as unbinned data.&#34;&#34;&#34;
+        self.__check_binned_unbinned_(False)
+        self.__check_set_limits_unbinned_obs_(df, limits)
+        return zfit.data.Data.from_pandas(obs=self._obs_, df=df)
+
+    def __load_from_histogram(self, hist_obj, limits):
+        &#34;&#34;&#34;
+        Load an uproot histogram object as binned data.
+        &#34;&#34;&#34;
+
+        self.__check_binned_unbinned_(True)
+        hist = hist_obj.to_hist()
+        hist = eval(f&#34;hist[::{self._rebin_}j]&#34;)  # pylint: disable=eval-used
+        hist_array = hist.to_numpy()
+
+        self.__check_set_limits_binned_obs_(hist_array, limits)
+        idx_min = np.argmin(np.abs(hist_array[1] - self._limits_[0]))
+        idx_max = np.argmin(np.abs(hist_array[1] - self._limits_[1]))
+
+        data = zfit.data.BinnedData.from_tensor(
+            self._obs_,
+            hist.values()[idx_min:idx_max],
+            hist.variances()[idx_min:idx_max]
+        )
+        return data
+
+    def add_data(self, data, **kwargs):
+        &#34;&#34;&#34;
+        Add data to the existing dataset.
+
+        Parameters
+        ------------------------------------------------
+        data: str, np.ndarray, pd.DataFrame, or uproot.behaviors.TH1.Histogram
+            The data to be added.
+        **kwargs:
+            Additional keyword arguments to be passed to the specific data loading functions.
+        &#34;&#34;&#34;
+        if &#34;limits&#34; in kwargs:
+            Logger(&#39;Limits not needed for adding data&#39;, &#39;FATAL&#39;)
+        data = self.__load_data(data, limits=None, **kwargs)
+
+        if self._isbinned_:
+            self._binned_data_ = zfit.data.concat(
+                [self._binned_data_.to_unbinned(), data.to_unbinned()]
+            ).to_binned(self._obs_)
+            self._norm_ = float(sum(self._binned_data_.values()))
+        else:
+            self._data_ = zfit.data.concat([self._data_, data])
+            self._norm_ = float(len(self._data_.to_pandas()))
 
     def get_data(self, input_data=False):
         &#34;&#34;&#34;
@@ -480,12 +601,110 @@ Name of the tree to be used in the fit in case of ROOT file</p>
 
         return hist</code></pre>
 </details>
+<div class="desc"><p>Class for storing and managing the data of (ROOT tree, TH1, numpy array, etc.)</p>
+<p>Initialize the DataHandler class</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>numpy.array / pandas.DataFrame / uproot.behaviors.TH1.Histogram / string</code></dt>
+<dd>Data or path to data to be used in the fit</dd>
+<dt><strong><code>var_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>Name of the variable used in the fit</dd>
+<dt><strong><code>limits</code></strong> :&ensp;<code>list</code> of <code>floats</code></dt>
+<dd>Limits of the x axis used in the fit</dd>
+<dt><strong><code>use_zfit</code></strong> :&ensp;<code>bool</code></dt>
+<dd>If True, zfit package is used to fit the data</dd>
+<dt><strong><code>**kwargs</code></strong> :&ensp;<code>dict</code></dt>
+<dd>
+<p>Additional optional arguments:</p>
+<ul>
+<li>
+<p>nbins: int
+Number of bins chosen by user to bin data in case of unbinned data</p>
+</li>
+<li>
+<p>rebin: int
+Rebin factor in case of binned data</p>
+</li>
+<li>
+<p>histoname: str
+Name of the histogram to be used in the fit in case of ROOT file</p>
+</li>
+<li>
+<p>treename: str
+Name of the tree to be used in the fit in case of ROOT file</p>
+</li>
+</ul>
+</dd>
+</dl></div>
 <h3>Methods</h3>
 <dl>
+<dt id="flarefly.data_handler.DataHandler.add_data"><code class="name flex">
+<span>def <span class="ident">add_data</span></span>(<span>self, data, **kwargs)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_data(self, data, **kwargs):
+    &#34;&#34;&#34;
+    Add data to the existing dataset.
+
+    Parameters
+    ------------------------------------------------
+    data: str, np.ndarray, pd.DataFrame, or uproot.behaviors.TH1.Histogram
+        The data to be added.
+    **kwargs:
+        Additional keyword arguments to be passed to the specific data loading functions.
+    &#34;&#34;&#34;
+    if &#34;limits&#34; in kwargs:
+        Logger(&#39;Limits not needed for adding data&#39;, &#39;FATAL&#39;)
+    data = self.__load_data(data, limits=None, **kwargs)
+
+    if self._isbinned_:
+        self._binned_data_ = zfit.data.concat(
+            [self._binned_data_.to_unbinned(), data.to_unbinned()]
+        ).to_binned(self._obs_)
+        self._norm_ = float(sum(self._binned_data_.values()))
+    else:
+        self._data_ = zfit.data.concat([self._data_, data])
+        self._norm_ = float(len(self._data_.to_pandas()))</code></pre>
+</details>
+<div class="desc"><p>Add data to the existing dataset.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>str, np.ndarray, pd.DataFrame,</code> or <code>uproot.behaviors.TH1.Histogram</code></dt>
+<dd>The data to be added.</dd>
+</dl>
+<p>**kwargs:
+Additional keyword arguments to be passed to the specific data loading functions.</p></div>
+</dd>
 <dt id="flarefly.data_handler.DataHandler.get_bin_center"><code class="name flex">
 <span>def <span class="ident">get_bin_center</span></span>(<span>self)</span>
 </code></dt>
 <dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_bin_center(self):
+    &#34;&#34;&#34;
+    Get the center of the bins
+
+    Returns
+    -------------------------------------------------
+    binning: array
+        The bin center
+    &#34;&#34;&#34;
+    if self.get_is_binned():
+        binning = self.get_obs().binning[0]
+    else:
+        binning = self.get_binned_obs_from_unbinned_data().binning[0]
+    bin_center = []
+    for bin_ in binning:
+        bin_center.append((bin_[0] + bin_[1])/2)
+    return bin_center</code></pre>
+</details>
 <div class="desc"><p>Get the center of the bins</p>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -497,6 +716,21 @@ Name of the tree to be used in the fit in case of ROOT file</p>
 <span>def <span class="ident">get_binned_data</span></span>(<span>self)</span>
 </code></dt>
 <dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_binned_data(self):
+    &#34;&#34;&#34;
+    Get the binned data
+
+    Returns
+    -------------------------------------------------
+    binned_data: zfit.data.BinnedData
+        The binned data
+    &#34;&#34;&#34;
+    return self._binned_data_</code></pre>
+</details>
 <div class="desc"><p>Get the binned data</p>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -508,6 +742,25 @@ Name of the tree to be used in the fit in case of ROOT file</p>
 <span>def <span class="ident">get_binned_data_from_unbinned_data</span></span>(<span>self)</span>
 </code></dt>
 <dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_binned_data_from_unbinned_data(self):
+    &#34;&#34;&#34;
+    Get the binned data from unbinned data
+
+    Returns
+    -------------------------------------------------
+    binned_data: float array
+        The binned data obtained from unbinned data
+    &#34;&#34;&#34;
+    limits = self.get_limits()
+    data_np = zfit.run(self.get_data()[self._var_name_])
+    data_values, _ = np.histogram(data_np, self.get_nbins(), range=(limits[0], limits[1]))
+
+    return data_values</code></pre>
+</details>
 <div class="desc"><p>Get the binned data from unbinned data</p>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -519,6 +772,26 @@ Name of the tree to be used in the fit in case of ROOT file</p>
 <span>def <span class="ident">get_binned_obs_from_unbinned_data</span></span>(<span>self)</span>
 </code></dt>
 <dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_binned_obs_from_unbinned_data(self):
+    &#34;&#34;&#34;
+    Get the binned obs from unbinned obs
+
+    Returns
+    -------------------------------------------------
+    binned_obs: zfit.core.space.Space
+        The observation space for unbinned data converted to binned data
+    &#34;&#34;&#34;
+    bins = self.get_nbins()
+    limits = self.get_limits()
+    binning = zfit.binned.RegularBinning(bins, limits[0], limits[1], name=self._var_name_)
+    obs = zfit.Space(self._var_name_, binning=binning)
+
+    return obs</code></pre>
+</details>
 <div class="desc"><p>Get the binned obs from unbinned obs</p>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -530,6 +803,28 @@ Name of the tree to be used in the fit in case of ROOT file</p>
 <span>def <span class="ident">get_data</span></span>(<span>self, input_data=False)</span>
 </code></dt>
 <dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_data(self, input_data=False):
+    &#34;&#34;&#34;
+    Get the data
+
+    Parameters
+    ------------------------------------------------
+    input_data: bool
+        If True, the input data is returned
+
+    Returns
+    -------------------------------------------------
+    data: zfit.core.data.Data
+        The data instance
+    &#34;&#34;&#34;
+    if not input_data:
+        return self._data_
+    return self._input_</code></pre>
+</details>
 <div class="desc"><p>Get the data</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -546,6 +841,21 @@ Name of the tree to be used in the fit in case of ROOT file</p>
 <span>def <span class="ident">get_is_binned</span></span>(<span>self)</span>
 </code></dt>
 <dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_is_binned(self):
+    &#34;&#34;&#34;
+    Get the data type (binned or not)
+
+    Returns
+    -------------------------------------------------
+    isbinnned: bool
+        A flag that indicates if the data is binned
+    &#34;&#34;&#34;
+    return self._isbinned_</code></pre>
+</details>
 <div class="desc"><p>Get the data type (binned or not)</p>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -557,6 +867,21 @@ Name of the tree to be used in the fit in case of ROOT file</p>
 <span>def <span class="ident">get_limits</span></span>(<span>self)</span>
 </code></dt>
 <dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_limits(self):
+    &#34;&#34;&#34;
+    Get the limits of the x axis
+
+    Returns
+    -------------------------------------------------
+    limits: list
+        The range limits of the x axis
+    &#34;&#34;&#34;
+    return self._limits_</code></pre>
+</details>
 <div class="desc"><p>Get the limits of the x axis</p>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -568,6 +893,21 @@ Name of the tree to be used in the fit in case of ROOT file</p>
 <span>def <span class="ident">get_nbins</span></span>(<span>self)</span>
 </code></dt>
 <dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_nbins(self):
+    &#34;&#34;&#34;
+    Get the number of bins
+
+    Returns
+    -------------------------------------------------
+    nbins: int
+        The number of bins
+    &#34;&#34;&#34;
+    return self._nbins_</code></pre>
+</details>
 <div class="desc"><p>Get the number of bins</p>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -579,6 +919,22 @@ Name of the tree to be used in the fit in case of ROOT file</p>
 <span>def <span class="ident">get_norm</span></span>(<span>self)</span>
 </code></dt>
 <dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_norm(self):
+    &#34;&#34;&#34;
+    Get the integral of the data
+
+    Returns
+    -------------------------------------------------
+    norm: float
+        The normalisation value
+    &#34;&#34;&#34;
+
+    return self._norm_</code></pre>
+</details>
 <div class="desc"><p>Get the integral of the data</p>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -590,6 +946,25 @@ Name of the tree to be used in the fit in case of ROOT file</p>
 <span>def <span class="ident">get_obs</span></span>(<span>self)</span>
 </code></dt>
 <dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_obs(self):
+    &#34;&#34;&#34;
+    Get the observation space
+
+    Returns
+    -------------------------------------------------
+    obs: zfit.core.space.Space
+        The observation space
+    &#34;&#34;&#34;
+    if self._use_zfit_:
+        return self._obs_
+
+    Logger(&#39;Observable not available for non-zfit data&#39;, &#39;ERROR&#39;)
+    return None</code></pre>
+</details>
 <div class="desc"><p>Get the observation space</p>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -601,6 +976,24 @@ Name of the tree to be used in the fit in case of ROOT file</p>
 <span>def <span class="ident">get_unbinned_obs_from_binned_data</span></span>(<span>self)</span>
 </code></dt>
 <dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_unbinned_obs_from_binned_data(self):
+    &#34;&#34;&#34;
+    Get the unbinned obs from binned obs
+
+    Returns
+    -------------------------------------------------
+    unbinned_obs: zfit.core.space.Space
+        The observation space for binned data converted to unbinned data
+    &#34;&#34;&#34;
+    limits = self.get_limits()
+    obs = zfit.Space(&#34;xaxis&#34;, lower=limits[0], upper=limits[1])
+
+    return obs</code></pre>
+</details>
 <div class="desc"><p>Get the unbinned obs from binned obs</p>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -612,6 +1005,21 @@ Name of the tree to be used in the fit in case of ROOT file</p>
 <span>def <span class="ident">get_use_zfit</span></span>(<span>self)</span>
 </code></dt>
 <dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_use_zfit(self):
+    &#34;&#34;&#34;
+    Get the use_zfit flag
+
+    Returns
+    -------------------------------------------------
+    limits: list
+        The range limits of the x axis
+    &#34;&#34;&#34;
+    return self._use_zfit_</code></pre>
+</details>
 <div class="desc"><p>Get the use_zfit flag</p>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -623,6 +1031,21 @@ Name of the tree to be used in the fit in case of ROOT file</p>
 <span>def <span class="ident">get_var_name</span></span>(<span>self)</span>
 </code></dt>
 <dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_var_name(self):
+    &#34;&#34;&#34;
+    Get the variable name
+
+    Returns
+    -------------------------------------------------
+    var_name: str
+        The variable name
+    &#34;&#34;&#34;
+    return self._var_name_</code></pre>
+</details>
 <div class="desc"><p>Get the variable name</p>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -634,6 +1057,60 @@ Name of the tree to be used in the fit in case of ROOT file</p>
 <span>def <span class="ident">to_hist</span></span>(<span>self, **kwargs)</span>
 </code></dt>
 <dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_hist(self, **kwargs):
+    &#34;&#34;&#34;
+    returns data in NamedHist
+
+    Parameters
+    ------------------------------------------------
+    **kwargs: dict
+        Additional optional arguments:
+
+        - lower_edge: float
+            lower edge (only used in case of originally unbinned data)
+
+        - upper_edge: float
+            upper edge (only used in case of originally unbinned data)
+
+        - nbins: int
+            number of bins (only used in case of originally unbinned data)
+
+        - axis_title: str
+            label of x-axis (only used in case of originally unbinned data)
+
+        - varname: str
+            name of variable (needed in case of originally unbinned data)
+
+    Returns
+    -------------------------------------------------
+    hist: Hist
+        The data in a hist.Hist
+    &#34;&#34;&#34;
+
+    if self._isbinned_:
+        return self._binned_data_.to_hist()
+
+    if &#39;varname&#39; not in kwargs:
+        Logger(&#39;Name of variable needed in case of unbinned data.&#39;, &#39;FATAL&#39;)
+
+    varname = kwargs[&#39;varname&#39;]
+    df_unbinned = self._data_.to_pandas()
+    data = df_unbinned[varname].to_numpy()
+
+    nbins = kwargs.get(&#39;nbins&#39;, 100)
+    lower_edge = kwargs.get(&#39;lower_edge&#39;, min(data))
+    upper_edge = kwargs.get(&#39;upper_edge&#39;, max(data))
+    axis_title = kwargs.get(&#39;axis_title&#39;, varname)
+
+    hist = Hist.new.Reg(nbins, lower_edge, upper_edge, name=&#34;x&#34;, label=axis_title).Double()
+    hist.fill(x=data)
+
+    return hist</code></pre>
+</details>
 <div class="desc"><p>returns data in NamedHist</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -674,6 +1151,28 @@ name of variable (needed in case of originally unbinned data)</p>
 <span>def <span class="ident">to_pandas</span></span>(<span>self)</span>
 </code></dt>
 <dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_pandas(self):
+    &#34;&#34;&#34;
+    returns data in pandas df
+
+    Returns
+    -------------------------------------------------
+    data: pandas.DataFrame
+        The data in a pandas DataFrame
+    &#34;&#34;&#34;
+    if self.__format__ == &#39;pandas&#39;:
+        Logger(&#39;Data already in pandas format.&#39;, &#39;WARNING&#39;)
+        return self._input_
+    if self.__format__ in [&#39;numpy&#39;, &#39;parquet&#39;, &#39;root&#39;] and not self._isbinned_:
+        return self._data_.to_pandas()
+
+    Logger(&#39;Data format not supported yet for pandas conversion.&#39;, &#39;ERROR&#39;)
+    return None</code></pre>
+</details>
 <div class="desc"><p>returns data in pandas df</p>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -701,6 +1200,7 @@ name of variable (needed in case of originally unbinned data)</p>
 <li>
 <h4><code><a title="flarefly.data_handler.DataHandler" href="#flarefly.data_handler.DataHandler">DataHandler</a></code></h4>
 <ul class="">
+<li><code><a title="flarefly.data_handler.DataHandler.add_data" href="#flarefly.data_handler.DataHandler.add_data">add_data</a></code></li>
 <li><code><a title="flarefly.data_handler.DataHandler.get_bin_center" href="#flarefly.data_handler.DataHandler.get_bin_center">get_bin_center</a></code></li>
 <li><code><a title="flarefly.data_handler.DataHandler.get_binned_data" href="#flarefly.data_handler.DataHandler.get_binned_data">get_binned_data</a></code></li>
 <li><code><a title="flarefly.data_handler.DataHandler.get_binned_data_from_unbinned_data" href="#flarefly.data_handler.DataHandler.get_binned_data_from_unbinned_data">get_binned_data_from_unbinned_data</a></code></li>
@@ -724,7 +1224,7 @@ name of variable (needed in case of originally unbinned data)</p>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.1</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.6</a>.</p>
 </footer>
 </body>
 </html>
