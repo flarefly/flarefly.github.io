@@ -49,7 +49,7 @@ el.replaceWith(d);
 <dl>
 <dt id="flarefly.data_handler.DataHandler"><code class="flex name class">
 <span>class <span class="ident">DataHandler</span></span>
-<span>(</span><span>data=None, var_name='', limits=None, use_zfit=True, **kwargs)</span>
+<span>(</span><span>data=None, var_name='xaxis', limits=None, use_zfit=True, **kwargs)</span>
 </code></dt>
 <dd>
 <details class="source">
@@ -61,13 +61,14 @@ el.replaceWith(d);
     Class for storing and managing the data of (ROOT tree, TH1, numpy array, etc.)
     &#34;&#34;&#34;
 
-    def __init__(self, data=None, var_name=&#39;&#39;, limits=None, use_zfit=True, **kwargs):
+    def __init__(self, data=None, var_name=&#39;xaxis&#39;, limits=None, use_zfit=True, **kwargs):
         &#34;&#34;&#34;
         Initialize the DataHandler class
 
         Parameters
         ------------------------------------------------
-        data: numpy.array / pandas.DataFrame / uproot.behaviors.TH1.Histogram / string
+        data: numpy.array / pandas.DataFrame / uproot.behaviors.TH1.Histogram / ROOT.TH1 / string /
+              zfit.data.Data / zfit.data.BinnedData
             Data or path to data to be used in the fit
         var_name: str
             Name of the variable used in the fit
@@ -159,6 +160,10 @@ el.replaceWith(d);
             if isinstance(data, pd.DataFrame):
                 self._limits_[0] = min(data[self._var_name_])
                 self._limits_[1] = max(data[self._var_name_])
+            elif isinstance(data, zfit.core.data.Data):
+                array = data.to_numpy()
+                self._limits_[0] = min(array)
+                self._limits_[1] = max(array)
             else:
                 self._limits_[0] = min(data)
                 self._limits_[1] = max(data)
@@ -216,9 +221,9 @@ el.replaceWith(d);
                 self._nbins_,
                 self._limits_[0],
                 self._limits_[1],
-                name=&#34;xaxis&#34;
+                name=self._var_name_
             )
-            self._obs_ = zfit.Space(&#34;xaxis&#34;, binning=binning)
+            self._obs_ = zfit.Space(self._var_name_, binning=binning)
         else:
             idx_min = np.argmin(np.abs(data[1] - self._limits_[0]))
             idx_max = np.argmin(np.abs(data[1] - self._limits_[1]))
@@ -226,7 +231,7 @@ el.replaceWith(d);
                 self._nbins_,
                 self._limits_[0],
                 self._limits_[1],
-                name=&#34;xaxis&#34;
+                name=self._var_name_
             )
             bin_edges = []
             for i in range(self._nbins_):
@@ -240,7 +245,7 @@ el.replaceWith(d);
 
         Parameters
         ------------------------------------------------
-        data: str, np.ndarray, pd.DataFrame, or uproot.behaviors.TH1.Histogram
+        data: str, np.ndarray, pd.DataFrame, uproot.behaviors.TH1.Histogram, or ROOT.TH1
             The data to be loaded. It can be a file path (str), a NumPy array,
             a Pandas DataFrame, or an uproot Histogram.
         limits: list
@@ -261,8 +266,18 @@ el.replaceWith(d);
         elif isinstance(data, pd.DataFrame):
             self.__check_set_format(&#39;pandas&#39;)
             data = self.__load_from_pandas(data, limits)
+        elif isinstance(data, zfit.data.Data):
+            self.__check_set_format(&#39;zfit_data&#39;)
+            data = self.__load_from_zfit_data(data, limits)
+        elif isinstance(data, zfit.data.BinnedData):
+            self.__check_set_format(&#39;zfit_data_binned&#39;)
+            data = self.__load_from_zfit_data_binned(data, limits)
         elif isinstance(data, uproot.behaviors.TH1.Histogram):
             self.__check_set_format(&#39;uproot&#39;)
+            data = self.__load_from_histogram(data, limits)
+        # Care the position: &#34;TH1&#34; is also in uproot type
+        elif &#34;TH1&#34; in str(type(data)):
+            self.__check_set_format(&#39;root_hist&#39;)
             data = self.__load_from_histogram(data, limits)
         else:
             Logger(&#39;Data format not supported&#39;, &#39;FATAL&#39;)
@@ -314,13 +329,36 @@ el.replaceWith(d);
         self.__check_set_limits_unbinned_obs_(df, limits)
         return zfit.data.Data.from_pandas(obs=self._obs_, df=df)
 
+    def __load_from_zfit_data(self, data, limits):
+        &#34;&#34;&#34;Load a zfit Data object as unbinned data.&#34;&#34;&#34;
+        self.__check_binned_unbinned_(False)
+        self.__check_set_limits_unbinned_obs_(data, limits)
+        return data
+
+    def __load_from_zfit_data_binned(self, data, limits):
+        &#34;&#34;&#34;Load a zfit DataBinned object as binned data.&#34;&#34;&#34;
+        self.__load_from_histogram(data, limits)
+        return data
+
     def __load_from_histogram(self, hist_obj, limits):
         &#34;&#34;&#34;
         Load an uproot histogram object as binned data.
         &#34;&#34;&#34;
 
         self.__check_binned_unbinned_(True)
-        hist = hist_obj.to_hist()
+        if self.__format__ == &#39;root_hist&#39;:
+            nbins = hist_obj.GetNbinsX()
+            xmin = hist_obj.GetXaxis().GetXmin()
+            xmax = hist_obj.GetXaxis().GetXmax()
+
+            hist = Hist(Regular(nbins, xmin, xmax, name=&#34;x&#34;))
+            contents = np.array([hist_obj.GetBinContent(i+1) for i in range(nbins)])
+            errors2 = np.array([hist_obj.GetBinError(i+1)**2 for i in range(nbins)])
+
+            hist.view(flow=False)[...] = contents
+            hist.variances(flow=False)[...] = errors2
+        else:
+            hist = hist_obj.to_hist()
         hist = eval(f&#34;hist[::{self._rebin_}j]&#34;)  # pylint: disable=eval-used
         hist_array = hist.to_numpy()
 
@@ -451,7 +489,7 @@ el.replaceWith(d);
             The observation space for binned data converted to unbinned data
         &#34;&#34;&#34;
         limits = self.get_limits()
-        obs = zfit.Space(&#34;xaxis&#34;, lower=limits[0], upper=limits[1])
+        obs = zfit.Space(self._var_name_, lower=limits[0], upper=limits[1])
 
         return obs
 
@@ -484,6 +522,25 @@ el.replaceWith(d);
         for bin_ in binning:
             bin_center.append((bin_[0] + bin_[1])/2)
         return bin_center
+
+    def get_bin_edges(self):
+        &#34;&#34;&#34;
+        Get the edges of the bins
+
+        Returns
+        -------------------------------------------------
+        bin_edges: list
+            The bin edges
+        &#34;&#34;&#34;
+        if self.get_is_binned():
+            binning = self.get_obs().binning[0]
+        else:
+            binning = self.get_binned_obs_from_unbinned_data().binning[0]
+        bin_edges = []
+        for bin_ in binning:
+            bin_edges.append(bin_[0])
+        bin_edges.append(binning[-1][1])
+        return bin_edges
 
     def get_nbins(self):
         &#34;&#34;&#34;
@@ -533,6 +590,22 @@ el.replaceWith(d);
 
         return data_values
 
+    def get_binned_data_handler_from_unbinned_data(self):
+        &#34;&#34;&#34;
+        Get the binned obs from unbinned obs
+
+        Returns
+        -------------------------------------------------
+        binned_obs: zfit.core.space.Space
+            The observation space for unbinned data converted to binned data
+        &#34;&#34;&#34;
+        return DataHandler(
+            self._data_.to_binned(self.get_binned_obs_from_unbinned_data()),
+            var_name=self.get_var_name(),
+            limits=self.get_limits(),
+            rebin=1
+        )
+
     def to_pandas(self):
         &#34;&#34;&#34;
         returns data in pandas df
@@ -545,7 +618,7 @@ el.replaceWith(d);
         if self.__format__ == &#39;pandas&#39;:
             Logger(&#39;Data already in pandas format.&#39;, &#39;WARNING&#39;)
             return self._input_
-        if self.__format__ in [&#39;numpy&#39;, &#39;parquet&#39;, &#39;root&#39;] and not self._isbinned_:
+        if self.__format__ in [&#39;numpy&#39;, &#39;parquet&#39;, &#39;root&#39;, &#39;zfit_data&#39;] and not self._isbinned_:
             return self._data_.to_pandas()
 
         Logger(&#39;Data format not supported yet for pandas conversion.&#39;, &#39;ERROR&#39;)
@@ -605,8 +678,9 @@ el.replaceWith(d);
 <p>Initialize the DataHandler class</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
-<dt><strong><code>data</code></strong> :&ensp;<code>numpy.array / pandas.DataFrame / uproot.behaviors.TH1.Histogram / string</code></dt>
-<dd>Data or path to data to be used in the fit</dd>
+<dt><strong><code>data</code></strong> :&ensp;<code>numpy.array / pandas.DataFrame / uproot.behaviors.TH1.Histogram / ROOT.TH1 / string /</code></dt>
+<dd>zfit.data.Data / zfit.data.BinnedData
+Data or path to data to be used in the fit</dd>
 <dt><strong><code>var_name</code></strong> :&ensp;<code>str</code></dt>
 <dd>Name of the variable used in the fit</dd>
 <dt><strong><code>limits</code></strong> :&ensp;<code>list</code> of <code>floats</code></dt>
@@ -712,6 +786,40 @@ Additional keyword arguments to be passed to the specific data loading functions
 <dd>The bin center</dd>
 </dl></div>
 </dd>
+<dt id="flarefly.data_handler.DataHandler.get_bin_edges"><code class="name flex">
+<span>def <span class="ident">get_bin_edges</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_bin_edges(self):
+    &#34;&#34;&#34;
+    Get the edges of the bins
+
+    Returns
+    -------------------------------------------------
+    bin_edges: list
+        The bin edges
+    &#34;&#34;&#34;
+    if self.get_is_binned():
+        binning = self.get_obs().binning[0]
+    else:
+        binning = self.get_binned_obs_from_unbinned_data().binning[0]
+    bin_edges = []
+    for bin_ in binning:
+        bin_edges.append(bin_[0])
+    bin_edges.append(binning[-1][1])
+    return bin_edges</code></pre>
+</details>
+<div class="desc"><p>Get the edges of the bins</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>bin_edges</code></strong> :&ensp;<code>list</code></dt>
+<dd>The bin edges</dd>
+</dl></div>
+</dd>
 <dt id="flarefly.data_handler.DataHandler.get_binned_data"><code class="name flex">
 <span>def <span class="ident">get_binned_data</span></span>(<span>self)</span>
 </code></dt>
@@ -766,6 +874,37 @@ Additional keyword arguments to be passed to the specific data loading functions
 <dl>
 <dt><strong><code>binned_data</code></strong> :&ensp;<code>float array</code></dt>
 <dd>The binned data obtained from unbinned data</dd>
+</dl></div>
+</dd>
+<dt id="flarefly.data_handler.DataHandler.get_binned_data_handler_from_unbinned_data"><code class="name flex">
+<span>def <span class="ident">get_binned_data_handler_from_unbinned_data</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_binned_data_handler_from_unbinned_data(self):
+    &#34;&#34;&#34;
+    Get the binned obs from unbinned obs
+
+    Returns
+    -------------------------------------------------
+    binned_obs: zfit.core.space.Space
+        The observation space for unbinned data converted to binned data
+    &#34;&#34;&#34;
+    return DataHandler(
+        self._data_.to_binned(self.get_binned_obs_from_unbinned_data()),
+        var_name=self.get_var_name(),
+        limits=self.get_limits(),
+        rebin=1
+    )</code></pre>
+</details>
+<div class="desc"><p>Get the binned obs from unbinned obs</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>binned_obs</code></strong> :&ensp;<code>zfit.core.space.Space</code></dt>
+<dd>The observation space for unbinned data converted to binned data</dd>
 </dl></div>
 </dd>
 <dt id="flarefly.data_handler.DataHandler.get_binned_obs_from_unbinned_data"><code class="name flex">
@@ -990,7 +1129,7 @@ Additional keyword arguments to be passed to the specific data loading functions
         The observation space for binned data converted to unbinned data
     &#34;&#34;&#34;
     limits = self.get_limits()
-    obs = zfit.Space(&#34;xaxis&#34;, lower=limits[0], upper=limits[1])
+    obs = zfit.Space(self._var_name_, lower=limits[0], upper=limits[1])
 
     return obs</code></pre>
 </details>
@@ -1167,7 +1306,7 @@ name of variable (needed in case of originally unbinned data)</p>
     if self.__format__ == &#39;pandas&#39;:
         Logger(&#39;Data already in pandas format.&#39;, &#39;WARNING&#39;)
         return self._input_
-    if self.__format__ in [&#39;numpy&#39;, &#39;parquet&#39;, &#39;root&#39;] and not self._isbinned_:
+    if self.__format__ in [&#39;numpy&#39;, &#39;parquet&#39;, &#39;root&#39;, &#39;zfit_data&#39;] and not self._isbinned_:
         return self._data_.to_pandas()
 
     Logger(&#39;Data format not supported yet for pandas conversion.&#39;, &#39;ERROR&#39;)
@@ -1202,8 +1341,10 @@ name of variable (needed in case of originally unbinned data)</p>
 <ul class="">
 <li><code><a title="flarefly.data_handler.DataHandler.add_data" href="#flarefly.data_handler.DataHandler.add_data">add_data</a></code></li>
 <li><code><a title="flarefly.data_handler.DataHandler.get_bin_center" href="#flarefly.data_handler.DataHandler.get_bin_center">get_bin_center</a></code></li>
+<li><code><a title="flarefly.data_handler.DataHandler.get_bin_edges" href="#flarefly.data_handler.DataHandler.get_bin_edges">get_bin_edges</a></code></li>
 <li><code><a title="flarefly.data_handler.DataHandler.get_binned_data" href="#flarefly.data_handler.DataHandler.get_binned_data">get_binned_data</a></code></li>
 <li><code><a title="flarefly.data_handler.DataHandler.get_binned_data_from_unbinned_data" href="#flarefly.data_handler.DataHandler.get_binned_data_from_unbinned_data">get_binned_data_from_unbinned_data</a></code></li>
+<li><code><a title="flarefly.data_handler.DataHandler.get_binned_data_handler_from_unbinned_data" href="#flarefly.data_handler.DataHandler.get_binned_data_handler_from_unbinned_data">get_binned_data_handler_from_unbinned_data</a></code></li>
 <li><code><a title="flarefly.data_handler.DataHandler.get_binned_obs_from_unbinned_data" href="#flarefly.data_handler.DataHandler.get_binned_obs_from_unbinned_data">get_binned_obs_from_unbinned_data</a></code></li>
 <li><code><a title="flarefly.data_handler.DataHandler.get_data" href="#flarefly.data_handler.DataHandler.get_data">get_data</a></code></li>
 <li><code><a title="flarefly.data_handler.DataHandler.get_is_binned" href="#flarefly.data_handler.DataHandler.get_is_binned">get_is_binned</a></code></li>

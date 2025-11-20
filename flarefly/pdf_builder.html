@@ -57,112 +57,140 @@ el.replaceWith(d);
 </summary>
 <pre><code class="python">class PDFBuilder:
     &#34;&#34;&#34;Class to build signal and background PDFs using zfit.&#34;&#34;&#34;
+
+    def __init__(self):
+        self.pdg_api = pdg.connect()
+
     @staticmethod
     def build_signal_pdf(
-        pdf_name: str,
+        pdf: F2PDFBase,
         obs: zfit.Space,
         name: str,
         ipdf: int,
-        init_pars: Dict[str, float],
-        limits_pars: Dict[str, List[float]],
-        fix_pars: Dict[str, bool]
     ) -&gt; zfit.pdf.BasePDF:
         &#34;&#34;&#34;Build a signal PDF with configurable parameters.
 
         Args:
-            pdf_name: Name of the PDF to build
+            pdf: The PDF to build
             obs: The observable space for the PDF
             name: Base name for parameters
             ipdf: Index of the PDF
-            init_pars: Dictionary that will be updated with default initial values
-            limits_pars: Dictionary that will be updated with default limits
-            fix_pars: Dictionary that will be updated with default fix flags
-
-        Returns:
-            - The constructed zfit PDF object
-            - Dictionary of zfit.Parameter objects for the PDF parameters
         &#34;&#34;&#34;
-        config = get_signal_pdf_config(pdf_name)
+        if pdf.is_kde():
+            pdf = PDFBuilder.build_signal_kde(
+                pdf,
+                name,
+                ipdf
+            )
+            return
+        if pdf.is_hist():
+            pdf = PDFBuilder.build_signal_hist(
+                pdf,
+                obs,
+                name,
+                ipdf
+            )
+            return
+
+        config = get_signal_pdf_config(pdf.kind)
 
         # Update the input dictionaries with default values
-        PDFBuilder._update_with_defaults(config, init_pars, limits_pars, fix_pars)
+        PDFBuilder._update_with_defaults(config, pdf)
 
         parameters = {}
         for par_name in config[&#39;parameters&#39;].keys():
             param_name = f&#39;{name}_{par_name}_signal{ipdf}&#39;
             parameters[param_name] = zfit.Parameter(
                 name=param_name,
-                value=init_pars[par_name],
-                lower=limits_pars[par_name][0],
-                upper=limits_pars[par_name][1],
-                floating=not fix_pars[par_name]
+                value=pdf.get_init_par(par_name),
+                lower=pdf.get_limits_par(par_name)[0],
+                upper=pdf.get_limits_par(par_name)[1],
+                floating=not pdf.get_fix_par(par_name)
             )
 
         pdf_args = {&#39;obs&#39;: obs}
         for arg_name in config[&#39;pdf_args&#39;]:
-            if &#39;args_mapping&#39; in config:
+            if &#39;args_mapping&#39; in config:  # flarefly -&gt; zfit argument name mapping
                 param_key = f&#34;{name}_{config[&#39;args_mapping&#39;][arg_name]}_signal{ipdf}&#34;
             else:
                 param_key = f&#39;{name}_{arg_name}_signal{ipdf}&#39;
             pdf_args[arg_name] = parameters[param_key]
 
-        return config[&#39;pdf_class&#39;](**pdf_args), parameters
+        pdf.pdf = config[&#39;pdf_class&#39;](**pdf_args)
+        pdf.parameters = parameters
+
+        if pdf.at_threshold:
+            # pion mass as default
+            pdf.set_default_par(
+                &#39;massthr&#39;,
+                init=pdf.pdg_api.get_particle_by_mcid(211).mass,
+                fix=True, limits=[None, None]
+            )
+            pdf.set_default_par(&#39;powerthr&#39;, init=1., fix=False, limits=[None, None])
+            pdf.parameters[f&#39;{name}_massthr_signal{ipdf}&#39;] = zfit.Parameter(
+                f&#39;{name}_massthr_signal{ipdf}&#39;, pdf.get_init_par(&#39;massthr&#39;),
+                pdf.get_limits_par(&#39;massthr&#39;)[0], pdf.get_limits_par(&#39;massthr&#39;)[1],
+                floating=not pdf.get_fix_par(&#39;massthr&#39;))
+            pdf.parameters[f&#39;{name}_powerthr_signal{ipdf}&#39;] = zfit.Parameter(
+                f&#39;{name}_powerthr_signal{ipdf}&#39;, pdf.get_init_par(&#39;powerthr&#39;),
+                pdf.get_limits_par(&#39;powerthr&#39;)[0], pdf.get_limits_par(&#39;powerthr&#39;)[1],
+                floating=not pdf.get_fix_par(&#39;powerthr&#39;))
+            signalthr_pdf = cpdf.Pow(
+                obs=obs,
+                mass=pdf.parameters[f&#39;{name}_massthr_signal{ipdf}&#39;],
+                power=pdf.parameters[f&#39;{name}_powerthr_signal{ipdf}&#39;]
+            )
+            pdf.pdf = zfit.pdf.ProductPDF([pdf.pdf, signalthr_pdf], obs=obs)
 
     @staticmethod
     def build_signal_kde(
-        pdf_name: str,
-        kde_sample: Any,
+        pdf: F2PDFBase,
         name: str,
         ipdf: int,
-        kde_options: Optional[Dict[str, Any]] = None
     ) -&gt; zfit.pdf.BasePDF:
         &#34;&#34;&#34;Build a signal KDE PDF.
 
         Args:
-            pdf_name: Type of KDE (&#39;kde_exact&#39;, &#39;kde_grid&#39;, &#39;kde_fft&#39;, &#39;kde_isj&#39;)
-            kde_sample: The sample data for KDE estimation
+            pdf: The PDF to build
             name: Base name for the PDF
             ipdf: Index of the PDF
-            kde_options: Additional options for the KDE
-
-        Returns:
-            The constructed KDE PDF
         &#34;&#34;&#34;
-        if not kde_sample:
+        if not pdf.kde_sample:
             Logger(f&#39;Missing datasample for Kernel Density Estimation of signal {ipdf}!&#39;, &#39;FATAL&#39;)
 
-        kde_options = kde_options or {}
+        kde_options = pdf.kde_option or {}
 
-        return get_kde_pdf(pdf_name)(
-            data=kde_sample.get_data(),
-            obs=kde_sample.get_obs(),
+        pdf.pdf = get_kde_pdf(pdf.kind)(
+            data=pdf.kde_sample.get_data(),
+            obs=pdf.kde_sample.get_obs(),
             name=f&#39;{name}_kde_signal{ipdf}&#39;,
             **kde_options
         )
 
     @staticmethod
     def build_signal_hist(
+        pdf: F2PDFBase,
         obs: zfit.Space,
-        hist_signal_sample: Any,
         name: str,
         ipdf: int,
     ) -&gt; zfit.pdf.BasePDF:
         &#34;&#34;&#34;Build a signal PDF from a histogram template.
 
         Args:
-            hist_signal_sample: The histogram
+            pdf: The PDF to build
+            obs: The observable space for the PDF
             name: Base name for the PDF
             ipdf: Index of the PDF
 
         Returns:
             The constructed PDF
         &#34;&#34;&#34;
-        if not hist_signal_sample:
+        if not pdf.hist_sample:
             Logger(f&#39;Missing datasample for histogram template of signal {ipdf}!&#39;, &#39;FATAL&#39;)
 
-        return zfit.pdf.SplinePDF(
+        pdf.pdf = zfit.pdf.SplinePDF(
             zfit.pdf.HistogramPDF(
-                hist_signal_sample.get_binned_data(),
+                pdf.hist_sample.get_binned_data(),
                 name=f&#39;{name}_hist_signal{ipdf}&#39;
             ),
             order=3,
@@ -171,106 +199,111 @@ el.replaceWith(d);
 
     @staticmethod
     def build_bkg_pdf(
-        pdf_name: str,
+        pdf: F2PDFBase,
         obs: zfit.Space,
         name: str,
         ipdf: int,
-        init_pars: Dict[str, float],
-        limits_pars: Dict[str, List[float]],
-        fix_pars: Dict[str, bool]
     ) -&gt; zfit.pdf.BasePDF:
-        &#34;&#34;&#34;Build a signal PDF with configurable parameters.
+        &#34;&#34;&#34;Build a background PDF with configurable parameters.
 
         Args:
-            pdf_name: Name of the PDF to build
+            pdf: The PDF to build
             obs: The observable space for the PDF
             name: Base name for parameters
             ipdf: Index of the PDF
-            init_pars: Dictionary that will be updated with default initial values
-            limits_pars: Dictionary that will be updated with default limits
-            fix_pars: Dictionary that will be updated with default fix flags
-
-        Returns:
-            - The constructed zfit PDF object
-            - Dictionary of zfit.Parameter objects for the PDF parameters
         &#34;&#34;&#34;
-        # Handle Chebyshev polynomials specially
-        if &#39;chebpol&#39; in pdf_name:
-            return PDFBuilder._build_chebyshev_pdf(
-                pdf_name, obs, name, ipdf, init_pars, limits_pars, fix_pars
+        if pdf.is_kde():
+            pdf = PDFBuilder.build_bkg_kde(
+                pdf,
+                name,
+                ipdf
             )
+            return
+        if pdf.is_hist():
+            pdf = PDFBuilder.build_bkg_hist(
+                pdf,
+                obs,
+                name,
+                ipdf
+            )
+            return
+        if pdf.kind == PDFType.CHEBPOL:
+            # Handle Chebyshev polynomials specially
+            PDFBuilder._build_chebyshev_pdf(
+                pdf, obs, name, ipdf
+            )
+            return
 
-        config = get_bkg_pdf_config(pdf_name)
+        config = get_bkg_pdf_config(pdf.kind)
 
         # Update the input dictionaries with default values
-        PDFBuilder._update_with_defaults(config, init_pars, limits_pars, fix_pars)
+        PDFBuilder._update_with_defaults(config, pdf)
 
         parameters = {}
         for par_name in config[&#39;parameters&#39;].keys():
             param_name = f&#39;{name}_{par_name}_bkg{ipdf}&#39;
             parameters[param_name] = zfit.Parameter(
                 name=param_name,
-                value=init_pars[par_name],
-                lower=limits_pars[par_name][0],
-                upper=limits_pars[par_name][1],
-                floating=not fix_pars[par_name]
+                value=pdf.get_init_par(par_name),
+                lower=pdf.get_limits_par(par_name)[0],
+                upper=pdf.get_limits_par(par_name)[1],
+                floating=not pdf.get_fix_par(par_name)
             )
 
         pdf_args = {&#39;obs&#39;: obs}
         for arg_name in config[&#39;pdf_args&#39;]:
-            param_key = f&#39;{name}_{arg_name}_bkg{ipdf}&#39;
+            if &#39;args_mapping&#39; in config:  # flarefly -&gt; zfit argument name mapping
+                param_key = f&#34;{name}_{config[&#39;args_mapping&#39;][arg_name]}_bkg{ipdf}&#34;
+            else:
+                param_key = f&#39;{name}_{arg_name}_bkg{ipdf}&#39;
             pdf_args[arg_name] = parameters[param_key]
 
-        return config[&#39;pdf_class&#39;](**pdf_args), parameters
+        pdf.pdf = config[&#39;pdf_class&#39;](**pdf_args)
+        pdf.parameters = parameters
 
     @staticmethod
     def _build_chebyshev_pdf(
-        pdf_name: str,
+        pdf: F2PDFBase,
         obs: zfit.Space,
         name: str,
         ipdf: int,
-        init_pars: Dict[str, float],
-        limits_pars: Dict[str, List[float]],
-        fix_pars: Dict[str, bool]
     ) -&gt; Tuple[zfit.pdf.BasePDF, Dict[str, zfit.Parameter]]:
         &#34;&#34;&#34;Build a Chebyshev polynomial background PDF.&#34;&#34;&#34;
-        pol_degree = int(pdf_name.split(&#39;chebpol&#39;)[1])
 
         # Create parameters for each coefficient
         parameters = {}
-        for deg in range(pol_degree + 1):
+        for deg in range(pdf.kind.order + 1):
             par_name = f&#39;c{deg}&#39;
-            init_pars.setdefault(par_name, 0.1)
-            limits_pars.setdefault(par_name, [None, None])
-            fix_pars.setdefault(par_name, False)
+            pdf.set_default_init_par(par_name, 0.1)
+            pdf.set_default_limits_par(par_name, [None, None])
+            pdf.set_default_fix_par(par_name, False)
 
             param_name = f&#39;{name}_{par_name}_bkg{ipdf}&#39;
             parameters[param_name] = zfit.Parameter(
                 name=param_name,
-                value=init_pars[par_name],
-                lower=limits_pars[par_name][0],
-                upper=limits_pars[par_name][1],
-                floating=not fix_pars[par_name]
+                value=pdf.get_init_par(par_name),
+                lower=pdf.get_limits_par(par_name)[0],
+                upper=pdf.get_limits_par(par_name)[1],
+                floating=not pdf.get_fix_par(par_name)
             )
 
         # Prepare Chebyshev arguments
         coeff0 = parameters[f&#39;{name}_c0_bkg{ipdf}&#39;]
-        bkg_coeffs = [parameters[f&#39;{name}_c{deg}_bkg{ipdf}&#39;] for deg in range(1, pol_degree + 1)]
+        bkg_coeffs = [parameters[f&#39;{name}_c{deg}_bkg{ipdf}&#39;] for deg in range(1, pdf.kind.order + 1)]
 
-        return zfit.pdf.Chebyshev(obs=obs, coeff0=coeff0, coeffs=bkg_coeffs), parameters
+        pdf.pdf = zfit.pdf.Chebyshev(obs=obs, coeff0=coeff0, coeffs=bkg_coeffs)
+        pdf.parameters = parameters
 
     @staticmethod
     def build_bkg_kde(
-        pdf_name: str,
-        kde_sample: Any,
+        pdf: F2PDFBase,
         name: str,
         ipdf: int,
-        kde_options: Optional[Dict[str, Any]] = None
     ) -&gt; zfit.pdf.BasePDF:
         &#34;&#34;&#34;Build a background KDE PDF.
 
         Args:
-            pdf_name: Type of KDE (&#39;kde_exact&#39;, &#39;kde_grid&#39;, &#39;kde_fft&#39;, &#39;kde_isj&#39;)
+            pdf_kind: Kind of KDE (&#39;kde_exact&#39;, &#39;kde_grid&#39;, &#39;kde_fft&#39;, &#39;kde_isj&#39;)
             kde_sample: The sample data for KDE estimation
             name: Base name for the PDF
             ipdf: Index of the PDF
@@ -279,41 +312,39 @@ el.replaceWith(d);
         Returns:
             The constructed KDE PDF
         &#34;&#34;&#34;
-        if not kde_sample:
+        if not pdf.kde_sample:
             Logger(f&#39;Missing datasample for Kernel Density Estimation of background {ipdf}!&#39;, &#39;FATAL&#39;)
 
-        kde_options = kde_options or {}
+        kde_options = pdf.kde_option or {}
 
-        return get_kde_pdf(pdf_name)(
-            data=kde_sample.get_data(),
-            obs=kde_sample.get_obs(),
+        pdf.pdf = get_kde_pdf(pdf.kind)(
+            data=pdf.kde_sample.get_data(),
+            obs=pdf.kde_sample.get_obs(),
             name=f&#39;{name}_kde_bkg{ipdf}&#39;,
             **kde_options
         )
 
     @staticmethod
     def build_bkg_hist(
+        pdf: F2PDFBase,
         obs: zfit.Space,
-        hist_bkg_sample: Any,
         name: str,
         ipdf: int,
     ) -&gt; zfit.pdf.BasePDF:
         &#34;&#34;&#34;Build a bkg PDF from a histogram template.
 
         Args:
-            hist_bkg_sample: The histogram
+            pdf: The PDF to build
+            obs: The observable space for the PDF
             name: Base name for the PDF
             ipdf: Index of the PDF
-
-        Returns:
-            The constructed PDF
         &#34;&#34;&#34;
-        if not hist_bkg_sample:
+        if not pdf.hist_bkg_sample:
             Logger(f&#39;Missing datasample for histogram template of background {ipdf}!&#39;, &#39;FATAL&#39;)
 
-        return zfit.pdf.SplinePDF(
+        pdf.pdf = zfit.pdf.SplinePDF(
             zfit.pdf.HistogramPDF(
-                hist_bkg_sample.get_binned_data(),
+                pdf.hist_bkg_sample.get_binned_data(),
                 name=f&#39;{name}_hist_bkg{ipdf}&#39;
             ),
             order=3,
@@ -323,21 +354,19 @@ el.replaceWith(d);
     @staticmethod
     def _update_with_defaults(
         config: Dict[str, Any],
-        init_pars: Dict[str, float],
-        limits_pars: Dict[str, List[float]],
-        fix_pars: Dict[str, bool]
+        pdf: F2PDFBase
     ) -&gt; None:
         &#34;&#34;&#34;Update the parameter dictionaries with default values from config.&#34;&#34;&#34;
         for par_name, par_config in config[&#39;parameters&#39;].items():
-            init_pars.setdefault(par_name, par_config[&#39;init&#39;])
-            limits_pars.setdefault(par_name, par_config[&#39;limits&#39;])
-            fix_pars.setdefault(par_name, par_config[&#39;fix&#39;])</code></pre>
+            pdf.set_default_init_par(par_name, par_config[&#39;init&#39;])
+            pdf.set_default_limits_par(par_name, par_config[&#39;limits&#39;])
+            pdf.set_default_fix_par(par_name, par_config[&#39;fix&#39;])</code></pre>
 </details>
 <div class="desc"><p>Class to build signal and background PDFs using zfit.</p></div>
 <h3>Static methods</h3>
 <dl>
 <dt id="flarefly.pdf_builder.PDFBuilder.build_bkg_hist"><code class="name flex">
-<span>def <span class="ident">build_bkg_hist</span></span>(<span>obs: zfit.core.space.Space, hist_bkg_sample: Any, name: str, ipdf: int) ‑> zfit.core.basepdf.BasePDF</span>
+<span>def <span class="ident">build_bkg_hist</span></span>(<span>pdf: <a title="flarefly.components.pdf_base.F2PDFBase" href="components/pdf_base.html#flarefly.components.pdf_base.F2PDFBase">F2PDFBase</a>,<br>obs: zfit.core.space.Space,<br>name: str,<br>ipdf: int) ‑> zfit.core.basepdf.BasePDF</span>
 </code></dt>
 <dd>
 <details class="source">
@@ -346,27 +375,25 @@ el.replaceWith(d);
 </summary>
 <pre><code class="python">@staticmethod
 def build_bkg_hist(
+    pdf: F2PDFBase,
     obs: zfit.Space,
-    hist_bkg_sample: Any,
     name: str,
     ipdf: int,
 ) -&gt; zfit.pdf.BasePDF:
     &#34;&#34;&#34;Build a bkg PDF from a histogram template.
 
     Args:
-        hist_bkg_sample: The histogram
+        pdf: The PDF to build
+        obs: The observable space for the PDF
         name: Base name for the PDF
         ipdf: Index of the PDF
-
-    Returns:
-        The constructed PDF
     &#34;&#34;&#34;
-    if not hist_bkg_sample:
+    if not pdf.hist_bkg_sample:
         Logger(f&#39;Missing datasample for histogram template of background {ipdf}!&#39;, &#39;FATAL&#39;)
 
-    return zfit.pdf.SplinePDF(
+    pdf.pdf = zfit.pdf.SplinePDF(
         zfit.pdf.HistogramPDF(
-            hist_bkg_sample.get_binned_data(),
+            pdf.hist_bkg_sample.get_binned_data(),
             name=f&#39;{name}_hist_bkg{ipdf}&#39;
         ),
         order=3,
@@ -376,18 +403,18 @@ def build_bkg_hist(
 <div class="desc"><p>Build a bkg PDF from a histogram template.</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>hist_bkg_sample</code></strong></dt>
-<dd>The histogram</dd>
+<dt><strong><code>pdf</code></strong></dt>
+<dd>The PDF to build</dd>
+<dt><strong><code>obs</code></strong></dt>
+<dd>The observable space for the PDF</dd>
 <dt><strong><code>name</code></strong></dt>
 <dd>Base name for the PDF</dd>
 <dt><strong><code>ipdf</code></strong></dt>
 <dd>Index of the PDF</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>The constructed PDF</p></div>
+</dl></div>
 </dd>
 <dt id="flarefly.pdf_builder.PDFBuilder.build_bkg_kde"><code class="name flex">
-<span>def <span class="ident">build_bkg_kde</span></span>(<span>pdf_name: str,<br>kde_sample: Any,<br>name: str,<br>ipdf: int,<br>kde_options: Dict[str, Any] | None = None) ‑> zfit.core.basepdf.BasePDF</span>
+<span>def <span class="ident">build_bkg_kde</span></span>(<span>pdf: <a title="flarefly.components.pdf_base.F2PDFBase" href="components/pdf_base.html#flarefly.components.pdf_base.F2PDFBase">F2PDFBase</a>,<br>name: str,<br>ipdf: int) ‑> zfit.core.basepdf.BasePDF</span>
 </code></dt>
 <dd>
 <details class="source">
@@ -396,16 +423,14 @@ def build_bkg_hist(
 </summary>
 <pre><code class="python">@staticmethod
 def build_bkg_kde(
-    pdf_name: str,
-    kde_sample: Any,
+    pdf: F2PDFBase,
     name: str,
     ipdf: int,
-    kde_options: Optional[Dict[str, Any]] = None
 ) -&gt; zfit.pdf.BasePDF:
     &#34;&#34;&#34;Build a background KDE PDF.
 
     Args:
-        pdf_name: Type of KDE (&#39;kde_exact&#39;, &#39;kde_grid&#39;, &#39;kde_fft&#39;, &#39;kde_isj&#39;)
+        pdf_kind: Kind of KDE (&#39;kde_exact&#39;, &#39;kde_grid&#39;, &#39;kde_fft&#39;, &#39;kde_isj&#39;)
         kde_sample: The sample data for KDE estimation
         name: Base name for the PDF
         ipdf: Index of the PDF
@@ -414,14 +439,14 @@ def build_bkg_kde(
     Returns:
         The constructed KDE PDF
     &#34;&#34;&#34;
-    if not kde_sample:
+    if not pdf.kde_sample:
         Logger(f&#39;Missing datasample for Kernel Density Estimation of background {ipdf}!&#39;, &#39;FATAL&#39;)
 
-    kde_options = kde_options or {}
+    kde_options = pdf.kde_option or {}
 
-    return get_kde_pdf(pdf_name)(
-        data=kde_sample.get_data(),
-        obs=kde_sample.get_obs(),
+    pdf.pdf = get_kde_pdf(pdf.kind)(
+        data=pdf.kde_sample.get_data(),
+        obs=pdf.kde_sample.get_obs(),
         name=f&#39;{name}_kde_bkg{ipdf}&#39;,
         **kde_options
     )</code></pre>
@@ -429,8 +454,8 @@ def build_bkg_kde(
 <div class="desc"><p>Build a background KDE PDF.</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>pdf_name</code></strong></dt>
-<dd>Type of KDE ('kde_exact', 'kde_grid', 'kde_fft', 'kde_isj')</dd>
+<dt><strong><code>pdf_kind</code></strong></dt>
+<dd>Kind of KDE ('kde_exact', 'kde_grid', 'kde_fft', 'kde_isj')</dd>
 <dt><strong><code>kde_sample</code></strong></dt>
 <dd>The sample data for KDE estimation</dd>
 <dt><strong><code>name</code></strong></dt>
@@ -444,7 +469,7 @@ def build_bkg_kde(
 <p>The constructed KDE PDF</p></div>
 </dd>
 <dt id="flarefly.pdf_builder.PDFBuilder.build_bkg_pdf"><code class="name flex">
-<span>def <span class="ident">build_bkg_pdf</span></span>(<span>pdf_name: str,<br>obs: zfit.core.space.Space,<br>name: str,<br>ipdf: int,<br>init_pars: Dict[str, float],<br>limits_pars: Dict[str, List[float]],<br>fix_pars: Dict[str, bool]) ‑> zfit.core.basepdf.BasePDF</span>
+<span>def <span class="ident">build_bkg_pdf</span></span>(<span>pdf: <a title="flarefly.components.pdf_base.F2PDFBase" href="components/pdf_base.html#flarefly.components.pdf_base.F2PDFBase">F2PDFBase</a>,<br>obs: zfit.core.space.Space,<br>name: str,<br>ipdf: int) ‑> zfit.core.basepdf.BasePDF</span>
 </code></dt>
 <dd>
 <details class="source">
@@ -453,84 +478,83 @@ def build_bkg_kde(
 </summary>
 <pre><code class="python">@staticmethod
 def build_bkg_pdf(
-    pdf_name: str,
+    pdf: F2PDFBase,
     obs: zfit.Space,
     name: str,
     ipdf: int,
-    init_pars: Dict[str, float],
-    limits_pars: Dict[str, List[float]],
-    fix_pars: Dict[str, bool]
 ) -&gt; zfit.pdf.BasePDF:
-    &#34;&#34;&#34;Build a signal PDF with configurable parameters.
+    &#34;&#34;&#34;Build a background PDF with configurable parameters.
 
     Args:
-        pdf_name: Name of the PDF to build
+        pdf: The PDF to build
         obs: The observable space for the PDF
         name: Base name for parameters
         ipdf: Index of the PDF
-        init_pars: Dictionary that will be updated with default initial values
-        limits_pars: Dictionary that will be updated with default limits
-        fix_pars: Dictionary that will be updated with default fix flags
-
-    Returns:
-        - The constructed zfit PDF object
-        - Dictionary of zfit.Parameter objects for the PDF parameters
     &#34;&#34;&#34;
-    # Handle Chebyshev polynomials specially
-    if &#39;chebpol&#39; in pdf_name:
-        return PDFBuilder._build_chebyshev_pdf(
-            pdf_name, obs, name, ipdf, init_pars, limits_pars, fix_pars
+    if pdf.is_kde():
+        pdf = PDFBuilder.build_bkg_kde(
+            pdf,
+            name,
+            ipdf
         )
+        return
+    if pdf.is_hist():
+        pdf = PDFBuilder.build_bkg_hist(
+            pdf,
+            obs,
+            name,
+            ipdf
+        )
+        return
+    if pdf.kind == PDFType.CHEBPOL:
+        # Handle Chebyshev polynomials specially
+        PDFBuilder._build_chebyshev_pdf(
+            pdf, obs, name, ipdf
+        )
+        return
 
-    config = get_bkg_pdf_config(pdf_name)
+    config = get_bkg_pdf_config(pdf.kind)
 
     # Update the input dictionaries with default values
-    PDFBuilder._update_with_defaults(config, init_pars, limits_pars, fix_pars)
+    PDFBuilder._update_with_defaults(config, pdf)
 
     parameters = {}
     for par_name in config[&#39;parameters&#39;].keys():
         param_name = f&#39;{name}_{par_name}_bkg{ipdf}&#39;
         parameters[param_name] = zfit.Parameter(
             name=param_name,
-            value=init_pars[par_name],
-            lower=limits_pars[par_name][0],
-            upper=limits_pars[par_name][1],
-            floating=not fix_pars[par_name]
+            value=pdf.get_init_par(par_name),
+            lower=pdf.get_limits_par(par_name)[0],
+            upper=pdf.get_limits_par(par_name)[1],
+            floating=not pdf.get_fix_par(par_name)
         )
 
     pdf_args = {&#39;obs&#39;: obs}
     for arg_name in config[&#39;pdf_args&#39;]:
-        param_key = f&#39;{name}_{arg_name}_bkg{ipdf}&#39;
+        if &#39;args_mapping&#39; in config:  # flarefly -&gt; zfit argument name mapping
+            param_key = f&#34;{name}_{config[&#39;args_mapping&#39;][arg_name]}_bkg{ipdf}&#34;
+        else:
+            param_key = f&#39;{name}_{arg_name}_bkg{ipdf}&#39;
         pdf_args[arg_name] = parameters[param_key]
 
-    return config[&#39;pdf_class&#39;](**pdf_args), parameters</code></pre>
+    pdf.pdf = config[&#39;pdf_class&#39;](**pdf_args)
+    pdf.parameters = parameters</code></pre>
 </details>
-<div class="desc"><p>Build a signal PDF with configurable parameters.</p>
+<div class="desc"><p>Build a background PDF with configurable parameters.</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>pdf_name</code></strong></dt>
-<dd>Name of the PDF to build</dd>
+<dt><strong><code>pdf</code></strong></dt>
+<dd>The PDF to build</dd>
 <dt><strong><code>obs</code></strong></dt>
 <dd>The observable space for the PDF</dd>
 <dt><strong><code>name</code></strong></dt>
 <dd>Base name for parameters</dd>
 <dt><strong><code>ipdf</code></strong></dt>
 <dd>Index of the PDF</dd>
-<dt><strong><code>init_pars</code></strong></dt>
-<dd>Dictionary that will be updated with default initial values</dd>
-<dt><strong><code>limits_pars</code></strong></dt>
-<dd>Dictionary that will be updated with default limits</dd>
-<dt><strong><code>fix_pars</code></strong></dt>
-<dd>Dictionary that will be updated with default fix flags</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<ul>
-<li>The constructed zfit PDF object</li>
-<li>Dictionary of zfit.Parameter objects for the PDF parameters</li>
-</ul></div>
+</dl></div>
 </dd>
 <dt id="flarefly.pdf_builder.PDFBuilder.build_signal_hist"><code class="name flex">
-<span>def <span class="ident">build_signal_hist</span></span>(<span>obs: zfit.core.space.Space, hist_signal_sample: Any, name: str, ipdf: int) ‑> zfit.core.basepdf.BasePDF</span>
+<span>def <span class="ident">build_signal_hist</span></span>(<span>pdf: <a title="flarefly.components.pdf_base.F2PDFBase" href="components/pdf_base.html#flarefly.components.pdf_base.F2PDFBase">F2PDFBase</a>,<br>obs: zfit.core.space.Space,<br>name: str,<br>ipdf: int) ‑> zfit.core.basepdf.BasePDF</span>
 </code></dt>
 <dd>
 <details class="source">
@@ -539,27 +563,28 @@ def build_bkg_pdf(
 </summary>
 <pre><code class="python">@staticmethod
 def build_signal_hist(
+    pdf: F2PDFBase,
     obs: zfit.Space,
-    hist_signal_sample: Any,
     name: str,
     ipdf: int,
 ) -&gt; zfit.pdf.BasePDF:
     &#34;&#34;&#34;Build a signal PDF from a histogram template.
 
     Args:
-        hist_signal_sample: The histogram
+        pdf: The PDF to build
+        obs: The observable space for the PDF
         name: Base name for the PDF
         ipdf: Index of the PDF
 
     Returns:
         The constructed PDF
     &#34;&#34;&#34;
-    if not hist_signal_sample:
+    if not pdf.hist_sample:
         Logger(f&#39;Missing datasample for histogram template of signal {ipdf}!&#39;, &#39;FATAL&#39;)
 
-    return zfit.pdf.SplinePDF(
+    pdf.pdf = zfit.pdf.SplinePDF(
         zfit.pdf.HistogramPDF(
-            hist_signal_sample.get_binned_data(),
+            pdf.hist_sample.get_binned_data(),
             name=f&#39;{name}_hist_signal{ipdf}&#39;
         ),
         order=3,
@@ -569,8 +594,10 @@ def build_signal_hist(
 <div class="desc"><p>Build a signal PDF from a histogram template.</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>hist_signal_sample</code></strong></dt>
-<dd>The histogram</dd>
+<dt><strong><code>pdf</code></strong></dt>
+<dd>The PDF to build</dd>
+<dt><strong><code>obs</code></strong></dt>
+<dd>The observable space for the PDF</dd>
 <dt><strong><code>name</code></strong></dt>
 <dd>Base name for the PDF</dd>
 <dt><strong><code>ipdf</code></strong></dt>
@@ -580,7 +607,7 @@ def build_signal_hist(
 <p>The constructed PDF</p></div>
 </dd>
 <dt id="flarefly.pdf_builder.PDFBuilder.build_signal_kde"><code class="name flex">
-<span>def <span class="ident">build_signal_kde</span></span>(<span>pdf_name: str,<br>kde_sample: Any,<br>name: str,<br>ipdf: int,<br>kde_options: Dict[str, Any] | None = None) ‑> zfit.core.basepdf.BasePDF</span>
+<span>def <span class="ident">build_signal_kde</span></span>(<span>pdf: <a title="flarefly.components.pdf_base.F2PDFBase" href="components/pdf_base.html#flarefly.components.pdf_base.F2PDFBase">F2PDFBase</a>,<br>name: str,<br>ipdf: int) ‑> zfit.core.basepdf.BasePDF</span>
 </code></dt>
 <dd>
 <details class="source">
@@ -589,32 +616,25 @@ def build_signal_hist(
 </summary>
 <pre><code class="python">@staticmethod
 def build_signal_kde(
-    pdf_name: str,
-    kde_sample: Any,
+    pdf: F2PDFBase,
     name: str,
     ipdf: int,
-    kde_options: Optional[Dict[str, Any]] = None
 ) -&gt; zfit.pdf.BasePDF:
     &#34;&#34;&#34;Build a signal KDE PDF.
 
     Args:
-        pdf_name: Type of KDE (&#39;kde_exact&#39;, &#39;kde_grid&#39;, &#39;kde_fft&#39;, &#39;kde_isj&#39;)
-        kde_sample: The sample data for KDE estimation
+        pdf: The PDF to build
         name: Base name for the PDF
         ipdf: Index of the PDF
-        kde_options: Additional options for the KDE
-
-    Returns:
-        The constructed KDE PDF
     &#34;&#34;&#34;
-    if not kde_sample:
+    if not pdf.kde_sample:
         Logger(f&#39;Missing datasample for Kernel Density Estimation of signal {ipdf}!&#39;, &#39;FATAL&#39;)
 
-    kde_options = kde_options or {}
+    kde_options = pdf.kde_option or {}
 
-    return get_kde_pdf(pdf_name)(
-        data=kde_sample.get_data(),
-        obs=kde_sample.get_obs(),
+    pdf.pdf = get_kde_pdf(pdf.kind)(
+        data=pdf.kde_sample.get_data(),
+        obs=pdf.kde_sample.get_obs(),
         name=f&#39;{name}_kde_signal{ipdf}&#39;,
         **kde_options
     )</code></pre>
@@ -622,22 +642,16 @@ def build_signal_kde(
 <div class="desc"><p>Build a signal KDE PDF.</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>pdf_name</code></strong></dt>
-<dd>Type of KDE ('kde_exact', 'kde_grid', 'kde_fft', 'kde_isj')</dd>
-<dt><strong><code>kde_sample</code></strong></dt>
-<dd>The sample data for KDE estimation</dd>
+<dt><strong><code>pdf</code></strong></dt>
+<dd>The PDF to build</dd>
 <dt><strong><code>name</code></strong></dt>
 <dd>Base name for the PDF</dd>
 <dt><strong><code>ipdf</code></strong></dt>
 <dd>Index of the PDF</dd>
-<dt><strong><code>kde_options</code></strong></dt>
-<dd>Additional options for the KDE</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>The constructed KDE PDF</p></div>
+</dl></div>
 </dd>
 <dt id="flarefly.pdf_builder.PDFBuilder.build_signal_pdf"><code class="name flex">
-<span>def <span class="ident">build_signal_pdf</span></span>(<span>pdf_name: str,<br>obs: zfit.core.space.Space,<br>name: str,<br>ipdf: int,<br>init_pars: Dict[str, float],<br>limits_pars: Dict[str, List[float]],<br>fix_pars: Dict[str, bool]) ‑> zfit.core.basepdf.BasePDF</span>
+<span>def <span class="ident">build_signal_pdf</span></span>(<span>pdf: <a title="flarefly.components.pdf_base.F2PDFBase" href="components/pdf_base.html#flarefly.components.pdf_base.F2PDFBase">F2PDFBase</a>,<br>obs: zfit.core.space.Space,<br>name: str,<br>ipdf: int) ‑> zfit.core.basepdf.BasePDF</span>
 </code></dt>
 <dd>
 <details class="source">
@@ -646,78 +660,97 @@ def build_signal_kde(
 </summary>
 <pre><code class="python">@staticmethod
 def build_signal_pdf(
-    pdf_name: str,
+    pdf: F2PDFBase,
     obs: zfit.Space,
     name: str,
     ipdf: int,
-    init_pars: Dict[str, float],
-    limits_pars: Dict[str, List[float]],
-    fix_pars: Dict[str, bool]
 ) -&gt; zfit.pdf.BasePDF:
     &#34;&#34;&#34;Build a signal PDF with configurable parameters.
 
     Args:
-        pdf_name: Name of the PDF to build
+        pdf: The PDF to build
         obs: The observable space for the PDF
         name: Base name for parameters
         ipdf: Index of the PDF
-        init_pars: Dictionary that will be updated with default initial values
-        limits_pars: Dictionary that will be updated with default limits
-        fix_pars: Dictionary that will be updated with default fix flags
-
-    Returns:
-        - The constructed zfit PDF object
-        - Dictionary of zfit.Parameter objects for the PDF parameters
     &#34;&#34;&#34;
-    config = get_signal_pdf_config(pdf_name)
+    if pdf.is_kde():
+        pdf = PDFBuilder.build_signal_kde(
+            pdf,
+            name,
+            ipdf
+        )
+        return
+    if pdf.is_hist():
+        pdf = PDFBuilder.build_signal_hist(
+            pdf,
+            obs,
+            name,
+            ipdf
+        )
+        return
+
+    config = get_signal_pdf_config(pdf.kind)
 
     # Update the input dictionaries with default values
-    PDFBuilder._update_with_defaults(config, init_pars, limits_pars, fix_pars)
+    PDFBuilder._update_with_defaults(config, pdf)
 
     parameters = {}
     for par_name in config[&#39;parameters&#39;].keys():
         param_name = f&#39;{name}_{par_name}_signal{ipdf}&#39;
         parameters[param_name] = zfit.Parameter(
             name=param_name,
-            value=init_pars[par_name],
-            lower=limits_pars[par_name][0],
-            upper=limits_pars[par_name][1],
-            floating=not fix_pars[par_name]
+            value=pdf.get_init_par(par_name),
+            lower=pdf.get_limits_par(par_name)[0],
+            upper=pdf.get_limits_par(par_name)[1],
+            floating=not pdf.get_fix_par(par_name)
         )
 
     pdf_args = {&#39;obs&#39;: obs}
     for arg_name in config[&#39;pdf_args&#39;]:
-        if &#39;args_mapping&#39; in config:
+        if &#39;args_mapping&#39; in config:  # flarefly -&gt; zfit argument name mapping
             param_key = f&#34;{name}_{config[&#39;args_mapping&#39;][arg_name]}_signal{ipdf}&#34;
         else:
             param_key = f&#39;{name}_{arg_name}_signal{ipdf}&#39;
         pdf_args[arg_name] = parameters[param_key]
 
-    return config[&#39;pdf_class&#39;](**pdf_args), parameters</code></pre>
+    pdf.pdf = config[&#39;pdf_class&#39;](**pdf_args)
+    pdf.parameters = parameters
+
+    if pdf.at_threshold:
+        # pion mass as default
+        pdf.set_default_par(
+            &#39;massthr&#39;,
+            init=pdf.pdg_api.get_particle_by_mcid(211).mass,
+            fix=True, limits=[None, None]
+        )
+        pdf.set_default_par(&#39;powerthr&#39;, init=1., fix=False, limits=[None, None])
+        pdf.parameters[f&#39;{name}_massthr_signal{ipdf}&#39;] = zfit.Parameter(
+            f&#39;{name}_massthr_signal{ipdf}&#39;, pdf.get_init_par(&#39;massthr&#39;),
+            pdf.get_limits_par(&#39;massthr&#39;)[0], pdf.get_limits_par(&#39;massthr&#39;)[1],
+            floating=not pdf.get_fix_par(&#39;massthr&#39;))
+        pdf.parameters[f&#39;{name}_powerthr_signal{ipdf}&#39;] = zfit.Parameter(
+            f&#39;{name}_powerthr_signal{ipdf}&#39;, pdf.get_init_par(&#39;powerthr&#39;),
+            pdf.get_limits_par(&#39;powerthr&#39;)[0], pdf.get_limits_par(&#39;powerthr&#39;)[1],
+            floating=not pdf.get_fix_par(&#39;powerthr&#39;))
+        signalthr_pdf = cpdf.Pow(
+            obs=obs,
+            mass=pdf.parameters[f&#39;{name}_massthr_signal{ipdf}&#39;],
+            power=pdf.parameters[f&#39;{name}_powerthr_signal{ipdf}&#39;]
+        )
+        pdf.pdf = zfit.pdf.ProductPDF([pdf.pdf, signalthr_pdf], obs=obs)</code></pre>
 </details>
 <div class="desc"><p>Build a signal PDF with configurable parameters.</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>pdf_name</code></strong></dt>
-<dd>Name of the PDF to build</dd>
+<dt><strong><code>pdf</code></strong></dt>
+<dd>The PDF to build</dd>
 <dt><strong><code>obs</code></strong></dt>
 <dd>The observable space for the PDF</dd>
 <dt><strong><code>name</code></strong></dt>
 <dd>Base name for parameters</dd>
 <dt><strong><code>ipdf</code></strong></dt>
 <dd>Index of the PDF</dd>
-<dt><strong><code>init_pars</code></strong></dt>
-<dd>Dictionary that will be updated with default initial values</dd>
-<dt><strong><code>limits_pars</code></strong></dt>
-<dd>Dictionary that will be updated with default limits</dd>
-<dt><strong><code>fix_pars</code></strong></dt>
-<dd>Dictionary that will be updated with default fix flags</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<ul>
-<li>The constructed zfit PDF object</li>
-<li>Dictionary of zfit.Parameter objects for the PDF parameters</li>
-</ul></div>
+</dl></div>
 </dd>
 </dl>
 </dd>

@@ -46,61 +46,61 @@ el.replaceWith(d);
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="flarefly.pdf_configs.get_bkg_pdf_config"><code class="name flex">
-<span>def <span class="ident">get_bkg_pdf_config</span></span>(<span>pdf_name: str)</span>
+<span>def <span class="ident">get_bkg_pdf_config</span></span>(<span>pdf_kind: <a title="flarefly.components.pdf_kind.PDFKind" href="components/pdf_kind.html#flarefly.components.pdf_kind.PDFKind">PDFKind</a>)</span>
 </code></dt>
 <dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_bkg_pdf_config(pdf_name: str):
+<pre><code class="python">def get_bkg_pdf_config(pdf_kind: PDFKind):
     &#34;&#34;&#34;Get the configuration for a specific PDF.&#34;&#34;&#34;
-    if pdf_name not in BACKGROUND_PDF_CONFIGS:
-        Logger(f&#34;Unknown background PDF name: {pdf_name}.&#34;, &#34;FATAL&#34;)
+    if pdf_kind not in BACKGROUND_PDF_CONFIGS:
+        Logger(f&#34;Unknown background PDF name: {pdf_kind.value}.&#34;, &#34;FATAL&#34;)
 
     # Get the specific config
-    config = BACKGROUND_PDF_CONFIGS[pdf_name].copy()
+    config = BACKGROUND_PDF_CONFIGS[pdf_kind].copy()
 
     return config</code></pre>
 </details>
 <div class="desc"><p>Get the configuration for a specific PDF.</p></div>
 </dd>
 <dt id="flarefly.pdf_configs.get_kde_pdf"><code class="name flex">
-<span>def <span class="ident">get_kde_pdf</span></span>(<span>kde_name: str)</span>
+<span>def <span class="ident">get_kde_pdf</span></span>(<span>kde_kind: <a title="flarefly.components.pdf_kind.PDFKind" href="components/pdf_kind.html#flarefly.components.pdf_kind.PDFKind">PDFKind</a>)</span>
 </code></dt>
 <dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_kde_pdf(kde_name: str):
+<pre><code class="python">def get_kde_pdf(kde_kind: PDFKind):
     &#34;&#34;&#34;Get the KDE PDF class for a specific KDE type.&#34;&#34;&#34;
-    if kde_name not in KDE_MAP:
+    if kde_kind not in KDE_MAP:
         Logger(
-            f&#34;Unknown KDE type: {kde_name}. &#34;
+            f&#34;Unknown KDE type: {kde_kind.value}. &#34;
             f&#34;Available types: {list(KDE_MAP.keys())}&#34;,
             &#34;FATAL&#34;
         )
 
-    return KDE_MAP[kde_name]</code></pre>
+    return KDE_MAP[kde_kind]</code></pre>
 </details>
 <div class="desc"><p>Get the KDE PDF class for a specific KDE type.</p></div>
 </dd>
 <dt id="flarefly.pdf_configs.get_signal_pdf_config"><code class="name flex">
-<span>def <span class="ident">get_signal_pdf_config</span></span>(<span>pdf_name: str)</span>
+<span>def <span class="ident">get_signal_pdf_config</span></span>(<span>pdf_kind: <a title="flarefly.components.pdf_kind.PDFKind" href="components/pdf_kind.html#flarefly.components.pdf_kind.PDFKind">PDFKind</a>)</span>
 </code></dt>
 <dd>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_signal_pdf_config(pdf_name: str):
+<pre><code class="python">def get_signal_pdf_config(pdf_kind: PDFKind):
     &#34;&#34;&#34;Get the configuration for a specific PDF.&#34;&#34;&#34;
-    if pdf_name not in SIGNAL_PDF_CONFIGS:
-        Logger(f&#34;Unknown signal PDF name: {pdf_name}.&#34;, &#34;FATAL&#34;)
+    if pdf_kind not in SIGNAL_PDF_CONFIGS:
+        Logger(f&#34;Unknown signal PDF name: {pdf_kind.value}.&#34;, &#34;FATAL&#34;)
 
     # Get the specific config
-    config = SIGNAL_PDF_CONFIGS[pdf_name].copy()
+    config = SIGNAL_PDF_CONFIGS[pdf_kind].copy()
 
     return config</code></pre>
 </details>

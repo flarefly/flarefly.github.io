@@ -1,0 +1,770 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.6">
+<title>flarefly.components.pdf_base API documentation</title>
+<meta name="description" content="Module defining the base class for PDFs">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source > summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible;min-width:max-content}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+/* Collapse source docstrings */
+setTimeout(() => {
+[...document.querySelectorAll('.hljs.language-python > .hljs-string')]
+.filter(el => el.innerHTML.length > 200 && ['"""', "'''"].includes(el.innerHTML.substring(0, 3)))
+.forEach(el => {
+let d = document.createElement('details');
+d.classList.add('hljs-string');
+d.innerHTML = '<summary>"""</summary>' + el.innerHTML.substring(3);
+el.replaceWith(d);
+});
+}, 100);
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>flarefly.components.pdf_base</code></h1>
+</header>
+<section id="section-intro">
+<p>Module defining the base class for PDFs</p>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="flarefly.components.pdf_base.F2PDFBase"><code class="flex name class">
+<span>class <span class="ident">F2PDFBase</span></span>
+<span>(</span><span>name_pdf: str, label_pdf: str, signal_bkg_or_refl: str, **kwargs)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class F2PDFBase:  # pylint: disable=too-many-public-methods, too-many-instance-attributes
+    &#34;&#34;&#34;Base class for PDFs&#34;&#34;&#34;
+
+    def __init__(
+            self,
+            name_pdf: str,
+            label_pdf: str,
+            signal_bkg_or_refl: str,
+            **kwargs
+    ):
+        if not name_pdf.startswith(&#34;chebpol&#34;):
+            self._kind_pdf = PDFKind(name_pdf)
+        else:
+            order = int(name_pdf.replace(&#39;chebpol&#39;, &#39;&#39;))
+            self._kind_pdf = PDFKind(&#34;chebpol&#34;, order=order)
+        self._pdf = None
+        self._label_pdf = label_pdf
+        self.set_signal_bkg_or_refl(signal_bkg_or_refl)
+        self._hist_sample = None
+        self._kde_sample = None
+        self._kde_option = None
+        self._refl_over_sgn = 0.0
+        self._at_threshold = kwargs.get(&#39;at_threshold&#39;, False)
+        self._pars = {}
+        self._parameter_setup = {}
+
+    def set_signal_bkg_or_refl(self, signal_bkg_or_refl):
+        &#34;&#34;&#34;Set whether the PDF is signal, background, or reflection&#34;&#34;&#34;
+        signal_bkg_or_refl = signal_bkg_or_refl.lower()
+        if signal_bkg_or_refl == &#34;signal&#34;:
+            self._signal_bkg_or_refl = SignalBkgOrRefl.SIGNAL
+        elif signal_bkg_or_refl == &#34;background&#34;:
+            self._signal_bkg_or_refl = SignalBkgOrRefl.BACKGROUND
+        elif signal_bkg_or_refl == &#34;reflection&#34;:
+            self._signal_bkg_or_refl = SignalBkgOrRefl.REFLECTION
+        else:
+            Logger(f&#34;Invalid value for signal_bkg_or_refl: {signal_bkg_or_refl}&#34;
+                   &#34;, expected &#39;signal&#39;, &#39;background&#39;, or &#39;reflection&#39;.&#34;,
+                   &#34;FATAL&#34;)
+
+    def __repr__(self):
+        return (f&#34;F2PDFBase(PDF={self._pdf}, label={self._label_pdf}, kind={self._kind_pdf}, &#34;
+                f&#34;Signal/Background/Reflection={self._signal_bkg_or_refl.name}, at_threshold={self._at_threshold}), &#34;
+                f&#34;parameter_setup={self._parameter_setup}, parameters={self._pars}&#34;)
+
+    # ------------------
+    # --- Properties ---
+    # ------------------
+
+    # --- pdf ---
+    @property
+    def pdf(self):
+        &#34;&#34;&#34;Get the PDF name&#34;&#34;&#34;
+        return self._pdf
+
+    @pdf.setter
+    def pdf(self, value):
+        &#34;&#34;&#34;Set the PDF name&#34;&#34;&#34;
+        self._pdf = value
+
+    # --- parameters ---
+    @property
+    def parameters(self):
+        &#34;&#34;&#34;Get the parameters&#34;&#34;&#34;
+        return self._pars
+
+    @parameters.setter
+    def parameters(self, value):
+        &#34;&#34;&#34;Set the parameters&#34;&#34;&#34;
+        self._pars = value
+
+    # --- kde_sample ---
+    @property
+    def kde_sample(self):
+        &#34;&#34;&#34;Get the KDE sample&#34;&#34;&#34;
+        return self._kde_sample
+
+    @kde_sample.setter
+    def kde_sample(self, value):
+        &#34;&#34;&#34;Set the KDE sample&#34;&#34;&#34;
+        self._kde_sample = value
+
+    # --- kde_option ---
+    @property
+    def kde_option(self):
+        &#34;&#34;&#34;Get the KDE options&#34;&#34;&#34;
+        return self._kde_option
+
+    @kde_option.setter
+    def kde_option(self, value):
+        &#34;&#34;&#34;Set the KDE options&#34;&#34;&#34;
+        self._kde_option = value
+
+    # --- hist_sample ---
+    @property
+    def hist_sample(self):
+        &#34;&#34;&#34;Get the histogram sample&#34;&#34;&#34;
+        return self._hist_sample
+
+    @hist_sample.setter
+    def hist_sample(self, value):
+        &#34;&#34;&#34;Set the histogram sample&#34;&#34;&#34;
+        self._hist_sample = value
+
+    # --- at_threshold ---
+    @property
+    def at_threshold(self):
+        &#34;&#34;&#34;Get the at_threshold flag&#34;&#34;&#34;
+        return self._at_threshold
+
+    # --- kind ---
+    @property
+    def kind(self):
+        &#34;&#34;&#34;Get the PDF kind&#34;&#34;&#34;
+        return self._kind_pdf
+
+    # --- label ---
+    @property
+    def label(self):
+        &#34;&#34;&#34;Get the PDF label&#34;&#34;&#34;
+        return self._label_pdf
+
+    # ----------------------
+    # --- Public Methods ---
+    # ----------------------
+    def is_kde(self):
+        &#34;&#34;&#34;Check if this PDF type is KDE&#34;&#34;&#34;
+        return self._kind_pdf.is_kde()
+
+    def is_hist(self):
+        &#34;&#34;&#34;Check if this PDF type is histogram&#34;&#34;&#34;
+        return self._kind_pdf.is_hist()
+
+    def uses_m_not_mu(self):
+        &#34;&#34;&#34;Check if this PDF uses m instead of mu&#34;&#34;&#34;
+        return self._kind_pdf.uses_m_not_mu()
+
+    def has_sigma(self):
+        &#34;&#34;&#34;Check if PDF type has sigma parameter&#34;&#34;&#34;
+        return self._kind_pdf.has_sigma()
+
+    def has_hwhm(self):
+        &#34;&#34;&#34;Check if PDF type has a HWHM&#34;&#34;&#34;
+        return self._kind_pdf.has_hwhm()
+
+    def par_exists(self, name):
+        &#34;&#34;&#34;Check if the parameter exists&#34;&#34;&#34;
+        return name in self._parameter_setup
+
+    def create_par(self, name):
+        &#34;&#34;&#34;Create a new parameter&#34;&#34;&#34;
+        self._parameter_setup[name] = {}
+
+    def get_init_par(self, name):
+        &#34;&#34;&#34;Get the parameter initial value&#34;&#34;&#34;
+        return self._parameter_setup[name][&#34;init&#34;]
+
+    def get_limits_par(self, name):
+        &#34;&#34;&#34;Get the parameter limits&#34;&#34;&#34;
+        return self._parameter_setup[name][&#34;limits&#34;]
+
+    def get_fix_par(self, name):
+        &#34;&#34;&#34;Get the parameter fix flag&#34;&#34;&#34;
+        return self._parameter_setup[name][&#34;fix&#34;]
+
+    def get_init_pars(self):
+        &#34;&#34;&#34;Get the parameters initial value dictionary&#34;&#34;&#34;
+        return {name: p[&#34;init&#34;] for name, p in self._parameter_setup.items()}
+
+    def get_limits_pars(self):
+        &#34;&#34;&#34;Get the parameters limits dictionary&#34;&#34;&#34;
+        return {name: p[&#34;limits&#34;] for name, p in self._parameter_setup.items()}
+
+    def get_fix_pars(self):
+        &#34;&#34;&#34;Get the parameters fix dictionary&#34;&#34;&#34;
+        return {name: p[&#34;fix&#34;] for name, p in self._parameter_setup.items()}
+
+    def set_init_par(self, name, value):
+        &#34;&#34;&#34;Set the parameter&#34;&#34;&#34;
+        self._check_and_create_par(name)
+        self._parameter_setup[name][&#34;init&#34;] = value
+
+    def set_limits_par(self, name, value):
+        &#34;&#34;&#34;Set the parameter limits&#34;&#34;&#34;
+        self._check_and_create_par(name)
+        self._parameter_setup[name][&#34;limits&#34;] = value
+
+    def set_fix_par(self, name, value):
+        &#34;&#34;&#34;Set the parameter fix flag&#34;&#34;&#34;
+        self._check_and_create_par(name)
+        self._parameter_setup[name][&#34;fix&#34;] = value
+
+    def set_default_init_par(self, name, value):
+        &#34;&#34;&#34;Set default parameter&#34;&#34;&#34;
+        self._check_and_create_par(name)
+        self._parameter_setup[name].setdefault(&#34;init&#34;, value)
+
+    def set_default_limits_par(self, name, value):
+        &#34;&#34;&#34;Set default parameter limits&#34;&#34;&#34;
+        self._check_and_create_par(name)
+        self._parameter_setup[name].setdefault(&#34;limits&#34;, value)
+
+    def set_default_fix_par(self, name, value):
+        &#34;&#34;&#34;Set default parameter fix flag&#34;&#34;&#34;
+        self._check_and_create_par(name)
+        self._parameter_setup[name].setdefault(&#34;fix&#34;, value)
+
+    def set_default_par(self, name, init=None, limits=None, fix=None):
+        &#34;&#34;&#34;Set default values for a parameter (only if not already defined).&#34;&#34;&#34;
+        self._check_and_create_par(name)
+        if init is not None:
+            self._parameter_setup[name].setdefault(&#34;init&#34;, init)
+        if limits is not None:
+            self._parameter_setup[name].setdefault(&#34;limits&#34;, limits)
+        if fix is not None:
+            self._parameter_setup[name].setdefault(&#34;fix&#34;, fix)
+
+    # -----------------------
+    # --- Private Methods ---
+    # -----------------------
+    def _check_and_create_par(self, name: str):
+        &#34;&#34;&#34;Check if parameter exists, if not create it&#34;&#34;&#34;
+        if not self.par_exists(name):
+            self.create_par(name)</code></pre>
+</details>
+<div class="desc"><p>Base class for PDFs</p></div>
+<h3>Instance variables</h3>
+<dl>
+<dt id="flarefly.components.pdf_base.F2PDFBase.at_threshold"><code class="name">prop <span class="ident">at_threshold</span></code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def at_threshold(self):
+    &#34;&#34;&#34;Get the at_threshold flag&#34;&#34;&#34;
+    return self._at_threshold</code></pre>
+</details>
+<div class="desc"><p>Get the at_threshold flag</p></div>
+</dd>
+<dt id="flarefly.components.pdf_base.F2PDFBase.hist_sample"><code class="name">prop <span class="ident">hist_sample</span></code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def hist_sample(self):
+    &#34;&#34;&#34;Get the histogram sample&#34;&#34;&#34;
+    return self._hist_sample</code></pre>
+</details>
+<div class="desc"><p>Get the histogram sample</p></div>
+</dd>
+<dt id="flarefly.components.pdf_base.F2PDFBase.kde_option"><code class="name">prop <span class="ident">kde_option</span></code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def kde_option(self):
+    &#34;&#34;&#34;Get the KDE options&#34;&#34;&#34;
+    return self._kde_option</code></pre>
+</details>
+<div class="desc"><p>Get the KDE options</p></div>
+</dd>
+<dt id="flarefly.components.pdf_base.F2PDFBase.kde_sample"><code class="name">prop <span class="ident">kde_sample</span></code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def kde_sample(self):
+    &#34;&#34;&#34;Get the KDE sample&#34;&#34;&#34;
+    return self._kde_sample</code></pre>
+</details>
+<div class="desc"><p>Get the KDE sample</p></div>
+</dd>
+<dt id="flarefly.components.pdf_base.F2PDFBase.kind"><code class="name">prop <span class="ident">kind</span></code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def kind(self):
+    &#34;&#34;&#34;Get the PDF kind&#34;&#34;&#34;
+    return self._kind_pdf</code></pre>
+</details>
+<div class="desc"><p>Get the PDF kind</p></div>
+</dd>
+<dt id="flarefly.components.pdf_base.F2PDFBase.label"><code class="name">prop <span class="ident">label</span></code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def label(self):
+    &#34;&#34;&#34;Get the PDF label&#34;&#34;&#34;
+    return self._label_pdf</code></pre>
+</details>
+<div class="desc"><p>Get the PDF label</p></div>
+</dd>
+<dt id="flarefly.components.pdf_base.F2PDFBase.parameters"><code class="name">prop <span class="ident">parameters</span></code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def parameters(self):
+    &#34;&#34;&#34;Get the parameters&#34;&#34;&#34;
+    return self._pars</code></pre>
+</details>
+<div class="desc"><p>Get the parameters</p></div>
+</dd>
+<dt id="flarefly.components.pdf_base.F2PDFBase.pdf"><code class="name">prop <span class="ident">pdf</span></code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def pdf(self):
+    &#34;&#34;&#34;Get the PDF name&#34;&#34;&#34;
+    return self._pdf</code></pre>
+</details>
+<div class="desc"><p>Get the PDF name</p></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="flarefly.components.pdf_base.F2PDFBase.create_par"><code class="name flex">
+<span>def <span class="ident">create_par</span></span>(<span>self, name)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def create_par(self, name):
+    &#34;&#34;&#34;Create a new parameter&#34;&#34;&#34;
+    self._parameter_setup[name] = {}</code></pre>
+</details>
+<div class="desc"><p>Create a new parameter</p></div>
+</dd>
+<dt id="flarefly.components.pdf_base.F2PDFBase.get_fix_par"><code class="name flex">
+<span>def <span class="ident">get_fix_par</span></span>(<span>self, name)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_fix_par(self, name):
+    &#34;&#34;&#34;Get the parameter fix flag&#34;&#34;&#34;
+    return self._parameter_setup[name][&#34;fix&#34;]</code></pre>
+</details>
+<div class="desc"><p>Get the parameter fix flag</p></div>
+</dd>
+<dt id="flarefly.components.pdf_base.F2PDFBase.get_fix_pars"><code class="name flex">
+<span>def <span class="ident">get_fix_pars</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_fix_pars(self):
+    &#34;&#34;&#34;Get the parameters fix dictionary&#34;&#34;&#34;
+    return {name: p[&#34;fix&#34;] for name, p in self._parameter_setup.items()}</code></pre>
+</details>
+<div class="desc"><p>Get the parameters fix dictionary</p></div>
+</dd>
+<dt id="flarefly.components.pdf_base.F2PDFBase.get_init_par"><code class="name flex">
+<span>def <span class="ident">get_init_par</span></span>(<span>self, name)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_init_par(self, name):
+    &#34;&#34;&#34;Get the parameter initial value&#34;&#34;&#34;
+    return self._parameter_setup[name][&#34;init&#34;]</code></pre>
+</details>
+<div class="desc"><p>Get the parameter initial value</p></div>
+</dd>
+<dt id="flarefly.components.pdf_base.F2PDFBase.get_init_pars"><code class="name flex">
+<span>def <span class="ident">get_init_pars</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_init_pars(self):
+    &#34;&#34;&#34;Get the parameters initial value dictionary&#34;&#34;&#34;
+    return {name: p[&#34;init&#34;] for name, p in self._parameter_setup.items()}</code></pre>
+</details>
+<div class="desc"><p>Get the parameters initial value dictionary</p></div>
+</dd>
+<dt id="flarefly.components.pdf_base.F2PDFBase.get_limits_par"><code class="name flex">
+<span>def <span class="ident">get_limits_par</span></span>(<span>self, name)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_limits_par(self, name):
+    &#34;&#34;&#34;Get the parameter limits&#34;&#34;&#34;
+    return self._parameter_setup[name][&#34;limits&#34;]</code></pre>
+</details>
+<div class="desc"><p>Get the parameter limits</p></div>
+</dd>
+<dt id="flarefly.components.pdf_base.F2PDFBase.get_limits_pars"><code class="name flex">
+<span>def <span class="ident">get_limits_pars</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_limits_pars(self):
+    &#34;&#34;&#34;Get the parameters limits dictionary&#34;&#34;&#34;
+    return {name: p[&#34;limits&#34;] for name, p in self._parameter_setup.items()}</code></pre>
+</details>
+<div class="desc"><p>Get the parameters limits dictionary</p></div>
+</dd>
+<dt id="flarefly.components.pdf_base.F2PDFBase.has_hwhm"><code class="name flex">
+<span>def <span class="ident">has_hwhm</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def has_hwhm(self):
+    &#34;&#34;&#34;Check if PDF type has a HWHM&#34;&#34;&#34;
+    return self._kind_pdf.has_hwhm()</code></pre>
+</details>
+<div class="desc"><p>Check if PDF type has a HWHM</p></div>
+</dd>
+<dt id="flarefly.components.pdf_base.F2PDFBase.has_sigma"><code class="name flex">
+<span>def <span class="ident">has_sigma</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def has_sigma(self):
+    &#34;&#34;&#34;Check if PDF type has sigma parameter&#34;&#34;&#34;
+    return self._kind_pdf.has_sigma()</code></pre>
+</details>
+<div class="desc"><p>Check if PDF type has sigma parameter</p></div>
+</dd>
+<dt id="flarefly.components.pdf_base.F2PDFBase.is_hist"><code class="name flex">
+<span>def <span class="ident">is_hist</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_hist(self):
+    &#34;&#34;&#34;Check if this PDF type is histogram&#34;&#34;&#34;
+    return self._kind_pdf.is_hist()</code></pre>
+</details>
+<div class="desc"><p>Check if this PDF type is histogram</p></div>
+</dd>
+<dt id="flarefly.components.pdf_base.F2PDFBase.is_kde"><code class="name flex">
+<span>def <span class="ident">is_kde</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_kde(self):
+    &#34;&#34;&#34;Check if this PDF type is KDE&#34;&#34;&#34;
+    return self._kind_pdf.is_kde()</code></pre>
+</details>
+<div class="desc"><p>Check if this PDF type is KDE</p></div>
+</dd>
+<dt id="flarefly.components.pdf_base.F2PDFBase.par_exists"><code class="name flex">
+<span>def <span class="ident">par_exists</span></span>(<span>self, name)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def par_exists(self, name):
+    &#34;&#34;&#34;Check if the parameter exists&#34;&#34;&#34;
+    return name in self._parameter_setup</code></pre>
+</details>
+<div class="desc"><p>Check if the parameter exists</p></div>
+</dd>
+<dt id="flarefly.components.pdf_base.F2PDFBase.set_default_fix_par"><code class="name flex">
+<span>def <span class="ident">set_default_fix_par</span></span>(<span>self, name, value)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_default_fix_par(self, name, value):
+    &#34;&#34;&#34;Set default parameter fix flag&#34;&#34;&#34;
+    self._check_and_create_par(name)
+    self._parameter_setup[name].setdefault(&#34;fix&#34;, value)</code></pre>
+</details>
+<div class="desc"><p>Set default parameter fix flag</p></div>
+</dd>
+<dt id="flarefly.components.pdf_base.F2PDFBase.set_default_init_par"><code class="name flex">
+<span>def <span class="ident">set_default_init_par</span></span>(<span>self, name, value)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_default_init_par(self, name, value):
+    &#34;&#34;&#34;Set default parameter&#34;&#34;&#34;
+    self._check_and_create_par(name)
+    self._parameter_setup[name].setdefault(&#34;init&#34;, value)</code></pre>
+</details>
+<div class="desc"><p>Set default parameter</p></div>
+</dd>
+<dt id="flarefly.components.pdf_base.F2PDFBase.set_default_limits_par"><code class="name flex">
+<span>def <span class="ident">set_default_limits_par</span></span>(<span>self, name, value)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_default_limits_par(self, name, value):
+    &#34;&#34;&#34;Set default parameter limits&#34;&#34;&#34;
+    self._check_and_create_par(name)
+    self._parameter_setup[name].setdefault(&#34;limits&#34;, value)</code></pre>
+</details>
+<div class="desc"><p>Set default parameter limits</p></div>
+</dd>
+<dt id="flarefly.components.pdf_base.F2PDFBase.set_default_par"><code class="name flex">
+<span>def <span class="ident">set_default_par</span></span>(<span>self, name, init=None, limits=None, fix=None)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_default_par(self, name, init=None, limits=None, fix=None):
+    &#34;&#34;&#34;Set default values for a parameter (only if not already defined).&#34;&#34;&#34;
+    self._check_and_create_par(name)
+    if init is not None:
+        self._parameter_setup[name].setdefault(&#34;init&#34;, init)
+    if limits is not None:
+        self._parameter_setup[name].setdefault(&#34;limits&#34;, limits)
+    if fix is not None:
+        self._parameter_setup[name].setdefault(&#34;fix&#34;, fix)</code></pre>
+</details>
+<div class="desc"><p>Set default values for a parameter (only if not already defined).</p></div>
+</dd>
+<dt id="flarefly.components.pdf_base.F2PDFBase.set_fix_par"><code class="name flex">
+<span>def <span class="ident">set_fix_par</span></span>(<span>self, name, value)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_fix_par(self, name, value):
+    &#34;&#34;&#34;Set the parameter fix flag&#34;&#34;&#34;
+    self._check_and_create_par(name)
+    self._parameter_setup[name][&#34;fix&#34;] = value</code></pre>
+</details>
+<div class="desc"><p>Set the parameter fix flag</p></div>
+</dd>
+<dt id="flarefly.components.pdf_base.F2PDFBase.set_init_par"><code class="name flex">
+<span>def <span class="ident">set_init_par</span></span>(<span>self, name, value)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_init_par(self, name, value):
+    &#34;&#34;&#34;Set the parameter&#34;&#34;&#34;
+    self._check_and_create_par(name)
+    self._parameter_setup[name][&#34;init&#34;] = value</code></pre>
+</details>
+<div class="desc"><p>Set the parameter</p></div>
+</dd>
+<dt id="flarefly.components.pdf_base.F2PDFBase.set_limits_par"><code class="name flex">
+<span>def <span class="ident">set_limits_par</span></span>(<span>self, name, value)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_limits_par(self, name, value):
+    &#34;&#34;&#34;Set the parameter limits&#34;&#34;&#34;
+    self._check_and_create_par(name)
+    self._parameter_setup[name][&#34;limits&#34;] = value</code></pre>
+</details>
+<div class="desc"><p>Set the parameter limits</p></div>
+</dd>
+<dt id="flarefly.components.pdf_base.F2PDFBase.set_signal_bkg_or_refl"><code class="name flex">
+<span>def <span class="ident">set_signal_bkg_or_refl</span></span>(<span>self, signal_bkg_or_refl)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_signal_bkg_or_refl(self, signal_bkg_or_refl):
+    &#34;&#34;&#34;Set whether the PDF is signal, background, or reflection&#34;&#34;&#34;
+    signal_bkg_or_refl = signal_bkg_or_refl.lower()
+    if signal_bkg_or_refl == &#34;signal&#34;:
+        self._signal_bkg_or_refl = SignalBkgOrRefl.SIGNAL
+    elif signal_bkg_or_refl == &#34;background&#34;:
+        self._signal_bkg_or_refl = SignalBkgOrRefl.BACKGROUND
+    elif signal_bkg_or_refl == &#34;reflection&#34;:
+        self._signal_bkg_or_refl = SignalBkgOrRefl.REFLECTION
+    else:
+        Logger(f&#34;Invalid value for signal_bkg_or_refl: {signal_bkg_or_refl}&#34;
+               &#34;, expected &#39;signal&#39;, &#39;background&#39;, or &#39;reflection&#39;.&#34;,
+               &#34;FATAL&#34;)</code></pre>
+</details>
+<div class="desc"><p>Set whether the PDF is signal, background, or reflection</p></div>
+</dd>
+<dt id="flarefly.components.pdf_base.F2PDFBase.uses_m_not_mu"><code class="name flex">
+<span>def <span class="ident">uses_m_not_mu</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def uses_m_not_mu(self):
+    &#34;&#34;&#34;Check if this PDF uses m instead of mu&#34;&#34;&#34;
+    return self._kind_pdf.uses_m_not_mu()</code></pre>
+</details>
+<div class="desc"><p>Check if this PDF uses m instead of mu</p></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="flarefly.components" href="index.html">flarefly.components</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="flarefly.components.pdf_base.F2PDFBase" href="#flarefly.components.pdf_base.F2PDFBase">F2PDFBase</a></code></h4>
+<ul class="">
+<li><code><a title="flarefly.components.pdf_base.F2PDFBase.at_threshold" href="#flarefly.components.pdf_base.F2PDFBase.at_threshold">at_threshold</a></code></li>
+<li><code><a title="flarefly.components.pdf_base.F2PDFBase.create_par" href="#flarefly.components.pdf_base.F2PDFBase.create_par">create_par</a></code></li>
+<li><code><a title="flarefly.components.pdf_base.F2PDFBase.get_fix_par" href="#flarefly.components.pdf_base.F2PDFBase.get_fix_par">get_fix_par</a></code></li>
+<li><code><a title="flarefly.components.pdf_base.F2PDFBase.get_fix_pars" href="#flarefly.components.pdf_base.F2PDFBase.get_fix_pars">get_fix_pars</a></code></li>
+<li><code><a title="flarefly.components.pdf_base.F2PDFBase.get_init_par" href="#flarefly.components.pdf_base.F2PDFBase.get_init_par">get_init_par</a></code></li>
+<li><code><a title="flarefly.components.pdf_base.F2PDFBase.get_init_pars" href="#flarefly.components.pdf_base.F2PDFBase.get_init_pars">get_init_pars</a></code></li>
+<li><code><a title="flarefly.components.pdf_base.F2PDFBase.get_limits_par" href="#flarefly.components.pdf_base.F2PDFBase.get_limits_par">get_limits_par</a></code></li>
+<li><code><a title="flarefly.components.pdf_base.F2PDFBase.get_limits_pars" href="#flarefly.components.pdf_base.F2PDFBase.get_limits_pars">get_limits_pars</a></code></li>
+<li><code><a title="flarefly.components.pdf_base.F2PDFBase.has_hwhm" href="#flarefly.components.pdf_base.F2PDFBase.has_hwhm">has_hwhm</a></code></li>
+<li><code><a title="flarefly.components.pdf_base.F2PDFBase.has_sigma" href="#flarefly.components.pdf_base.F2PDFBase.has_sigma">has_sigma</a></code></li>
+<li><code><a title="flarefly.components.pdf_base.F2PDFBase.hist_sample" href="#flarefly.components.pdf_base.F2PDFBase.hist_sample">hist_sample</a></code></li>
+<li><code><a title="flarefly.components.pdf_base.F2PDFBase.is_hist" href="#flarefly.components.pdf_base.F2PDFBase.is_hist">is_hist</a></code></li>
+<li><code><a title="flarefly.components.pdf_base.F2PDFBase.is_kde" href="#flarefly.components.pdf_base.F2PDFBase.is_kde">is_kde</a></code></li>
+<li><code><a title="flarefly.components.pdf_base.F2PDFBase.kde_option" href="#flarefly.components.pdf_base.F2PDFBase.kde_option">kde_option</a></code></li>
+<li><code><a title="flarefly.components.pdf_base.F2PDFBase.kde_sample" href="#flarefly.components.pdf_base.F2PDFBase.kde_sample">kde_sample</a></code></li>
+<li><code><a title="flarefly.components.pdf_base.F2PDFBase.kind" href="#flarefly.components.pdf_base.F2PDFBase.kind">kind</a></code></li>
+<li><code><a title="flarefly.components.pdf_base.F2PDFBase.label" href="#flarefly.components.pdf_base.F2PDFBase.label">label</a></code></li>
+<li><code><a title="flarefly.components.pdf_base.F2PDFBase.par_exists" href="#flarefly.components.pdf_base.F2PDFBase.par_exists">par_exists</a></code></li>
+<li><code><a title="flarefly.components.pdf_base.F2PDFBase.parameters" href="#flarefly.components.pdf_base.F2PDFBase.parameters">parameters</a></code></li>
+<li><code><a title="flarefly.components.pdf_base.F2PDFBase.pdf" href="#flarefly.components.pdf_base.F2PDFBase.pdf">pdf</a></code></li>
+<li><code><a title="flarefly.components.pdf_base.F2PDFBase.set_default_fix_par" href="#flarefly.components.pdf_base.F2PDFBase.set_default_fix_par">set_default_fix_par</a></code></li>
+<li><code><a title="flarefly.components.pdf_base.F2PDFBase.set_default_init_par" href="#flarefly.components.pdf_base.F2PDFBase.set_default_init_par">set_default_init_par</a></code></li>
+<li><code><a title="flarefly.components.pdf_base.F2PDFBase.set_default_limits_par" href="#flarefly.components.pdf_base.F2PDFBase.set_default_limits_par">set_default_limits_par</a></code></li>
+<li><code><a title="flarefly.components.pdf_base.F2PDFBase.set_default_par" href="#flarefly.components.pdf_base.F2PDFBase.set_default_par">set_default_par</a></code></li>
+<li><code><a title="flarefly.components.pdf_base.F2PDFBase.set_fix_par" href="#flarefly.components.pdf_base.F2PDFBase.set_fix_par">set_fix_par</a></code></li>
+<li><code><a title="flarefly.components.pdf_base.F2PDFBase.set_init_par" href="#flarefly.components.pdf_base.F2PDFBase.set_init_par">set_init_par</a></code></li>
+<li><code><a title="flarefly.components.pdf_base.F2PDFBase.set_limits_par" href="#flarefly.components.pdf_base.F2PDFBase.set_limits_par">set_limits_par</a></code></li>
+<li><code><a title="flarefly.components.pdf_base.F2PDFBase.set_signal_bkg_or_refl" href="#flarefly.components.pdf_base.F2PDFBase.set_signal_bkg_or_refl">set_signal_bkg_or_refl</a></code></li>
+<li><code><a title="flarefly.components.pdf_base.F2PDFBase.uses_m_not_mu" href="#flarefly.components.pdf_base.F2PDFBase.uses_m_not_mu">uses_m_not_mu</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.6</a>.</p>
+</footer>
+</body>
+</html>

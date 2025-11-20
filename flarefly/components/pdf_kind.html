@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+<meta name="generator" content="pdoc3 0.11.6">
+<title>flarefly.components.pdf_kind API documentation</title>
+<meta name="description" content="Module defining PDF kinds">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/sanitize.min.css" integrity="sha512-y1dtMcuvtTMJc1yPgEqF0ZjQbhnc/bFhyvIyVNb9Zk5mIGtqVaAB1Ttl28su8AvFMOY0EwRbAe+HCLqj6W7/KA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/13.0.0/typography.min.css" integrity="sha512-Y1DYSb995BAfxobCkKepB1BqJJTPrOp3zPL74AWFugHHmmdcvO+C48WLrUOlhGMc0QG7AE3f7gmvvcrmX2fDoA==" crossorigin>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:1.5em;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:2em 0 .50em 0}h3{font-size:1.4em;margin:1.6em 0 .7em 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .2s ease-in-out}a:visited{color:#503}a:hover{color:#b62}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900;font-weight:bold}pre code{font-size:.8em;line-height:1.4em;padding:1em;display:block}code{background:#f3f3f3;font-family:"DejaVu Sans Mono",monospace;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source > summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible;min-width:max-content}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em 1em;margin:1em 0}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul ul{padding-left:1em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js" integrity="sha512-D9gUyxqja7hBtkWpPWGt9wfbfaMGVt9gnyCvYa+jojwwPHLCzUm5i8rpk7vD7wNee9bA35eYIjobYPaQuKS1MQ==" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => {
+hljs.configure({languages: ['bash', 'css', 'diff', 'graphql', 'ini', 'javascript', 'json', 'plaintext', 'python', 'python-repl', 'rust', 'shell', 'sql', 'typescript', 'xml', 'yaml']});
+hljs.highlightAll();
+/* Collapse source docstrings */
+setTimeout(() => {
+[...document.querySelectorAll('.hljs.language-python > .hljs-string')]
+.filter(el => el.innerHTML.length > 200 && ['"""', "'''"].includes(el.innerHTML.substring(0, 3)))
+.forEach(el => {
+let d = document.createElement('details');
+d.classList.add('hljs-string');
+d.innerHTML = '<summary>"""</summary>' + el.innerHTML.substring(3);
+el.replaceWith(d);
+});
+}, 100);
+})</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>flarefly.components.pdf_kind</code></h1>
+</header>
+<section id="section-intro">
+<p>Module defining PDF kinds</p>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="flarefly.components.pdf_kind.PDFKind"><code class="flex name class">
+<span>class <span class="ident">PDFKind</span></span>
+<span>(</span><span>kind: <a title="flarefly.components.pdf_kind.PDFType" href="#flarefly.components.pdf_kind.PDFType">PDFType</a> | str,<br>order: int | None = None)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@dataclass
+class PDFKind:
+    &#34;&#34;&#34;Class representing the kind of PDF&#34;&#34;&#34;
+    kind: Union[PDFType, str]
+    order: Union[int, None] = None
+
+    def __post_init__(self):
+        # Allow to use string representation for kind
+        if isinstance(self.kind, str):
+            self.kind = PDFType(self.kind)
+
+    def __eq__(self, other):
+        if isinstance(other, PDFKind):
+            return self.kind is other.kind
+        if isinstance(other, PDFType):
+            return self.kind is other
+        return NotImplemented
+
+    def __hash__(self):
+        return hash(self.kind)
+
+    def __getattr__(self, name):
+        &#34;&#34;&#34;Delegate unknown attributes/methods to PDFType Enum&#34;&#34;&#34;
+        return getattr(self.kind, name)</code></pre>
+</details>
+<div class="desc"><p>Class representing the kind of PDF</p></div>
+<h3>Instance variables</h3>
+<dl>
+<dt id="flarefly.components.pdf_kind.PDFKind.kind"><code class="name">var <span class="ident">kind</span> : <a title="flarefly.components.pdf_kind.PDFType" href="#flarefly.components.pdf_kind.PDFType">PDFType</a> | str</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFKind.order"><code class="name">var <span class="ident">order</span> : int | None</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFType"><code class="flex name class">
+<span>class <span class="ident">PDFType</span></span>
+<span>(</span><span>*args, **kwds)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class PDFType(Enum):
+    &#34;&#34;&#34;Enumeration of supported PDF types&#34;&#34;&#34;
+
+    # Signal PDFs
+    NO_SIGNAL = &#34;nosignal&#34;
+    GAUSSIAN = &#34;gaussian&#34;
+    DOUBLE_GAUS = &#34;doublegaus&#34;
+    GAUS_EXP_TAIL = &#34;gausexptail&#34;
+    GENER_GAUS_EXP_TAIL = &#34;genergausexptail&#34;
+    GENER_GAUS_EXP_TAIL_SYMM = &#34;genergausexptailsymm&#34;
+    BIFUR_GAUS = &#34;bifurgaus&#34;
+    CRYSTAL_BALL = &#34;crystalball&#34;
+    DOUBLE_CB = &#34;doublecb&#34;
+    DOUBLE_CB_SYMM = &#34;doublecbsymm&#34;
+    GENER_CRYSTAL_BALL = &#34;genercrystalball&#34;
+    CAUCHY = &#34;cauchy&#34;
+    VOIGTIAN = &#34;voigtian&#34;
+    KDE_EXACT = &#34;kde_exact&#34;
+    KDE_GRID = &#34;kde_grid&#34;
+    KDE_FFT = &#34;kde_fft&#34;
+    KDE_ISJ = &#34;kde_isj&#34;
+    HIST = &#34;hist&#34;
+
+    # Background PDFs
+    NO_BKG = &#34;nobkg&#34;
+    CHEBPOL = &#34;chebpol&#34;
+    EXPO = &#34;expo&#34;
+    POW_LAW = &#34;powlaw&#34;
+    EXPO_POW = &#34;expopow&#34;
+    EXPO_POW_EXT = &#34;expopowext&#34;
+
+    # Reflection PDFs
+    NONE = &#34;none&#34;
+
+    def is_kde(self) -&gt; bool:
+        &#34;&#34;&#34;Check if PDF type is KDE&#34;&#34;&#34;
+        return self.value.startswith(&#34;kde_&#34;)
+
+    def is_hist(self) -&gt; bool:
+        &#34;&#34;&#34;Check if PDF type is histogram&#34;&#34;&#34;
+        return self.value == &#34;hist&#34;
+
+    def has_sigma(self) -&gt; bool:
+        &#34;&#34;&#34;Check if PDF type has sigma parameter&#34;&#34;&#34;
+        return self.value in [
+            &#34;gaussian&#34;,
+            &#34;gausexptail&#34;,
+            &#34;genergausexptailsymm&#34;,
+            &#34;crystalball&#34;,
+            &#34;doublecb&#34;,
+            &#34;doublecbsymm&#34;,
+            &#34;voigtian&#34;,
+            &#34;hist&#34;,
+        ]
+
+    def has_hwhm(self) -&gt; bool:
+        &#34;&#34;&#34;Check if PDF type has HWHM&#34;&#34;&#34;
+        return self.value in [&#34;gaussian&#34;, &#34;cauchy&#34;, &#34;voigtian&#34;]
+
+    def uses_m_not_mu(self) -&gt; bool:
+        &#34;&#34;&#34;Check if PDF uses &#39;m&#39; instead of &#39;mu&#39; for mass parameter&#34;&#34;&#34;
+        return self.value in [&#34;cauchy&#34;, &#34;voigtian&#34;]
+
+    def mass_limits(self) -&gt; bool:
+        &#34;&#34;&#34;Check if PDF has mass limits&#34;&#34;&#34;
+        return self.value in [&#34;powlaw&#34;, &#34;expopow&#34;, &#34;expopowext&#34;]</code></pre>
+</details>
+<div class="desc"><p>Enumeration of supported PDF types</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="flarefly.components.pdf_kind.PDFType.BIFUR_GAUS"><code class="name">var <span class="ident">BIFUR_GAUS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFType.CAUCHY"><code class="name">var <span class="ident">CAUCHY</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFType.CHEBPOL"><code class="name">var <span class="ident">CHEBPOL</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFType.CRYSTAL_BALL"><code class="name">var <span class="ident">CRYSTAL_BALL</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFType.DOUBLE_CB"><code class="name">var <span class="ident">DOUBLE_CB</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFType.DOUBLE_CB_SYMM"><code class="name">var <span class="ident">DOUBLE_CB_SYMM</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFType.DOUBLE_GAUS"><code class="name">var <span class="ident">DOUBLE_GAUS</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFType.EXPO"><code class="name">var <span class="ident">EXPO</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFType.EXPO_POW"><code class="name">var <span class="ident">EXPO_POW</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFType.EXPO_POW_EXT"><code class="name">var <span class="ident">EXPO_POW_EXT</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFType.GAUSSIAN"><code class="name">var <span class="ident">GAUSSIAN</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFType.GAUS_EXP_TAIL"><code class="name">var <span class="ident">GAUS_EXP_TAIL</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFType.GENER_CRYSTAL_BALL"><code class="name">var <span class="ident">GENER_CRYSTAL_BALL</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFType.GENER_GAUS_EXP_TAIL"><code class="name">var <span class="ident">GENER_GAUS_EXP_TAIL</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFType.GENER_GAUS_EXP_TAIL_SYMM"><code class="name">var <span class="ident">GENER_GAUS_EXP_TAIL_SYMM</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFType.HIST"><code class="name">var <span class="ident">HIST</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFType.KDE_EXACT"><code class="name">var <span class="ident">KDE_EXACT</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFType.KDE_FFT"><code class="name">var <span class="ident">KDE_FFT</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFType.KDE_GRID"><code class="name">var <span class="ident">KDE_GRID</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFType.KDE_ISJ"><code class="name">var <span class="ident">KDE_ISJ</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFType.NONE"><code class="name">var <span class="ident">NONE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFType.NO_BKG"><code class="name">var <span class="ident">NO_BKG</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFType.NO_SIGNAL"><code class="name">var <span class="ident">NO_SIGNAL</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFType.POW_LAW"><code class="name">var <span class="ident">POW_LAW</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFType.VOIGTIAN"><code class="name">var <span class="ident">VOIGTIAN</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="flarefly.components.pdf_kind.PDFType.has_hwhm"><code class="name flex">
+<span>def <span class="ident">has_hwhm</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def has_hwhm(self) -&gt; bool:
+    &#34;&#34;&#34;Check if PDF type has HWHM&#34;&#34;&#34;
+    return self.value in [&#34;gaussian&#34;, &#34;cauchy&#34;, &#34;voigtian&#34;]</code></pre>
+</details>
+<div class="desc"><p>Check if PDF type has HWHM</p></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFType.has_sigma"><code class="name flex">
+<span>def <span class="ident">has_sigma</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def has_sigma(self) -&gt; bool:
+    &#34;&#34;&#34;Check if PDF type has sigma parameter&#34;&#34;&#34;
+    return self.value in [
+        &#34;gaussian&#34;,
+        &#34;gausexptail&#34;,
+        &#34;genergausexptailsymm&#34;,
+        &#34;crystalball&#34;,
+        &#34;doublecb&#34;,
+        &#34;doublecbsymm&#34;,
+        &#34;voigtian&#34;,
+        &#34;hist&#34;,
+    ]</code></pre>
+</details>
+<div class="desc"><p>Check if PDF type has sigma parameter</p></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFType.is_hist"><code class="name flex">
+<span>def <span class="ident">is_hist</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_hist(self) -&gt; bool:
+    &#34;&#34;&#34;Check if PDF type is histogram&#34;&#34;&#34;
+    return self.value == &#34;hist&#34;</code></pre>
+</details>
+<div class="desc"><p>Check if PDF type is histogram</p></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFType.is_kde"><code class="name flex">
+<span>def <span class="ident">is_kde</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_kde(self) -&gt; bool:
+    &#34;&#34;&#34;Check if PDF type is KDE&#34;&#34;&#34;
+    return self.value.startswith(&#34;kde_&#34;)</code></pre>
+</details>
+<div class="desc"><p>Check if PDF type is KDE</p></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFType.mass_limits"><code class="name flex">
+<span>def <span class="ident">mass_limits</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def mass_limits(self) -&gt; bool:
+    &#34;&#34;&#34;Check if PDF has mass limits&#34;&#34;&#34;
+    return self.value in [&#34;powlaw&#34;, &#34;expopow&#34;, &#34;expopowext&#34;]</code></pre>
+</details>
+<div class="desc"><p>Check if PDF has mass limits</p></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.PDFType.uses_m_not_mu"><code class="name flex">
+<span>def <span class="ident">uses_m_not_mu</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def uses_m_not_mu(self) -&gt; bool:
+    &#34;&#34;&#34;Check if PDF uses &#39;m&#39; instead of &#39;mu&#39; for mass parameter&#34;&#34;&#34;
+    return self.value in [&#34;cauchy&#34;, &#34;voigtian&#34;]</code></pre>
+</details>
+<div class="desc"><p>Check if PDF uses 'm' instead of 'mu' for mass parameter</p></div>
+</dd>
+</dl>
+</dd>
+<dt id="flarefly.components.pdf_kind.SignalBkgOrRefl"><code class="flex name class">
+<span>class <span class="ident">SignalBkgOrRefl</span></span>
+<span>(</span><span>*args, **kwds)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SignalBkgOrRefl(Enum):
+    &#34;&#34;&#34;Enumeration of type of component&#34;&#34;&#34;
+    SIGNAL = &#34;signal&#34;
+    BACKGROUND = &#34;background&#34;
+    REFLECTION = &#34;reflection&#34;</code></pre>
+</details>
+<div class="desc"><p>Enumeration of type of component</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="flarefly.components.pdf_kind.SignalBkgOrRefl.BACKGROUND"><code class="name">var <span class="ident">BACKGROUND</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.SignalBkgOrRefl.REFLECTION"><code class="name">var <span class="ident">REFLECTION</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="flarefly.components.pdf_kind.SignalBkgOrRefl.SIGNAL"><code class="name">var <span class="ident">SIGNAL</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="flarefly.components" href="index.html">flarefly.components</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="flarefly.components.pdf_kind.PDFKind" href="#flarefly.components.pdf_kind.PDFKind">PDFKind</a></code></h4>
+<ul class="">
+<li><code><a title="flarefly.components.pdf_kind.PDFKind.kind" href="#flarefly.components.pdf_kind.PDFKind.kind">kind</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFKind.order" href="#flarefly.components.pdf_kind.PDFKind.order">order</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="flarefly.components.pdf_kind.PDFType" href="#flarefly.components.pdf_kind.PDFType">PDFType</a></code></h4>
+<ul class="">
+<li><code><a title="flarefly.components.pdf_kind.PDFType.BIFUR_GAUS" href="#flarefly.components.pdf_kind.PDFType.BIFUR_GAUS">BIFUR_GAUS</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFType.CAUCHY" href="#flarefly.components.pdf_kind.PDFType.CAUCHY">CAUCHY</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFType.CHEBPOL" href="#flarefly.components.pdf_kind.PDFType.CHEBPOL">CHEBPOL</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFType.CRYSTAL_BALL" href="#flarefly.components.pdf_kind.PDFType.CRYSTAL_BALL">CRYSTAL_BALL</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFType.DOUBLE_CB" href="#flarefly.components.pdf_kind.PDFType.DOUBLE_CB">DOUBLE_CB</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFType.DOUBLE_CB_SYMM" href="#flarefly.components.pdf_kind.PDFType.DOUBLE_CB_SYMM">DOUBLE_CB_SYMM</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFType.DOUBLE_GAUS" href="#flarefly.components.pdf_kind.PDFType.DOUBLE_GAUS">DOUBLE_GAUS</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFType.EXPO" href="#flarefly.components.pdf_kind.PDFType.EXPO">EXPO</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFType.EXPO_POW" href="#flarefly.components.pdf_kind.PDFType.EXPO_POW">EXPO_POW</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFType.EXPO_POW_EXT" href="#flarefly.components.pdf_kind.PDFType.EXPO_POW_EXT">EXPO_POW_EXT</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFType.GAUSSIAN" href="#flarefly.components.pdf_kind.PDFType.GAUSSIAN">GAUSSIAN</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFType.GAUS_EXP_TAIL" href="#flarefly.components.pdf_kind.PDFType.GAUS_EXP_TAIL">GAUS_EXP_TAIL</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFType.GENER_CRYSTAL_BALL" href="#flarefly.components.pdf_kind.PDFType.GENER_CRYSTAL_BALL">GENER_CRYSTAL_BALL</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFType.GENER_GAUS_EXP_TAIL" href="#flarefly.components.pdf_kind.PDFType.GENER_GAUS_EXP_TAIL">GENER_GAUS_EXP_TAIL</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFType.GENER_GAUS_EXP_TAIL_SYMM" href="#flarefly.components.pdf_kind.PDFType.GENER_GAUS_EXP_TAIL_SYMM">GENER_GAUS_EXP_TAIL_SYMM</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFType.HIST" href="#flarefly.components.pdf_kind.PDFType.HIST">HIST</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFType.KDE_EXACT" href="#flarefly.components.pdf_kind.PDFType.KDE_EXACT">KDE_EXACT</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFType.KDE_FFT" href="#flarefly.components.pdf_kind.PDFType.KDE_FFT">KDE_FFT</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFType.KDE_GRID" href="#flarefly.components.pdf_kind.PDFType.KDE_GRID">KDE_GRID</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFType.KDE_ISJ" href="#flarefly.components.pdf_kind.PDFType.KDE_ISJ">KDE_ISJ</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFType.NONE" href="#flarefly.components.pdf_kind.PDFType.NONE">NONE</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFType.NO_BKG" href="#flarefly.components.pdf_kind.PDFType.NO_BKG">NO_BKG</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFType.NO_SIGNAL" href="#flarefly.components.pdf_kind.PDFType.NO_SIGNAL">NO_SIGNAL</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFType.POW_LAW" href="#flarefly.components.pdf_kind.PDFType.POW_LAW">POW_LAW</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFType.VOIGTIAN" href="#flarefly.components.pdf_kind.PDFType.VOIGTIAN">VOIGTIAN</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFType.has_hwhm" href="#flarefly.components.pdf_kind.PDFType.has_hwhm">has_hwhm</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFType.has_sigma" href="#flarefly.components.pdf_kind.PDFType.has_sigma">has_sigma</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFType.is_hist" href="#flarefly.components.pdf_kind.PDFType.is_hist">is_hist</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFType.is_kde" href="#flarefly.components.pdf_kind.PDFType.is_kde">is_kde</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFType.mass_limits" href="#flarefly.components.pdf_kind.PDFType.mass_limits">mass_limits</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.PDFType.uses_m_not_mu" href="#flarefly.components.pdf_kind.PDFType.uses_m_not_mu">uses_m_not_mu</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="flarefly.components.pdf_kind.SignalBkgOrRefl" href="#flarefly.components.pdf_kind.SignalBkgOrRefl">SignalBkgOrRefl</a></code></h4>
+<ul class="">
+<li><code><a title="flarefly.components.pdf_kind.SignalBkgOrRefl.BACKGROUND" href="#flarefly.components.pdf_kind.SignalBkgOrRefl.BACKGROUND">BACKGROUND</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.SignalBkgOrRefl.REFLECTION" href="#flarefly.components.pdf_kind.SignalBkgOrRefl.REFLECTION">REFLECTION</a></code></li>
+<li><code><a title="flarefly.components.pdf_kind.SignalBkgOrRefl.SIGNAL" href="#flarefly.components.pdf_kind.SignalBkgOrRefl.SIGNAL">SIGNAL</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.11.6</a>.</p>
+</footer>
+</body>
+</html>
