@@ -339,12 +339,12 @@ el.replaceWith(d);
             name: Base name for the PDF
             ipdf: Index of the PDF
         &#34;&#34;&#34;
-        if not pdf.hist_bkg_sample:
+        if not pdf.hist_sample:
             Logger(f&#39;Missing datasample for histogram template of background {ipdf}!&#39;, &#39;FATAL&#39;)
 
         pdf.pdf = zfit.pdf.SplinePDF(
             zfit.pdf.HistogramPDF(
-                pdf.hist_bkg_sample.get_binned_data(),
+                pdf.hist_sample.get_binned_data(),
                 name=f&#39;{name}_hist_bkg{ipdf}&#39;
             ),
             order=3,
@@ -388,12 +388,12 @@ def build_bkg_hist(
         name: Base name for the PDF
         ipdf: Index of the PDF
     &#34;&#34;&#34;
-    if not pdf.hist_bkg_sample:
+    if not pdf.hist_sample:
         Logger(f&#39;Missing datasample for histogram template of background {ipdf}!&#39;, &#39;FATAL&#39;)
 
     pdf.pdf = zfit.pdf.SplinePDF(
         zfit.pdf.HistogramPDF(
-            pdf.hist_bkg_sample.get_binned_data(),
+            pdf.hist_sample.get_binned_data(),
             name=f&#39;{name}_hist_bkg{ipdf}&#39;
         ),
         order=3,

@@ -1581,7 +1581,7 @@ name of variable (needed in case of originally unbinned data)</p>
         )
         if &#39;limits&#39; in kwargs and self._data_handler_.get_is_binned():
             Logger(&#39;Restriction of fit limits is not yet implemented in binned fits!&#39;, &#39;FATAL&#39;)
-        if &#39;limits&#39; in kwargs and self._signal_pdfs_[0].kind != PDFType.NO_SIGNAL:
+        if &#39;limits&#39; in kwargs and not self.no_signal:
             Logger(&#39;Using signal PDFs while restricting fit limits!&#39;, &#39;WARNING&#39;)
         self._limits_ = kwargs.get(
             &#39;limits&#39;, self._data_handler_.get_limits())
