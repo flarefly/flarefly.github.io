@@ -89,8 +89,7 @@ el.replaceWith(d);
         elif level == &#39;ERROR&#39;:
             print(f&#39;{Logger.ERROR}ERROR{Logger.ENDC}: {text}&#39;)
         elif level == &#39;FATAL&#39;:
-            print(f&#39;{Logger.FATAL}FATAL{Logger.ENDC}: {text}&#39;)
-            sys.exit(0)
+            raise RuntimeError(text)
         elif level == &#39;RESULT&#39;:
             print(f&#39;\n\n{text}\n\n&#39;)
         else:

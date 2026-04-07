@@ -193,8 +193,8 @@ el.replaceWith(d);
                 self._limits_[1] = max(data[self._var_name_])
             elif isinstance(data, zfit.core.data.Data):
                 array = data.to_numpy()
-                self._limits_[0] = min(array)
-                self._limits_[1] = max(array)
+                self._limits_[0] = min(array)[0]
+                self._limits_[1] = max(array)[0]
             else:
                 self._limits_[0] = min(data)
                 self._limits_[1] = max(data)
@@ -364,12 +364,31 @@ el.replaceWith(d);
         &#34;&#34;&#34;Load a zfit Data object as unbinned data.&#34;&#34;&#34;
         self.__check_binned_unbinned_(False)
         self.__check_set_limits_unbinned_obs_(data, limits)
-        return data
+        return data.with_obs(self._obs_)
 
     def __load_from_zfit_data_binned(self, data, limits):
         &#34;&#34;&#34;Load a zfit DataBinned object as binned data.&#34;&#34;&#34;
         self.__load_from_histogram(data, limits)
         return data
+
+    def is_th1_weighted(self, hist):
+        &#34;&#34;&#34;
+        Check if a ROOT.TH1 histogram is weighted.
+        Adapted from uproot weighted property in TH1 behavior.
+
+        Parameters
+        ------------------------------------------------
+        hist: ROOT.TH1
+            The histogram to be checked.
+
+        Returns
+        -------------------------------------------------
+        is_weighted: bool
+            True if the histogram is weighted, False otherwise.
+        &#34;&#34;&#34;
+        ncells = hist.GetNcells()
+        sumw2 = hist.GetSumw2()
+        return sumw2 is not None and len(sumw2) == ncells
 
     def __load_from_histogram(self, hist_obj, limits):
         &#34;&#34;&#34;
@@ -382,12 +401,20 @@ el.replaceWith(d);
             xmin = hist_obj.GetXaxis().GetXmin()
             xmax = hist_obj.GetXaxis().GetXmax()
 
-            hist = Hist(Regular(nbins, xmin, xmax, name=&#34;x&#34;))
+            is_weighted = self.is_th1_weighted(hist_obj)
+            storage = &#34;weight&#34; if is_weighted else &#34;double&#34;
+
+            hist = Hist(Regular(nbins, xmin, xmax, name=&#34;x&#34;), storage=storage)
             contents = np.array([hist_obj.GetBinContent(i+1) for i in range(nbins)])
             errors2 = np.array([hist_obj.GetBinError(i+1)**2 for i in range(nbins)])
 
-            hist.view(flow=False)[...] = contents
-            hist.variances(flow=False)[...] = errors2
+            if is_weighted:
+                view = hist.view(flow=False)
+                view.value = contents
+                view.variance = errors2
+            else:
+                hist.view(flow=False)[...] = contents
+                hist.variances(flow=False)[...] = errors2
         else:
             hist = hist_obj.to_hist()
         hist = eval(f&#34;hist[::{self._rebin_}j]&#34;)  # pylint: disable=eval-used
@@ -616,8 +643,7 @@ el.replaceWith(d);
             The binned data obtained from unbinned data
         &#34;&#34;&#34;
         limits = self.get_limits()
-        data_np = zfit.run(self.get_data()[self._var_name_])
-        data_values, _ = np.histogram(data_np, self.get_nbins(), range=(limits[0], limits[1]))
+        data_values, _ = np.histogram(self._data_.to_numpy(), self._nbins_, range=(limits[0], limits[1]))
 
         return data_values
 
@@ -646,14 +672,67 @@ el.replaceWith(d);
         data: pandas.DataFrame
             The data in a pandas DataFrame
         &#34;&#34;&#34;
-        if self.__format__ == &#39;pandas&#39;:
-            Logger(&#39;Data already in pandas format.&#39;, &#39;WARNING&#39;)
-            return self._input_
-        if self.__format__ in [&#39;numpy&#39;, &#39;parquet&#39;, &#39;root&#39;, &#39;zfit_data&#39;] and not self._isbinned_:
+        if self.__format__ in [&#39;pandas&#39;, &#39;numpy&#39;, &#39;parquet&#39;, &#39;root&#39;, &#39;zfit_data&#39;] and not self._isbinned_:
             return self._data_.to_pandas()
 
         Logger(&#39;Data format not supported yet for pandas conversion.&#39;, &#39;ERROR&#39;)
         return None
+
+    def to_numpy(self):
+        &#34;&#34;&#34;
+        returns data in numpy array
+
+        Returns
+        -------------------------------------------------
+        data: numpy.ndarray
+            The data in a numpy array
+        &#34;&#34;&#34;
+        if self.__format__ in [&#39;pandas&#39;, &#39;numpy&#39;, &#39;parquet&#39;, &#39;root&#39;, &#39;zfit_data&#39;] and not self._isbinned_:
+            return self._data_.to_numpy()
+
+        Logger(&#39;Data format not supported yet for numpy conversion.&#39;, &#39;ERROR&#39;)
+        return None
+
+    def dump_to_root(self, filename, **kwargs):
+        &#34;&#34;&#34;
+        dumps data in ROOT file
+
+        Parameters
+        ------------------------------------------------
+        filename: str
+            The name of the ROOT file to dump the data to
+
+        **kwargs: dict
+            Additional optional arguments:
+            - option: str
+                option (recreate or update)
+
+            - suffix: str
+                suffix to append to objects
+
+            - folder: str
+                folder in the ROOT file to store the objects
+        &#34;&#34;&#34;
+
+        suffix = kwargs.get(&#39;suffix&#39;, &#39;&#39;)
+        option = kwargs.get(&#39;option&#39;, &#39;recreate&#39;)
+        folder = kwargs.get(&#39;folder&#39;, &#39;&#39;)
+
+        if option not in [&#39;recreate&#39;, &#39;update&#39;]:
+            Logger(&#39;Illegal option to save outputs in ROOT file!&#39;, &#39;FATAL&#39;)
+
+        open_file = uproot.recreate if option == &#39;recreate&#39; else uproot.update
+
+        with open_file(filename) as ofile:
+            name = &#39;&#39; if folder == &#39;&#39; else folder + &#39;/&#39;
+            if self._isbinned_:
+                hist = self.to_hist()
+                name += f&#34;hdata{suffix}&#34;
+                ofile[name] = hist
+            else:
+                tree = self.to_pandas()
+                name += f&#34;treedata{suffix}&#34;
+                ofile.mktree(name, tree)
 
     def to_hist(self, **kwargs):
         &#34;&#34;&#34;
@@ -784,6 +863,78 @@ Name of the tree to be used in the fit in case of ROOT file</p>
 <p>**kwargs:
 Additional keyword arguments to be passed to the specific data loading functions.</p></div>
 </dd>
+<dt id="flarefly.DataHandler.dump_to_root"><code class="name flex">
+<span>def <span class="ident">dump_to_root</span></span>(<span>self, filename, **kwargs)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def dump_to_root(self, filename, **kwargs):
+    &#34;&#34;&#34;
+    dumps data in ROOT file
+
+    Parameters
+    ------------------------------------------------
+    filename: str
+        The name of the ROOT file to dump the data to
+
+    **kwargs: dict
+        Additional optional arguments:
+        - option: str
+            option (recreate or update)
+
+        - suffix: str
+            suffix to append to objects
+
+        - folder: str
+            folder in the ROOT file to store the objects
+    &#34;&#34;&#34;
+
+    suffix = kwargs.get(&#39;suffix&#39;, &#39;&#39;)
+    option = kwargs.get(&#39;option&#39;, &#39;recreate&#39;)
+    folder = kwargs.get(&#39;folder&#39;, &#39;&#39;)
+
+    if option not in [&#39;recreate&#39;, &#39;update&#39;]:
+        Logger(&#39;Illegal option to save outputs in ROOT file!&#39;, &#39;FATAL&#39;)
+
+    open_file = uproot.recreate if option == &#39;recreate&#39; else uproot.update
+
+    with open_file(filename) as ofile:
+        name = &#39;&#39; if folder == &#39;&#39; else folder + &#39;/&#39;
+        if self._isbinned_:
+            hist = self.to_hist()
+            name += f&#34;hdata{suffix}&#34;
+            ofile[name] = hist
+        else:
+            tree = self.to_pandas()
+            name += f&#34;treedata{suffix}&#34;
+            ofile.mktree(name, tree)</code></pre>
+</details>
+<div class="desc"><p>dumps data in ROOT file</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>filename</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name of the ROOT file to dump the data to</dd>
+<dt><strong><code>**kwargs</code></strong> :&ensp;<code>dict</code></dt>
+<dd>
+<p>Additional optional arguments:
+- option: str
+option (recreate or update)</p>
+<ul>
+<li>
+<p>suffix: str
+suffix to append to objects</p>
+</li>
+<li>
+<p>folder: str
+folder in the ROOT file to store the objects</p>
+</li>
+</ul>
+</dd>
+</dl></div>
+</dd>
 <dt id="flarefly.DataHandler.get_bin_center"><code class="name flex">
 <span>def <span class="ident">get_bin_center</span></span>(<span>self)</span>
 </code></dt>
@@ -895,8 +1046,7 @@ Additional keyword arguments to be passed to the specific data loading functions
         The binned data obtained from unbinned data
     &#34;&#34;&#34;
     limits = self.get_limits()
-    data_np = zfit.run(self.get_data()[self._var_name_])
-    data_values, _ = np.histogram(data_np, self.get_nbins(), range=(limits[0], limits[1]))
+    data_values, _ = np.histogram(self._data_.to_numpy(), self._nbins_, range=(limits[0], limits[1]))
 
     return data_values</code></pre>
 </details>
@@ -1223,6 +1373,46 @@ Additional keyword arguments to be passed to the specific data loading functions
 <dd>The variable name</dd>
 </dl></div>
 </dd>
+<dt id="flarefly.DataHandler.is_th1_weighted"><code class="name flex">
+<span>def <span class="ident">is_th1_weighted</span></span>(<span>self, hist)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_th1_weighted(self, hist):
+    &#34;&#34;&#34;
+    Check if a ROOT.TH1 histogram is weighted.
+    Adapted from uproot weighted property in TH1 behavior.
+
+    Parameters
+    ------------------------------------------------
+    hist: ROOT.TH1
+        The histogram to be checked.
+
+    Returns
+    -------------------------------------------------
+    is_weighted: bool
+        True if the histogram is weighted, False otherwise.
+    &#34;&#34;&#34;
+    ncells = hist.GetNcells()
+    sumw2 = hist.GetSumw2()
+    return sumw2 is not None and len(sumw2) == ncells</code></pre>
+</details>
+<div class="desc"><p>Check if a ROOT.TH1 histogram is weighted.
+Adapted from uproot weighted property in TH1 behavior.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>hist</code></strong> :&ensp;<code>ROOT.TH1</code></dt>
+<dd>The histogram to be checked.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>is_weighted</code></strong> :&ensp;<code>bool</code></dt>
+<dd>True if the histogram is weighted, False otherwise.</dd>
+</dl></div>
+</dd>
 <dt id="flarefly.DataHandler.to_hist"><code class="name flex">
 <span>def <span class="ident">to_hist</span></span>(<span>self, **kwargs)</span>
 </code></dt>
@@ -1317,6 +1507,36 @@ name of variable (needed in case of originally unbinned data)</p>
 <dd>The data in a hist.Hist</dd>
 </dl></div>
 </dd>
+<dt id="flarefly.DataHandler.to_numpy"><code class="name flex">
+<span>def <span class="ident">to_numpy</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_numpy(self):
+    &#34;&#34;&#34;
+    returns data in numpy array
+
+    Returns
+    -------------------------------------------------
+    data: numpy.ndarray
+        The data in a numpy array
+    &#34;&#34;&#34;
+    if self.__format__ in [&#39;pandas&#39;, &#39;numpy&#39;, &#39;parquet&#39;, &#39;root&#39;, &#39;zfit_data&#39;] and not self._isbinned_:
+        return self._data_.to_numpy()
+
+    Logger(&#39;Data format not supported yet for numpy conversion.&#39;, &#39;ERROR&#39;)
+    return None</code></pre>
+</details>
+<div class="desc"><p>returns data in numpy array</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>data</code></strong> :&ensp;<code>numpy.ndarray</code></dt>
+<dd>The data in a numpy array</dd>
+</dl></div>
+</dd>
 <dt id="flarefly.DataHandler.to_pandas"><code class="name flex">
 <span>def <span class="ident">to_pandas</span></span>(<span>self)</span>
 </code></dt>
@@ -1334,10 +1554,7 @@ name of variable (needed in case of originally unbinned data)</p>
     data: pandas.DataFrame
         The data in a pandas DataFrame
     &#34;&#34;&#34;
-    if self.__format__ == &#39;pandas&#39;:
-        Logger(&#39;Data already in pandas format.&#39;, &#39;WARNING&#39;)
-        return self._input_
-    if self.__format__ in [&#39;numpy&#39;, &#39;parquet&#39;, &#39;root&#39;, &#39;zfit_data&#39;] and not self._isbinned_:
+    if self.__format__ in [&#39;pandas&#39;, &#39;numpy&#39;, &#39;parquet&#39;, &#39;root&#39;, &#39;zfit_data&#39;] and not self._isbinned_:
         return self._data_.to_pandas()
 
     Logger(&#39;Data format not supported yet for pandas conversion.&#39;, &#39;ERROR&#39;)
@@ -1404,6 +1621,8 @@ name of variable (needed in case of originally unbinned data)</p>
             - &#39;cauchy&#39;
 
             - &#39;voigtian&#39;
+
+            - &#39;genergaussian&#39;
 
             - &#39;kde_exact&#39; (requires to set the datasample and options)
 
@@ -2000,8 +2219,9 @@ name of variable (needed in case of originally unbinned data)</p>
         limits = self._data_handler_.get_limits()
         sidebands_integral, total_integral = 0., 0.
         for i_pdf, pdf in enumerate(self._signal_pdfs_ + self._background_pdfs_):
-            sidebands_integral += float(sum(pdf.pdf.integrate(lim) * fracs[i_pdf] for lim in self._limits_))
-            total_integral += float(pdf.pdf.integrate(limits) * fracs[i_pdf])
+            sidebands_integral += float(
+                sum(float(pdf.pdf.integrate(lim).numpy().item()) * fracs[i_pdf] for lim in self._limits_))
+            total_integral += float(float(pdf.pdf.integrate(limits).numpy().item()) * fracs[i_pdf])
 
         self._ratio_truncated_ = sidebands_integral / total_integral
 
@@ -3135,6 +3355,7 @@ name of variable (needed in case of originally unbinned data)</p>
 
         # pylint: disable=missing-kwoa
         signal = self._signal_pdfs_[idx].pdf.integrate((min_value, max_value))
+        signal = float(signal.numpy().item())
 
         signal_fracs, _, refl_fracs, signal_err_fracs, _, _ = self.__get_all_fracs()
 
@@ -3239,7 +3460,8 @@ name of variable (needed in case of originally unbinned data)</p>
             norm = self._total_pdf_norm_ * bkg_fracs[idx2]
             norm_err = norm * bkg_err_fracs[idx2]
 
-            bkg_int = float(bkg.pdf.integrate((min_value, max_value)))
+            bkg_int = bkg.pdf.integrate((min_value, max_value))
+            bkg_int = float(bkg_int.numpy().item())
             background += bkg_int * norm
             background_err += (bkg_int * norm_err)**2
 
@@ -3342,72 +3564,44 @@ name of variable (needed in case of originally unbinned data)</p>
             Logger(&#39;sWeights not available for truncated fit&#39;, &#39;ERROR&#39;)
             return {&#39;signal&#39;: None, &#39;bkg&#39;: None}
         if self._extended_:
-            model = self._total_pdf_.get_models()[0]  # Get the SumPDF object (not the truncated one)
-            sweights_model = []
-            for i_pdf, pdf in enumerate(self._signal_pdfs_):
-                sweights_model.append(i_pdf)
-            for i_pdf, pdf in enumerate(self._background_pdfs_):
-                sweights_model.append(i_pdf + len(self._signal_pdfs_))
-            model = zfit.pdf.SumPDF(
-                [model.get_models()[i] for i in sweights_model],
-                extended=self._data_handler_.get_norm(),
-                obs=self._data_handler_.get_obs(),
-                name=self._name_ + &#39;_sweights&#39;
-            )
-
-            sweights = compute_sweights(model, self._data_handler_.get_data())
-            names = self._signal_pdfs_+self._background_pdfs_
-            names = [names[i].kind.value for i in sweights_model]
+            sweights = compute_sweights(self._total_pdf_, self._data_handler_.get_data())
+            names = [f&#34;signal{i}&#34; for i in range(len(self._signal_pdfs_))] + \
+                    [f&#34;bkg{i}&#34; for i in range(len(self._background_pdfs_))]
             for new_name, old_name in zip(
-                self._signal_pdfs_+self._background_pdfs_,
+                names,
                 list(sweights.keys())
             ):
-                sweights[new_name.kind.value] = sweights.pop(old_name)
+                sweights[new_name] = sweights.pop(old_name)
             return sweights
 
         # Not extended case
         signal_pdf_extended = []
-        refl_pdf_extended = []
         bkg_pdf_extended = []
 
         norm = self._data_handler_.get_norm()
 
-        signal_fracs, bkg_fracs, refl_fracs, _, _, _ = self.__get_all_fracs()
-        bkg_fracs.append(1-sum(bkg_fracs)-sum(signal_fracs)-sum(refl_fracs))
+        signal_fracs, bkg_fracs, _, _, _, _ = self.__get_all_fracs()
 
         total_signal_yields = 0.
         total_bkg_yields = 0.
-        for pdf, frac in zip(self._signal_pdfs_, signal_fracs+refl_fracs):
-            signal_pdf_extended.append(pdf.create_extended(frac * norm))
+        for pdf, frac in zip(self._signal_pdfs_, signal_fracs):
+            signal_pdf_extended.append(pdf.pdf.create_extended(frac * norm))
             total_signal_yields += frac * norm
         for pdf, frac in zip(self._background_pdfs_, bkg_fracs):
-            bkg_pdf_extended.append(pdf.create_extended(frac * norm))
+            bkg_pdf_extended.append(pdf.pdf.create_extended(frac * norm))
             total_bkg_yields += frac * norm
 
-        total_signal_yields_par = zfit.Parameter(&#39;signal_yield&#39;, total_signal_yields)
-        total_bkg_yields_par = zfit.Parameter(&#39;bkg_yield&#39;, total_bkg_yields)
-
-        if len(signal_pdf_extended + refl_pdf_extended) &gt; 1:
-            signal_pdf_for_sweights = zfit.pdf.SumPDF(
-                signal_pdf_extended,
-                extended=total_signal_yields_par
-            )
-        else:
-            signal_pdf_for_sweights = signal_pdf_extended[0]
-
-        if len(bkg_pdf_extended) &gt; 1:
-            bkg_pdf_for_sweights = zfit.pdf.SumPDF(
-                bkg_pdf_extended + refl_pdf_extended,
-                extended=total_bkg_yields_par
-            )
-        else:
-            bkg_pdf_for_sweights = bkg_pdf_extended[0]
-
-        total_pdf_for_sweights = zfit.pdf.SumPDF([signal_pdf_for_sweights, bkg_pdf_for_sweights])
+        total_pdf_for_sweights = zfit.pdf.SumPDF(signal_pdf_extended + bkg_pdf_extended)
         sweights = compute_sweights(total_pdf_for_sweights, self._data_handler_.get_data())
-        sweights_labels = list(sweights.keys())
+        names = [f&#34;signal{i}&#34; for i in range(len(self._signal_pdfs_))] + \
+            [f&#34;bkg{i}&#34; for i in range(len(self._background_pdfs_))]
+        for new_name, old_name in zip(
+            names,
+            list(sweights.keys())
+        ):
+            sweights[new_name] = sweights.pop(old_name)
+        return sweights
 
-        return {&#39;signal&#39;: sweights[sweights_labels[0]], &#39;bkg&#39;: sweights[sweights_labels[1]]}
 
     def set_particle_mass(self, idx, **kwargs):
         &#34;&#34;&#34;
@@ -4029,6 +4223,9 @@ Parameters</p>
 <p>'voigtian'</p>
 </li>
 <li>
+<p>'genergaussian'</p>
+</li>
+<li>
 <p>'kde_exact' (requires to set the datasample and options)</p>
 </li>
 <li>
@@ -4601,7 +4798,8 @@ folder in the ROOT file to store the objects</p>
         norm = self._total_pdf_norm_ * bkg_fracs[idx2]
         norm_err = norm * bkg_err_fracs[idx2]
 
-        bkg_int = float(bkg.pdf.integrate((min_value, max_value)))
+        bkg_int = bkg.pdf.integrate((min_value, max_value))
+        bkg_int = float(bkg_int.numpy().item())
         background += bkg_int * norm
         background_err += (bkg_int * norm_err)**2
 
@@ -5345,6 +5543,7 @@ maximum value of invariant-mass for signal counting (alternative to nsigma)</p>
 
     # pylint: disable=missing-kwoa
     signal = self._signal_pdfs_[idx].pdf.integrate((min_value, max_value))
+    signal = float(signal.numpy().item())
 
     signal_fracs, _, refl_fracs, signal_err_fracs, _, _ = self.__get_all_fracs()
 
@@ -5712,72 +5911,43 @@ maximum value of invariant-mass for signal and background computation (alternati
         Logger(&#39;sWeights not available for truncated fit&#39;, &#39;ERROR&#39;)
         return {&#39;signal&#39;: None, &#39;bkg&#39;: None}
     if self._extended_:
-        model = self._total_pdf_.get_models()[0]  # Get the SumPDF object (not the truncated one)
-        sweights_model = []
-        for i_pdf, pdf in enumerate(self._signal_pdfs_):
-            sweights_model.append(i_pdf)
-        for i_pdf, pdf in enumerate(self._background_pdfs_):
-            sweights_model.append(i_pdf + len(self._signal_pdfs_))
-        model = zfit.pdf.SumPDF(
-            [model.get_models()[i] for i in sweights_model],
-            extended=self._data_handler_.get_norm(),
-            obs=self._data_handler_.get_obs(),
-            name=self._name_ + &#39;_sweights&#39;
-        )
-
-        sweights = compute_sweights(model, self._data_handler_.get_data())
-        names = self._signal_pdfs_+self._background_pdfs_
-        names = [names[i].kind.value for i in sweights_model]
+        sweights = compute_sweights(self._total_pdf_, self._data_handler_.get_data())
+        names = [f&#34;signal{i}&#34; for i in range(len(self._signal_pdfs_))] + \
+                [f&#34;bkg{i}&#34; for i in range(len(self._background_pdfs_))]
         for new_name, old_name in zip(
-            self._signal_pdfs_+self._background_pdfs_,
+            names,
             list(sweights.keys())
         ):
-            sweights[new_name.kind.value] = sweights.pop(old_name)
+            sweights[new_name] = sweights.pop(old_name)
         return sweights
 
     # Not extended case
     signal_pdf_extended = []
-    refl_pdf_extended = []
     bkg_pdf_extended = []
 
     norm = self._data_handler_.get_norm()
 
-    signal_fracs, bkg_fracs, refl_fracs, _, _, _ = self.__get_all_fracs()
-    bkg_fracs.append(1-sum(bkg_fracs)-sum(signal_fracs)-sum(refl_fracs))
+    signal_fracs, bkg_fracs, _, _, _, _ = self.__get_all_fracs()
 
     total_signal_yields = 0.
     total_bkg_yields = 0.
-    for pdf, frac in zip(self._signal_pdfs_, signal_fracs+refl_fracs):
-        signal_pdf_extended.append(pdf.create_extended(frac * norm))
+    for pdf, frac in zip(self._signal_pdfs_, signal_fracs):
+        signal_pdf_extended.append(pdf.pdf.create_extended(frac * norm))
         total_signal_yields += frac * norm
     for pdf, frac in zip(self._background_pdfs_, bkg_fracs):
-        bkg_pdf_extended.append(pdf.create_extended(frac * norm))
+        bkg_pdf_extended.append(pdf.pdf.create_extended(frac * norm))
         total_bkg_yields += frac * norm
 
-    total_signal_yields_par = zfit.Parameter(&#39;signal_yield&#39;, total_signal_yields)
-    total_bkg_yields_par = zfit.Parameter(&#39;bkg_yield&#39;, total_bkg_yields)
-
-    if len(signal_pdf_extended + refl_pdf_extended) &gt; 1:
-        signal_pdf_for_sweights = zfit.pdf.SumPDF(
-            signal_pdf_extended,
-            extended=total_signal_yields_par
-        )
-    else:
-        signal_pdf_for_sweights = signal_pdf_extended[0]
-
-    if len(bkg_pdf_extended) &gt; 1:
-        bkg_pdf_for_sweights = zfit.pdf.SumPDF(
-            bkg_pdf_extended + refl_pdf_extended,
-            extended=total_bkg_yields_par
-        )
-    else:
-        bkg_pdf_for_sweights = bkg_pdf_extended[0]
-
-    total_pdf_for_sweights = zfit.pdf.SumPDF([signal_pdf_for_sweights, bkg_pdf_for_sweights])
+    total_pdf_for_sweights = zfit.pdf.SumPDF(signal_pdf_extended + bkg_pdf_extended)
     sweights = compute_sweights(total_pdf_for_sweights, self._data_handler_.get_data())
-    sweights_labels = list(sweights.keys())
-
-    return {&#39;signal&#39;: sweights[sweights_labels[0]], &#39;bkg&#39;: sweights[sweights_labels[1]]}</code></pre>
+    names = [f&#34;signal{i}&#34; for i in range(len(self._signal_pdfs_))] + \
+        [f&#34;bkg{i}&#34; for i in range(len(self._background_pdfs_))]
+    for new_name, old_name in zip(
+        names,
+        list(sweights.keys())
+    ):
+        sweights[new_name] = sweights.pop(old_name)
+    return sweights</code></pre>
 </details>
 <div class="desc"><p>Calculate sWeights for signal and background components.</p>
 <h2 id="returns">Returns</h2>
@@ -6951,6 +7121,7 @@ for more details</dd>
 <h4><code><a title="flarefly.DataHandler" href="#flarefly.DataHandler">DataHandler</a></code></h4>
 <ul class="">
 <li><code><a title="flarefly.DataHandler.add_data" href="#flarefly.DataHandler.add_data">add_data</a></code></li>
+<li><code><a title="flarefly.DataHandler.dump_to_root" href="#flarefly.DataHandler.dump_to_root">dump_to_root</a></code></li>
 <li><code><a title="flarefly.DataHandler.get_bin_center" href="#flarefly.DataHandler.get_bin_center">get_bin_center</a></code></li>
 <li><code><a title="flarefly.DataHandler.get_bin_edges" href="#flarefly.DataHandler.get_bin_edges">get_bin_edges</a></code></li>
 <li><code><a title="flarefly.DataHandler.get_binned_data" href="#flarefly.DataHandler.get_binned_data">get_binned_data</a></code></li>
@@ -6966,7 +7137,9 @@ for more details</dd>
 <li><code><a title="flarefly.DataHandler.get_unbinned_obs_from_binned_data" href="#flarefly.DataHandler.get_unbinned_obs_from_binned_data">get_unbinned_obs_from_binned_data</a></code></li>
 <li><code><a title="flarefly.DataHandler.get_use_zfit" href="#flarefly.DataHandler.get_use_zfit">get_use_zfit</a></code></li>
 <li><code><a title="flarefly.DataHandler.get_var_name" href="#flarefly.DataHandler.get_var_name">get_var_name</a></code></li>
+<li><code><a title="flarefly.DataHandler.is_th1_weighted" href="#flarefly.DataHandler.is_th1_weighted">is_th1_weighted</a></code></li>
 <li><code><a title="flarefly.DataHandler.to_hist" href="#flarefly.DataHandler.to_hist">to_hist</a></code></li>
+<li><code><a title="flarefly.DataHandler.to_numpy" href="#flarefly.DataHandler.to_numpy">to_numpy</a></code></li>
 <li><code><a title="flarefly.DataHandler.to_pandas" href="#flarefly.DataHandler.to_pandas">to_pandas</a></code></li>
 </ul>
 </li>
